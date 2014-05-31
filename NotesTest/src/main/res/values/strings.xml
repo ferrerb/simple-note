@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">NotesTest</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="add_note">Add</string>
+    <string name="about">About</string>
 
 </resources>

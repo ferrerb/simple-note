@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
 public class NotesTest extends Activity {
 
     @Override
@@ -18,18 +17,22 @@ public class NotesTest extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.notes_test, menu);
+        getMenuInflater().inflate(R.menu.options, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        // Handle action bar item clicks here
+        switch (item.getItemId()) {
+            case(R.id.add_note):
+                //call notefragment and make new note
+                return true;
+            case(R.id.settings):
+                return true;
+
+            case(R.id.about):
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
