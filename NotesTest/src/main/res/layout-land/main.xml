@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment android:name="com.randomstuff.notestest.NoteFragment"
-        android:id="@+id/notelist"
+    <fragment class="com.randomstuff.notestest.NoteListFragment"
+        android:id="@+id/notes_list"
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1" />
 
-    <fragment android:name="com.randomstuff.notestest.NoteListFragment"
+    <fragment class="com.randomstuff.notestest.NoteFragment"
         android:id="@+id/notes"
         android:layout_height="match_parent"
         android:layout_width="0dp"
