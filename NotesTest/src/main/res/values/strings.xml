@@ -5,5 +5,6 @@
     <string name="settings">Settings</string>
     <string name="add_note">Add</string>
     <string name="about">About</string>
+    <string name="notes_title">List of Notes!</string>
 
 </resources>
