@@ -8,11 +8,19 @@ import android.os.AsyncTask;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME="notestest.db";
     private static final int SCHEMA_VERSION=1;
+    private static DatabaseHelper singleton=null;
     private Context ctxt=null;
 
     private DatabaseHelper(Context ctxt) {
         super(ctxt, DATABASE_NAME, null, SCHEMA_VERSION);
         this.ctxt=ctxt;
+    }
+
+    synchronized static DatabaseHelper getInstance(Context ctxt){
+        if (singleton==null){
+            singleton = new DatabaseHelper(ctxt.getApplicationContext());
+        }
+        return(singleton);
     }
 
     @Override
