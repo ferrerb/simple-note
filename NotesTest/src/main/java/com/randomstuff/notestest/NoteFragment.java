@@ -15,4 +15,9 @@ public class NoteFragment extends Fragment {
         View result = inflater.inflate(R.layout.notes_detail, container, false);
         return(result);
     }
+
+    @Override
+    public void onPause(){
+
+    }
 }
