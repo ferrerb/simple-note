@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private class GetNoteTask extends AsyncTask<Integer, Void, String>{
-        //create, or retrieve a note
+        //retrieve, or create a note
 
         protected Void doInBackground(){
 
@@ -61,8 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private class DeleteNoteTask extends AsyncTask<Integer, Void, Void> {
         //deletetetete
-
-        protected void doInBackground() {
+        @Override
+        protected Void doInBackground() {
 
         }
     }

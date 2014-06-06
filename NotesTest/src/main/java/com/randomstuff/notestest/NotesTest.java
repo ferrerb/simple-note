@@ -1,6 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,11 @@ public class NotesTest extends Activity {
         switch (item.getItemId()) {
             case(R.id.add_note):
                 //call notefragment and make new note
+                if (getFragmentManager().findFragmentById(R.id.notes) == null){
+                    Intent i=new Intent(this, NotesActivity.class);
+                    i.putExtra("position", position);
+                    startActivity(i);
+                }
                 return true;
             case(R.id.settings):
                 return true;
@@ -36,4 +42,5 @@ public class NotesTest extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

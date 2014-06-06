@@ -7,6 +7,8 @@
     <string name="about">About</string>
     <string name="delete_button">Delete</string>
     <string name="notes_title">List of Notes!</string>
+    <string name="edit_title">Title</string>
+    <string name="edit_note">Notes</string>
     <string name="sql_upgrade_error">This should not be running</string>
 
 </resources>
