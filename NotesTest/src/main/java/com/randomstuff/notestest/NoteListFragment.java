@@ -13,7 +13,8 @@ public class NoteListFragment extends Fragment {
                              Bundle savedInstanceState){
         View result = inflater.inflate(R.layout.notes_list, container, false);
 
-        return(result);
+        setHasOptionsMenu(true);
 
+        return(result);
     }
 }

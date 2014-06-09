@@ -10,7 +10,7 @@ import android.os.Bundle;
  * an existing one.
  **/
 
-public class NotesActivity extends Activity {
+public class NoteActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

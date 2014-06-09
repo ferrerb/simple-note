@@ -29,9 +29,12 @@ public class NotesTest extends Activity {
             case(R.id.add_note):
                 //call notefragment and make new note
                 if (getFragmentManager().findFragmentById(R.id.notes) == null){
-                    Intent i=new Intent(this, NotesActivity.class);
+                    Intent i=new Intent(this, NoteActivity.class);
                     i.putExtra("position", position);
                     startActivity(i);
+                }
+                else {
+                    //call NoteFragment to make new note
                 }
                 return true;
             case(R.id.settings):
