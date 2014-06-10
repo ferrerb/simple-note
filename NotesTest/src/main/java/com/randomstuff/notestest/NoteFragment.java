@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.widget.EditText;
 
-public class NoteFragment extends Fragment {
+public class NoteFragment extends Fragment implements DatabaseHelper.NoteListener {
+    private EditText editTitle=null;
+    private EditText editNote=null;
 
     static NoteFragment newInstance(int position){
         NoteFragment frag = new NoteFragment();
@@ -25,6 +28,10 @@ public class NoteFragment extends Fragment {
                              Bundle savedInstanceState){
 
         View result = inflater.inflate(R.layout.notes_detail, container, false);
+
+        editTitle = (EditText)result.findViewById(R.id.edit_title);
+        editNote = (EditText)result.findViewById(R.id.edit_note);
+
         return(result);
     }
 
@@ -36,7 +43,13 @@ public class NoteFragment extends Fragment {
     }
 
     @Override
-    public void onPause(){
+    public void setNote(String title, String note) {
+        editTitle.setText(title);
+        editNote.setText(note);
+    }
 
+    @Override
+    public void onPause(){
+        //use contentvalues to store from edittext, put in database
     }
 }

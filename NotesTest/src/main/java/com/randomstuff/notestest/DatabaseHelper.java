@@ -1,6 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
@@ -43,10 +44,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         throw new RuntimeException(ctxt.getString(R.string.sql_upgrade_error));
     }
 
-    private class GetNoteTask extends AsyncTask<Integer, Void, String>{
-        //retrieve, or create a note
+    //interface with NoteFragment, sets the edittext to the note
+    interface NoteListener {
+        void setNote(String noteTitle, String note);
+    }
 
-        protected Void doInBackground(){
+    private class GetNoteTask extends AsyncTask<Integer, Void, String>{
+        //retrieve a note
+        private NoteListener listener=null;
+
+        GetNoteTask(NoteListener listener) {
+            this.listener=listener;
+        }
+
+        @Override
+        protected String doInBackground(Integer... params){
+            //String[] args= {params[0].toString() };
+            Cursor c = getReadableDatabase().rawQuery("SELECT title, note " +
+                                                      "FROM notes WHERE position=?", null);
+            c.moveToFirst();
+
+            if (c.isAfterLast()) {
+                return(null);
+            }
+
+            String title = c.getString(1);
+            String note = c.getString(2);
+
+            c.close();
+
+            return(title, note);
 
         }
     }
@@ -54,6 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private class SaveNoteTask extends AsyncTask<Void, Void, Void> {
         //save the note
 
+        @Override
         protected void doInBackground(){
 
         }
@@ -67,8 +95,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    void getNoteAsync(){
-
+    void getNoteAsync(int position, NoteListener listener){
+        new GetNoteTask(listener).execute(position);
     }
 
     void saveNoteAsync(){
