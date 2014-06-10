@@ -43,9 +43,9 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     }
 
     @Override
-    public void setNote(String title, String note) {
-        editTitle.setText(title);
-        editNote.setText(note);
+    public void setNote(String[] note) {
+        editTitle.setText(note[0]);
+        editNote.setText(note[1]);
     }
 
     @Override

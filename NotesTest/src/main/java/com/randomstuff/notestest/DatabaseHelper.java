@@ -44,12 +44,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         throw new RuntimeException(ctxt.getString(R.string.sql_upgrade_error));
     }
 
-    //interface with NoteFragment, sets the edittext to the note
+    //interface/callback with NoteFragment, sets the edittext to the note
     interface NoteListener {
-        void setNote(String noteTitle, String note);
+        void setNote(String[] note);
     }
 
-    private class GetNoteTask extends AsyncTask<Integer, Void, String>{
+    private class GetNoteList extends AsyncTask<Void, Void, >
+
+    private class GetNoteTask extends AsyncTask<Integer, Void, String[]>{
         //retrieve a note
         private NoteListener listener=null;
 
@@ -58,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         @Override
-        protected String doInBackground(Integer... params){
+        protected String[] doInBackground(Integer... params){
             //String[] args= {params[0].toString() };
             Cursor c = getReadableDatabase().rawQuery("SELECT title, note " +
                                                       "FROM notes WHERE position=?", null);
@@ -68,14 +70,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return(null);
             }
 
-            String title = c.getString(1);
-            String note = c.getString(2);
+            String[] note = new String[2];
+            note[0] = c.getString(1);
+            note[1] = c.getString(2);
 
             c.close();
 
-            return(title, note);
+            return(note);
 
         }
+
+        @Override
+        public void onPostExecute(String[] stuff){
+            listener.setNote(stuff);
+        }
+    }
+
+    //create a note
+    private class CreateNoteTask extends AsyncTask<Void, Void, Void> {
+
     }
 
     private class SaveNoteTask extends AsyncTask<Void, Void, Void> {
