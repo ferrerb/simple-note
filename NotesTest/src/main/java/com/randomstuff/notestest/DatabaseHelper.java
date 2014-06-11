@@ -44,12 +44,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         throw new RuntimeException(ctxt.getString(R.string.sql_upgrade_error));
     }
 
+    //interface/callback with NoteListFragment, sets the note list
+    interface ListListener {
+        void setList(Cursor noteList);
+    }
+
     //interface/callback with NoteFragment, sets the edittext to the note
     interface NoteListener {
         void setNote(String[] note);
     }
 
-    private class GetNoteList extends AsyncTask<Void, Void, >
+    private class GetNoteList extends AsyncTask<Void, Void, Cursor> {
+        /*get the list of titles preferably, and you need a interface like NoteListener
+        * just like in GetNoteTask
+        */
+        private ListListener listener1=null;
+
+        GetNoteList(ListListener listener1) {
+            this.listener1=listener1;
+        }
+
+        @Override
+        protected Cursor doInBackground(Integer... params) {
+            Cursor listOfNotes = getReadableDatabase().rawQuery("SELECT title FROM notes", null);
+
+            return(listOfNotes);
+        }
+
+        @Override
+        public void onPostExecute(Cursor mList) {
+            listener1.setList(mList);
+        }
+    }
 
     private class GetNoteTask extends AsyncTask<Integer, Void, String[]>{
         //retrieve a note
@@ -106,6 +132,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         protected Void doInBackground() {
 
         }
+    }
+
+    void getListAsync(ListListener listener1) {
+        new GetNoteList(listener1).execute();
     }
 
     void getNoteAsync(int position, NoteListener listener){
