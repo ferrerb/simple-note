@@ -42,6 +42,8 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
         editTitle = (EditText)result.findViewById(R.id.edit_title);
         editNote = (EditText)result.findViewById(R.id.edit_note);
 
+        DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownIndex(), this);
+
         return(result);
     }
 

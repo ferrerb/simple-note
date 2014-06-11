@@ -36,6 +36,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         finally {
             db.endTransaction();
         }
+        //add example note
+        getWritableDatabase().execSQL("INSERT INTO notes (title, note) VALUES (test, sample)");
+
     }
 
     @Override
