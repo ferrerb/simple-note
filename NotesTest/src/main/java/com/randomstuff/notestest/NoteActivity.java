@@ -15,9 +15,10 @@ public class NoteActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getFragmentManager().findFragmentById(R.id.notes) == null) {
-            Fragment f = NoteFragment.newInstance(position);
-            getFragmentManager().beginTransaction().add()
+        if (savedInstanceState == null) {
+            NoteFragment frag = new NoteFragment();
+            frag.setArguments(getIntent().getExtras());
+            getFragmentManager().beginTransaction().add(android.R.id.content, frag).commit();
         }
     }
 }

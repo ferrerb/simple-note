@@ -13,14 +13,24 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     private EditText editTitle=null;
     private EditText editNote=null;
 
-    static NoteFragment newInstance(int position){
+    static NoteFragment newInstance(int index){
         NoteFragment frag = new NoteFragment();
 
         Bundle args = new Bundle();
-        args.putInt("position", position);
+        args.putInt("index", index);
         frag.setArguments(args);
 
         return(frag);
+    }
+
+    public int getShownIndex() {
+        return getArguments().getInt("index", 0);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -31,8 +41,6 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
         editTitle = (EditText)result.findViewById(R.id.edit_title);
         editNote = (EditText)result.findViewById(R.id.edit_note);
-
-        setHasOptionsMenu(true);
 
         return(result);
     }

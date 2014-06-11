@@ -65,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         @Override
-        protected Cursor doInBackground(Integer... params) {
+        protected Cursor doInBackground(Void... params) {
             Cursor listOfNotes = getReadableDatabase().rawQuery("SELECT title FROM notes", null);
 
             return(listOfNotes);
@@ -114,23 +114,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //create a note
     private class CreateNoteTask extends AsyncTask<Void, Void, Void> {
-
+        //probably need to actually return something here
+        @Override
+        protected Void doInBackground(Void... params){
+            return(null);
+        }
     }
 
-    private class SaveNoteTask extends AsyncTask<Void, Void, Void> {
+    private class SaveNoteTask extends AsyncTask<Integer, Void, Void> {
         //save the note
 
         @Override
-        protected void doInBackground(){
-
+        protected Void doInBackground(Integer... params){
+            return(null);
         }
     }
 
     private class DeleteNoteTask extends AsyncTask<Integer, Void, Void> {
         //deletetetete
         @Override
-        protected Void doInBackground() {
-
+        protected Void doInBackground(Integer... params) {
+            return(null);
         }
     }
 

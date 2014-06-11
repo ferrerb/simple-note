@@ -12,8 +12,6 @@ public class NotesTest extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        setHasOptionsMenu(true);
     }
 
 

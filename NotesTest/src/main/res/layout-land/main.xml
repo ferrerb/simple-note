@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_weight="1" />
 
-    <fragment class="com.randomstuff.notestest.NoteFragment"
+    <FrameLayout
         android:id="@+id/notes"
         android:layout_height="match_parent"
         android:layout_width="0dp"
