@@ -2,7 +2,6 @@ package com.randomstuff.notestest;
 
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;

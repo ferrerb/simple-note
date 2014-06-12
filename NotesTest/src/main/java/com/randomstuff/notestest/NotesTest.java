@@ -1,6 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,7 +36,15 @@ public class NotesTest extends Activity {
                     startActivity(i);
                 }
                 else {
-                    //call NoteFragment to make new note
+                    NoteFragment noteFrag = (NoteFragment)
+                            getFragmentManager().findFragmentById(R.id.notes);
+
+                    if (noteFrag == null || noteFrag.getShownIndex() != -1) {
+                        noteFrag = NoteFragment.newInstance(-1);
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.notes, noteFrag).commit();
+                    }
                 }
                 return true;
             case(R.id.settings):
