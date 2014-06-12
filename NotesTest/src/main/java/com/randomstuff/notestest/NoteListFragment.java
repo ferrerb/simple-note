@@ -2,6 +2,7 @@ package com.randomstuff.notestest;
 
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -37,13 +38,14 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
     public void setList(Cursor listHere) {
         //something with listNote
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_1, listHere, from, to, flags);
+                android.R.layout.simple_list_item_1, listHere, new String[] { "title" },
+                new int[] { android.R.id.text1}, 0);
         setListAdapter(adapter);
     }
 
     @Override
-    public void onSavedInstanceState(Bundle outState) {
-        super.onSavedInstanceState(outState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt("curNote", mCurNotePosition);
     }
 

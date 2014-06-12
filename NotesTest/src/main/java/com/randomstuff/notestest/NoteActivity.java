@@ -1,7 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 /**
@@ -14,6 +14,11 @@ public class NoteActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            finish();
+            return;
+        }
 
         if (savedInstanceState == null) {
             NoteFragment frag = new NoteFragment();

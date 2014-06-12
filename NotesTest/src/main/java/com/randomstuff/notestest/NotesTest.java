@@ -30,7 +30,8 @@ public class NotesTest extends Activity {
                 //call notefragment and make new note
                 if (getFragmentManager().findFragmentById(R.id.notes) == null){
                     Intent i=new Intent(this, NoteActivity.class);
-                    i.putExtra("position", position);
+                    //call new note interface in databasehelper/notefragment
+                    i.putExtra("index", -1);
                     startActivity(i);
                 }
                 else {
