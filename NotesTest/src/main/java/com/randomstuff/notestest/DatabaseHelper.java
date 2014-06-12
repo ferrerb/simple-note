@@ -36,8 +36,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         finally {
             db.endTransaction();
         }
-        //add example note
-        getWritableDatabase().execSQL("INSERT INTO notes (title, note) VALUES (test, sample)");
 
     }
 
@@ -69,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected Cursor doInBackground(Void... params) {
-            Cursor listOfNotes = getReadableDatabase().rawQuery("SELECT title FROM notes", null);
+            Cursor listOfNotes = getReadableDatabase().rawQuery("SELECT _id, title FROM notes", null);
 
             return(listOfNotes);
         }
@@ -91,7 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         @Override
         protected String[] doInBackground(Integer... params){
             //String[] args= {params[0].toString() };
-            Cursor c = getReadableDatabase().rawQuery("SELECT title, note " +
+            Cursor c = getReadableDatabase().rawQuery("SELECT _id, title, note " +
                                                       "FROM notes WHERE position=?", null);
             c.moveToFirst();
 
