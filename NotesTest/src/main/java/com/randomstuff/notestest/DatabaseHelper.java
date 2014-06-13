@@ -88,9 +88,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected String[] doInBackground(Integer... params){
-            //String[] args= {params[0].toString() };
+            String[] args= {params[0].toString() };
             Cursor c = getReadableDatabase().rawQuery("SELECT _id, title, note " +
-                                                      "FROM notes WHERE position=?", null);
+                                                      "FROM notes WHERE position=?", args);
             c.moveToFirst();
 
             if (c.isAfterLast()) {
