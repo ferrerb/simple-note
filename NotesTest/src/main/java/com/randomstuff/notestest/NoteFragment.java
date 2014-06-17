@@ -44,7 +44,11 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
         //if logic about -1 making a new note, otherwise getnoteasync
         if (getShownIndex() == -1) {
-            //call createnoteasync or whatever, just display blank stuff, no need for db work
+            /*
+            *Call createnoteasync or whatever, just display blank stuff, no need for db work
+            *could just set blank here, and call create note or something at onPause, based on
+            * index -1
+            */
         }
         else{
             DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownIndex(), this);
@@ -69,6 +73,6 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     @Override
     public void onPause(){
-        //use contentvalues to store from edittext, put in database
+        //use a string array to store from edittext, put in database
     }
 }
