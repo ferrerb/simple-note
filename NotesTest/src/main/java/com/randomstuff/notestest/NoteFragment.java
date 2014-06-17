@@ -44,7 +44,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
         //if logic about -1 making a new note, otherwise getnoteasync
         if (getShownIndex() == -1) {
-            //call createnoteasync or whatever
+            //call createnoteasync or whatever, just display blank stuff, no need for db work
         }
         else{
             DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownIndex(), this);
