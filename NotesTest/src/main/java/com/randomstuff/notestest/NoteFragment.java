@@ -3,6 +3,7 @@ package com.randomstuff.notestest;
 import android.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Bundle;
@@ -49,6 +50,8 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
             *could just set blank here, and call create note or something at onPause, based on
             * index -1
             */
+            editTitle=null;
+            editNote=null;
         }
         else{
             DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownIndex(), this);
@@ -66,6 +69,16 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     }
 
     @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        //deal with delete
+        if (item.getItemId() == R.id.delete) {
+            //call delete note and maybe move to another note
+
+        }
+        return(true);
+    }
+
+    @Override
     public void setNote(String[] note) {
         editTitle.setText(note[0]);
         editNote.setText(note[1]);
@@ -74,5 +87,11 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     @Override
     public void onPause(){
         //use a string array to store from edittext, put in database
+        if (getShownIndex() == -1) {
+            //call create note
+        }
+        else {
+            //call save note, might need to deal with delete
+        }
     }
 }

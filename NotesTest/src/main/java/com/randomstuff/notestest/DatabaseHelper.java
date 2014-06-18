@@ -122,11 +122,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private class SaveNoteTask extends AsyncTask<Integer, Void, Void> {
+    private class SaveNoteTask extends AsyncTask<Void, Void, Void> {
         //save the note
+        private int position;
+        private String title=null;
+        private String body=null;
+
+        SaveNoteTask(int position, String title, String body) {
+            this.position=position;
+            this.title=title;
+            this.body=body;
+        }
 
         @Override
-        protected Void doInBackground(Integer... params){
+        protected Void doInBackground(Void... params){
             return(null);
         }
     }
@@ -147,8 +156,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         new GetNoteTask(listener).execute(position);
     }
 
-    void saveNoteAsync(){
+    void createNoteAsync() {
 
+    }
+
+    void saveNoteAsync(int position, String title, String body){
+        new SaveNoteTask(position, title, body).execute();
     }
 
     void deleteNoteAsync(){
