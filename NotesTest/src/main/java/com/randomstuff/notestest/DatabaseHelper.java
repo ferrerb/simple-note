@@ -67,7 +67,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected Cursor doInBackground(Void... params) {
-            Cursor listOfNotes = getReadableDatabase().rawQuery("SELECT _id, title FROM notes", null);
+            Cursor listOfNotes = getReadableDatabase().query("notes",
+                    new String[] { "_id", "title" },
+                    null, null, null, null, null );
 
             return(listOfNotes);
         }
@@ -89,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         @Override
         protected String[] doInBackground(Integer... params){
             String[] args= {params[0].toString() };
-            Cursor c = getReadableDatabase().rawQuery("SELECT _id, title, note " +
+            Cursor c = getReadableDatabase().rawQuery("SELECT (_id, title, note) " +
                                                       "FROM notes WHERE position=?", args);
             c.moveToFirst();
 
@@ -136,6 +138,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected Void doInBackground(Void... params){
+            String[] args = {String.valueOf(position), title, body };
+            //could do logic for new note, if position == -1 then insert, and return position
+            getWritableDatabase().execSQL("REPLACE INTO notes (_id, title, note) VALUES (?, ?, ?)",
+                    args);
             return(null);
         }
     }
