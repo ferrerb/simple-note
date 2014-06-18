@@ -71,6 +71,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     new String[] { "_id", "title" },
                     null, null, null, null, null );
 
+            if (listOfNotes.isAfterLast()) {
+                return(null);
+            }
+
             return(listOfNotes);
         }
 
@@ -90,10 +94,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected String[] doInBackground(Integer... params){
-            String[] args= {params[0].toString() };
-            Cursor c = getReadableDatabase().rawQuery("SELECT (_id, title, note) " +
-                                                      "FROM notes WHERE position=?", args);
-            c.moveToFirst();
+            String args= params[0].toString();
+            Cursor c = getReadableDatabase().query("notes",
+                         new String[] { "_id", "title", "note"},
+                         args, null, null, null, null);
 
             if (c.isAfterLast()) {
                 return(null);
@@ -115,15 +119,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    //create a note
-    private class CreateNoteTask extends AsyncTask<Void, Void, Void> {
-        //probably need to actually return something here
-        @Override
-        protected Void doInBackground(Void... params){
-            return(null);
-        }
-    }
-
     private class SaveNoteTask extends AsyncTask<Void, Void, Void> {
         //save the note
         private int position;
@@ -139,9 +134,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         @Override
         protected Void doInBackground(Void... params){
             String[] args = {String.valueOf(position), title, body };
-            //could do logic for new note, if position == -1 then insert, and return position
-            getWritableDatabase().execSQL("REPLACE INTO notes (_id, title, note) VALUES (?, ?, ?)",
-                    args);
+            //might need some logic if null
+            if (position == -1) {
+                getWritableDatabase().execSQL("INSERT INTO notes (title, note) " +
+                        "VALUES (" + title + ", " + body + ")");
+            }
+            else {
+                getWritableDatabase().execSQL("REPLACE INTO notes (_id, title, note) VALUES (?, ?, ?)",
+                        args);
+            }
             return(null);
         }
     }
@@ -160,10 +161,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     void getNoteAsync(int position, NoteListener listener){
         new GetNoteTask(listener).execute(position);
-    }
-
-    void createNoteAsync() {
-
     }
 
     void saveNoteAsync(int position, String title, String body){

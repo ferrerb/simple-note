@@ -5,13 +5,23 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 public class NoteListFragment extends ListFragment implements DatabaseHelper.ListListener {
     boolean mDualPane;
     int mCurNotePosition = 0;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View result = inflater.inflate(R.layout.notes_list, container, false);
+
+        return(result);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){

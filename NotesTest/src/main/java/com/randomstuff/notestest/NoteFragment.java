@@ -63,9 +63,9 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
 
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -86,12 +86,10 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     @Override
     public void onPause(){
+        super.onPause();
         //use a string array to store from edittext, put in database
-        if (getShownIndex() == -1) {
-            //call create note
-        }
-        else {
-            //call save note, might need to deal with delete
-        }
+        DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownIndex(),
+                                   editTitle.toString(),
+                                   editNote.toString());
     }
 }
