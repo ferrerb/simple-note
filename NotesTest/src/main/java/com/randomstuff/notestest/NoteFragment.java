@@ -87,9 +87,8 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     @Override
     public void onPause(){
         super.onPause();
-        //use a string array to store from edittext, put in database
         DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownIndex(),
-                                   editTitle.toString(),
-                                   editNote.toString());
+                                   editTitle.getText().toString(),
+                                   editNote.getText().toString());
     }
 }
