@@ -1,6 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.app.Fragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,19 +45,9 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
         editNote = (EditText)result.findViewById(R.id.edit_note);
 
         //if logic about -1 making a new note, otherwise getnoteasync
-        if (getShownIndex() == -1) {
-            /*
-            *Call createnoteasync or whatever, just display blank stuff, no need for db work
-            *could just set blank here, and call create note or something at onPause, based on
-            * index -1
-            */
-            editTitle=null;
-            editNote=null;
-        }
-        else{
+        if (getShownIndex() != -1) {
             DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownIndex(), this);
         }
-
 
         return(result);
     }
@@ -86,9 +77,11 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     @Override
     public void onPause(){
-        super.onPause();
+        //Log.d("title check", "value : " + editTitle.getText().toString());
         DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownIndex(),
                                    editTitle.getText().toString(),
                                    editNote.getText().toString());
+
+        super.onPause();
     }
 }
