@@ -1,5 +1,6 @@
 package com.randomstuff.notestest;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -68,8 +69,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         @Override
         protected Cursor doInBackground(Void... params) {
             Cursor listOfNotes = getReadableDatabase().query("notes",
-                    new String[] { "_id", "title" },
-                    null, null, null, null, null );
+                    new String[]{"_id", "title"},
+                    null, null, null, null, null);
 
             if (listOfNotes.isAfterLast()) {
                 return(null);
@@ -96,8 +97,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         protected String[] doInBackground(Integer... params){
             String args= params[0].toString();
             Cursor c = getReadableDatabase().query("notes",
-                         new String[] { "_id", "title", "note"},
-                         args, null, null, null, null);
+                    new String[]{"_id", "title", "note"},
+                    args, null, null, null, null);
 
             if (c.isAfterLast()) {
                 return(null);
@@ -133,15 +134,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected Void doInBackground(Void... params){
-            String[] args = {String.valueOf(position), title, body };
             //might need some logic if null
             if (position == -1) {
-                getWritableDatabase().execSQL("INSERT INTO notes (title, note) " +
-                        "VALUES (" + title + ", " + body + ")");
+                ContentValues cv = new ContentValues();
+                cv.put("title", title);
+                cv.put("note", body);
+                getWritableDatabase().insert("notes", null, cv);
             }
             else {
-                getWritableDatabase().execSQL("REPLACE INTO notes (_id, title, note) VALUES (?, ?, ?)",
-                        args);
+                ContentValues cv = new ContentValues();
+                cv.put("title", title);
+                cv.put("note", body);
+                getWritableDatabase().update("notes", cv, "_id = " + String.valueOf(position), null);
             }
             return(null);
         }
