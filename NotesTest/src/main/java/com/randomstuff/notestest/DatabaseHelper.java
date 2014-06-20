@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME="notestest.db";
@@ -96,21 +97,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         @Override
         protected String[] doInBackground(Integer... params){
             String args= params[0].toString();
+            String[] mNote = new String[2];
+
             Cursor c = getReadableDatabase().query("notes",
-                    new String[]{"_id", "title", "note"},
-                    args, null, null, null, null);
+                    new String[] {"_id", "title", "note"},
+                    "_id=" + args, null, null, null, null);
+
+            c.moveToFirst();
 
             if (c.isAfterLast()) {
-                return(null);
+               return(null);
             }
 
-            String[] note = new String[2];
-            note[0] = c.getString(1);
-            note[1] = c.getString(2);
+            Log.d("test", c.getString(0));
+            Log.d("title", c.getString(1));
+            Log.d("note", c.getString(2));
+
+            mNote[0] = c.getString(1);
+            mNote[1] = c.getString(2);
 
             c.close();
 
-            return(note);
+            return(mNote);
 
         }
 
