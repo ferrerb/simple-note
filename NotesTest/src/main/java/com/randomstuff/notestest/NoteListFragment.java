@@ -61,6 +61,7 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
         //maybe do position + 1?
         showNote(position);
     }
