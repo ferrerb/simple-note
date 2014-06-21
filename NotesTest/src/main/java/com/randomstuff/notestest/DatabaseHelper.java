@@ -71,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         protected Cursor doInBackground(Void... params) {
             Cursor listOfNotes = getReadableDatabase().query("notes",
                     new String[]{"_id", "title"},
-                    null, null, null, null, null);
+                    null, null, null, null, "_id DESC");
 
             if (listOfNotes.isAfterLast()) {
                 return(null);
@@ -99,24 +99,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String args= params[0].toString();
             String[] mNote = new String[2];
 
+            Log.d("index passed", args);
+
             Cursor c = getReadableDatabase().query("notes",
                     new String[] {"_id", "title", "note"},
                     "_id=" + args, null, null, null, null);
 
-            c.moveToFirst();
+            if (c != null && c.moveToFirst()) {
+                mNote[0] = c.getString(1);
+                mNote[1] = c.getString(2);
 
-            if (c.isAfterLast()) {
-               return(null);
+                c.close();
             }
 
-            Log.d("test", c.getString(0));
-            Log.d("title", c.getString(1));
-            Log.d("note", c.getString(2));
+            //Log.d("test", c.getString(0));
+            //Log.d("title", c.getString(1));
+            //Log.d("note", c.getString(2));
 
-            mNote[0] = c.getString(1);
-            mNote[1] = c.getString(2);
 
-            c.close();
 
             return(mNote);
 
