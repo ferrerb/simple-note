@@ -150,6 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 getWritableDatabase().insert("notes", null, cv);
             }
             else {
+                //check this to see if it writes to position 0 or something
                 ContentValues cv = new ContentValues();
                 cv.put("title", title);
                 cv.put("note", body);
