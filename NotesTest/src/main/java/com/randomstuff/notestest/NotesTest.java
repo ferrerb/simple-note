@@ -40,7 +40,7 @@ public class NotesTest extends Activity {
                             getFragmentManager().findFragmentById(R.id.notes);
 
                     if (noteFrag == null || noteFrag.getShownIndex() != -1) {
-                        noteFrag = NoteFragment.newInstance(-1);
+                        noteFrag = NoteFragment.newInstance(-1, -1);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.replace(R.id.notes, noteFrag).commit();

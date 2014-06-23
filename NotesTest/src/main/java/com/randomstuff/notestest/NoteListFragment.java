@@ -13,7 +13,7 @@ import android.widget.SimpleCursorAdapter;
 
 public class NoteListFragment extends ListFragment implements DatabaseHelper.ListListener {
     boolean mDualPane;
-    int mCurNotePosition = 1;
+    long mCurNotePosition = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,15 +31,16 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
         DatabaseHelper.getInstance(getActivity()).getListAsync(this);
 
         View notesFrame = getActivity().findViewById(R.id.notes);
-        mDualPane = notesFrame != null && notesFrame.getVisibility() == View.VISIBLE;
+        mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
 
         if (savedInstanceState != null) {
-            mCurNotePosition = savedInstanceState.getInt("curNote", 1);
+            mCurNotePosition = savedInstanceState.getLong("curNote", 1);
         }
 
         if (mDualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            showNote(mCurNotePosition);
+            //might need to iterate through cursor and match the id to the position
+            showNote(mCurNotePosition, 0);
         }
     }
 
@@ -55,19 +56,18 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("curNote", mCurNotePosition);
+        outState.putLong("curNote", mCurNotePosition);
     }
 
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        //maybe do id, corrseponds with rowid? this is in reverse
-        //http://stackoverflow.com/questions/9870663/android-listview-onlistitemclick-find-row-id
-        showNote(position + 1);
+
+        showNote(id, position);
     }
 
-    void showNote(int index) {
+    void showNote(long id, int index) {
         // deal with showing the fragment
         mCurNotePosition = index;
 
@@ -79,7 +79,7 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
                     getFragmentManager().findFragmentById(R.id.notes);
 
             if (noteFrag == null || noteFrag.getShownIndex() != index) {
-                noteFrag = NoteFragment.newInstance(index);
+                noteFrag = NoteFragment.newInstance(id, index);
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.notes, noteFrag).commit();
@@ -89,6 +89,7 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
             Intent i = new Intent();
             i.setClass(getActivity(), NoteActivity.class);
             i.putExtra("index", index);
+            i.putExtra("id", id);
             startActivity(i);
         }
     }

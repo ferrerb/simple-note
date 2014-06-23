@@ -86,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private class GetNoteTask extends AsyncTask<Integer, Void, String[]>{
+    private class GetNoteTask extends AsyncTask<Long, Void, String[]>{
         //retrieve a note
         private NoteListener listener=null;
 
@@ -95,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         @Override
-        protected String[] doInBackground(Integer... params){
+        protected String[] doInBackground(Long... params){
             String args= params[0].toString();
             String[] mNote = new String[2];
 
@@ -130,11 +130,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private class SaveNoteTask extends AsyncTask<Void, Void, Void> {
         //save the note
-        private int position;
+        private long position;
         private String title=null;
         private String body=null;
 
-        SaveNoteTask(int position, String title, String body) {
+        SaveNoteTask(long position, String title, String body) {
             this.position=position;
             this.title=title;
             this.body=body;
@@ -160,10 +160,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private class DeleteNoteTask extends AsyncTask<Integer, Void, Void> {
+    private class DeleteNoteTask extends AsyncTask<Long, Void, Void> {
         //deletetetete
         @Override
-        protected Void doInBackground(Integer... params) {
+        protected Void doInBackground(Long... params) {
+            String args = params[0].toString();
+            getWritableDatabase().delete("notes", "id=" + args, null);
             return(null);
         }
     }
@@ -172,16 +174,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         new GetNoteList(listener1).execute();
     }
 
-    void getNoteAsync(int position, NoteListener listener){
+    void getNoteAsync(long position, NoteListener listener){
         new GetNoteTask(listener).execute(position);
     }
 
-    void saveNoteAsync(int position, String title, String body){
+    void saveNoteAsync(long position, String title, String body){
         new SaveNoteTask(position, title, body).execute();
     }
 
-    void deleteNoteAsync(){
-
+    void deleteNoteAsync(long position){
+        new DeleteNoteTask().execute(position);
     }
 
 }

@@ -14,11 +14,12 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     private EditText editTitle=null;
     private EditText editNote=null;
 
-    static NoteFragment newInstance(int index){
+    static NoteFragment newInstance(long id, int index){
         NoteFragment frag = new NoteFragment();
 
         Bundle args = new Bundle();
         args.putInt("index", index);
+        args.putLong("id", id);
         frag.setArguments(args);
 
         return(frag);
@@ -26,6 +27,10 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     public int getShownIndex() {
         return getArguments().getInt("index", 0);
+    }
+
+    public long getShownId() {
+        return getArguments().getLong("id", 0);
     }
 
     @Override
@@ -45,7 +50,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
         //if logic about -1 making a new note, otherwise getnoteasync
         if (getShownIndex() != -1) {
-            DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownIndex(), this);
+            DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownId(), this);
         }
 
         return(result);
@@ -63,8 +68,11 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
         //deal with delete
         if (item.getItemId() == R.id.delete) {
             //call delete note and maybe move to another note
+            //must do something diff for portrait and land
+            DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
 
         }
+        //implement a 'Done' button or something
         return(true);
     }
 
