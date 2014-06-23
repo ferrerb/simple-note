@@ -62,8 +62,9 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        //maybe do id, corrseponds with rowid?
-        showNote(position);
+        //maybe do id, corrseponds with rowid? this is in reverse
+        //http://stackoverflow.com/questions/9870663/android-listview-onlistitemclick-find-row-id
+        showNote(position + 1);
     }
 
     void showNote(int index) {
