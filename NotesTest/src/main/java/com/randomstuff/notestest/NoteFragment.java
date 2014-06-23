@@ -13,6 +13,7 @@ import android.widget.EditText;
 public class NoteFragment extends Fragment implements DatabaseHelper.NoteListener {
     private EditText editTitle=null;
     private EditText editNote=null;
+    private boolean isDeleted=false;
 
     static NoteFragment newInstance(long id, int index){
         NoteFragment frag = new NoteFragment();
@@ -69,6 +70,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
         if (item.getItemId() == R.id.delete) {
             //call delete note and maybe move to another note
             //must do something diff for portrait and land
+            isDeleted=true;
             DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
 
         }
@@ -85,9 +87,11 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     @Override
     public void onPause(){
         //Log.d("title check", "value : " + editTitle.getText().toString());
-        DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownIndex(),
-                                   editTitle.getText().toString(),
-                                   editNote.getText().toString());
+        if (!isDeleted) {
+            DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
+                    editTitle.getText().toString(),
+                    editNote.getText().toString());
+        }
 
         super.onPause();
     }

@@ -32,7 +32,7 @@ public class NotesTest extends Activity {
                 if (getFragmentManager().findFragmentById(R.id.notes) == null){
                     Intent i=new Intent(this, NoteActivity.class);
                     //call new note interface in databasehelper/notefragment
-                    i.putExtra("index", -1);
+                    i.putExtra("id", -1);
                     startActivity(i);
                 }
                 else {

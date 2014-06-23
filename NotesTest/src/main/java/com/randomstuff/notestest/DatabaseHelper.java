@@ -142,7 +142,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Override
         protected Void doInBackground(Void... params){
-            //might need some logic if null
             if (position == -1) {
                 ContentValues cv = new ContentValues();
                 cv.put("title", title);
@@ -150,7 +149,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 getWritableDatabase().insert("notes", null, cv);
             }
             else {
-                //check this to see if it writes to position 0 or something
                 ContentValues cv = new ContentValues();
                 cv.put("title", title);
                 cv.put("note", body);
