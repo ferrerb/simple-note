@@ -1,6 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,6 +60,12 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     }
 
     @Override
+    public void setNote(String[] note) {
+        editTitle.setText(note[0]);
+        editNote.setText(note[1]);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
@@ -74,22 +81,30 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
             isDeleted=true;
             DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
 
-        }
-        //implement a 'Done' button or something
-        return(true);
-    }
+            NoteListFragment noteListFrag = (NoteListFragment)getFragmentManager()
+                                .findFragmentById(R.id.notes_list);
 
-    @Override
-    public void setNote(String[] note) {
-        editTitle.setText(note[0]);
-        editNote.setText(note[1]);
+            if (noteListFrag.isVisible()) {
+                NoteFragment noteFrag = new NoteFragment();
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.remove(noteFrag).commit();
+            }
+            else {
+                getActivity().finish();
+            }
+
+        }
+        return(super.onOptionsItemSelected(item));
     }
 
     @Override
     public void onPause(){
-        if (!isDeleted) {
-            Log.d("getshownid", String.valueOf(getShownId()));
+        //check if the edittexts are empty, dont save, or something
+        boolean titleEmpty = editTitle.getText().toString().isEmpty();
+        boolean noteEmpty = editNote.getText().toString().isEmpty();
 
+        if (!isDeleted && !titleEmpty && !noteEmpty) {
             DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
                     editTitle.getText().toString(),
                     editNote.getText().toString());
