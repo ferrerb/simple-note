@@ -1,6 +1,7 @@
 package com.randomstuff.notestest;
 
 import android.app.Fragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,6 +89,8 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     public void onPause(){
         //Log.d("title check", "value : " + editTitle.getText().toString());
         if (!isDeleted) {
+            Log.d("getshownid", String.valueOf(getShownId()));
+
             DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
                     editTitle.getText().toString(),
                     editNote.getText().toString());

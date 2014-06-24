@@ -69,7 +69,7 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
 
     void showNote(long id, int index) {
         // deal with showing the fragment
-        mCurNotePosition = index;
+        mCurNotePosition = id;
 
         if (mDualPane) {
             // Highlights the currently selected note

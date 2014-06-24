@@ -159,7 +159,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private class DeleteNoteTask extends AsyncTask<Long, Void, Void> {
-        //deletetetete
         @Override
         protected Void doInBackground(Long... params) {
             String args = params[0].toString();
