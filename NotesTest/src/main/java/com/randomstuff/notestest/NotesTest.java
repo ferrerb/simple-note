@@ -31,8 +31,8 @@ public class NotesTest extends Activity {
                 //call notefragment and make new note
                 if (getFragmentManager().findFragmentById(R.id.notes) == null){
                     Intent i=new Intent(this, NoteActivity.class);
-                    //call new note interface in databasehelper/notefragment
-                    i.putExtra("id", -1);
+                    i.putExtra("id", -1L);
+                    i.putExtra("index", -1);
                     startActivity(i);
                 }
                 else {
@@ -40,7 +40,7 @@ public class NotesTest extends Activity {
                             getFragmentManager().findFragmentById(R.id.notes);
 
                     if (noteFrag == null || noteFrag.getShownIndex() != -1) {
-                        noteFrag = NoteFragment.newInstance(-1, -1);
+                        noteFrag = NoteFragment.newInstance(-1L, -1);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.replace(R.id.notes, noteFrag).commit();

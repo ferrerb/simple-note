@@ -32,7 +32,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     }
 
     public long getShownId() {
-        return getArguments().getLong("id", 0);
+        return getArguments().getLong("id", 0L);
     }
 
     @Override
@@ -87,7 +87,6 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     @Override
     public void onPause(){
-        //Log.d("title check", "value : " + editTitle.getText().toString());
         if (!isDeleted) {
             Log.d("getshownid", String.valueOf(getShownId()));
 

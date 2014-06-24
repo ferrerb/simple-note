@@ -13,7 +13,7 @@ import android.widget.SimpleCursorAdapter;
 
 public class NoteListFragment extends ListFragment implements DatabaseHelper.ListListener {
     boolean mDualPane;
-    long mCurNotePosition = 1;
+    long mCurNotePosition = 1L;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,8 +88,8 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
         else {
             Intent i = new Intent();
             i.setClass(getActivity(), NoteActivity.class);
-            i.putExtra("index", index);
             i.putExtra("id", id);
+            i.putExtra("index", index);
             startActivity(i);
         }
     }
