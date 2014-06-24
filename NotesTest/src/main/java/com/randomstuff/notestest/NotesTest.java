@@ -49,7 +49,8 @@ public class NotesTest extends Activity {
                 return true;
             case(R.id.settings):
                 return true;
-
+            case(R.id.help):
+                return true;
             case(R.id.about):
                 return true;
         }

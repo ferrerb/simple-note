@@ -92,7 +92,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
                 ft.remove(noteFrag).commit();
             }
             else {
-                ((NoteActivity)getActivity()).finish();
+                getActivity().finish();
             }
 
         }
