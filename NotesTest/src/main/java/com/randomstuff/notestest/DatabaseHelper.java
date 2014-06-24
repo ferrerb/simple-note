@@ -162,7 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         @Override
         protected Void doInBackground(Long... params) {
             String args = params[0].toString();
-            getWritableDatabase().delete("notes", "id=" + args, null);
+            getWritableDatabase().delete("notes", "_id=" + args, null);
             return(null);
         }
     }
