@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class NoteFragment extends Fragment implements DatabaseHelper.NoteListener {
     private EditText editTitle=null;
     private EditText editNote=null;
     private boolean isDeleted=false;
+    private boolean mDualPane;
 
     static NoteFragment newInstance(long id, int index){
         NoteFragment frag = new NoteFragment();
@@ -56,6 +58,9 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
             DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownId(), this);
         }
 
+        View notesListFrame = getActivity().findViewById(R.id.notes_list);
+        mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
+
         return(result);
     }
 
@@ -81,10 +86,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
             isDeleted=true;
             DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
 
-            NoteListFragment noteListFrag = (NoteListFragment)getFragmentManager()
-                                .findFragmentById(R.id.notes_list);
-
-            if (noteListFrag.isVisible()) {
+            if (mDualPane) {
                 NoteFragment noteFrag = new NoteFragment();
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -108,6 +110,10 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
             DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
                     editTitle.getText().toString(),
                     editNote.getText().toString());
+        }
+        else {
+            CharSequence saveFail = "Save failed. Must have a title and a note";
+            Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
         }
 
         super.onPause();
