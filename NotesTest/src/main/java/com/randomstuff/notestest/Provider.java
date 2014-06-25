@@ -11,7 +11,7 @@ public class Provider extends ContentProvider {
     }
 
     public void query() {
-
+        //query!
     }
 
 }
