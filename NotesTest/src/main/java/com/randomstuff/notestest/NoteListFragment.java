@@ -3,7 +3,9 @@ package com.randomstuff.notestest;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,12 +32,7 @@ public class NoteListFragment extends ListFragment implements
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
-                null, new String[] { Provider.Constants.COLUMN_TITLE },
-                new int[] {R.id.notes_list}, 0);
-
-        setListAdapter(adapter);
-        getLoaderManager().initLoader(0, null, this);
+        fillList();
 
         View notesFrame = getActivity().findViewById(R.id.notes);
         mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
@@ -90,5 +87,34 @@ public class NoteListFragment extends ListFragment implements
             i.putExtra("index", index);
             startActivity(i);
         }
+    }
+
+    public void fillList() {
+        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                null, new String[] { Provider.Constants.COLUMN_TITLE },
+                new int[] {R.id.notes_list}, 0);
+
+        setListAdapter(adapter);
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        String[] projection =
+                { Provider.Constants.COLUMN_ID, Provider.Constants.COLUMN_TITLE };
+        String sortOrder = Provider.Constants.COLUMN_ID + " DESC";
+
+        return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
+                                projection, null, null, sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }

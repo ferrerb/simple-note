@@ -17,10 +17,11 @@ public class Provider extends ContentProvider {
     private static final String DATABASE_NAME = "notes";
     private static final int NOTES = 1;
     private static final int NOTE_ID = 2;
-    private static final String AUTHORITY = "com.randomstuff.notestest.provider.Provider";
-    private static final String BASE_PATH = "";
+    private static final String AUTHORITY = "com.randomstuff.notestest.Provider";
+    private static final String BASE_PATH = "notes";
 
     public static final class Constants implements BaseColumns {
+        public static final String COLUMN_ID = "_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_NOTE = "note";
         public static final Uri CONTENT_URI =
@@ -51,7 +52,20 @@ public class Provider extends ContentProvider {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(DATABASE_NAME);
 
-        Cursor c = qb.query(db.getReadableDatabase(), projection, selection, selectionArgs, null, null, sort);
+        int uriType = sURIMatcher.match(uri);
+
+        switch (uriType) {
+            case NOTES:
+                break;
+            case NOTE_ID:
+                qb.appendWhere(Provider.Constants.COLUMN_ID + "=" + uri.getLastPathSegment());
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Uri: " + uri);
+        }
+
+        Cursor c = qb.query(db.getReadableDatabase(), projection,
+                            selection, selectionArgs, null, null, sort);
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
 

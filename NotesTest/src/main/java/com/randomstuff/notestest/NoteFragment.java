@@ -2,6 +2,10 @@ package com.randomstuff.notestest;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,13 +17,13 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class NoteFragment extends Fragment implements DatabaseHelper.NoteListener {
-    private EditText editTitle=null;
-    private EditText editNote=null;
-    private boolean isDeleted=false;
+public class NoteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private EditText editTitle = null;
+    private EditText editNote = null;
+    private boolean isDeleted = false;
     private boolean mDualPane;
 
-    static NoteFragment newInstance(long id, int index){
+    static NoteFragment newInstance(long id, int index) {
         NoteFragment frag = new NoteFragment();
 
         Bundle args = new Bundle();
@@ -27,7 +31,7 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
         args.putLong("id", id);
         frag.setArguments(args);
 
-        return(frag);
+        return (frag);
     }
 
     public int getShownIndex() {
@@ -46,28 +50,22 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
 
         View result = inflater.inflate(R.layout.notes_detail, container, false);
 
-        editTitle = (EditText)result.findViewById(R.id.edit_title);
-        editNote = (EditText)result.findViewById(R.id.edit_note);
+        editTitle = (EditText) result.findViewById(R.id.edit_title);
+        editNote = (EditText) result.findViewById(R.id.edit_note);
 
         //if logic about -1 making a new note, otherwise getnoteasync
         if (getShownIndex() != -1) {
-            DatabaseHelper.getInstance(getActivity()).getNoteAsync(getShownId(), this);
+            //cursorloader call here
         }
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
 
-        return(result);
-    }
-
-    @Override
-    public void setNote(String[] note) {
-        editTitle.setText(note[0]);
-        editNote.setText(note[1]);
+        return (result);
     }
 
     @Override
@@ -78,44 +76,60 @@ public class NoteFragment extends Fragment implements DatabaseHelper.NoteListene
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         //deal with delete
         if (item.getItemId() == R.id.delete) {
             //call delete note and maybe move to another note
             //must do something diff for portrait and land
-            isDeleted=true;
-            DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
+            isDeleted = true;
+            //DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
 
             if (mDualPane) {
                 NoteFragment noteFrag = new NoteFragment();
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.remove(noteFrag).commit();
-            }
-            else {
+            } else {
                 getActivity().finish();
             }
 
         }
-        return(super.onOptionsItemSelected(item));
+        return (super.onOptionsItemSelected(item));
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         //check if the edittexts are empty, dont save, or something
         boolean titleEmpty = editTitle.getText().toString().isEmpty();
         boolean noteEmpty = editNote.getText().toString().isEmpty();
 
         if (!isDeleted && !titleEmpty && !noteEmpty) {
-            DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
-                    editTitle.getText().toString(),
-                    editNote.getText().toString());
-        }
-        else {
+            //DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
+                    //editTitle.getText().toString(),
+                    //editNote.getText().toString());
+        } else {
             CharSequence saveFail = "Save failed. Must have a title and a note";
             Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
         }
 
         super.onPause();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        String[] projection = new String[]
+                {Provider.Constants._ID, Provider.Constants.COLUMN_TITLE};
+        return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
+                projection, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        //adapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        //adapter.swapCursor(null);
     }
 }
