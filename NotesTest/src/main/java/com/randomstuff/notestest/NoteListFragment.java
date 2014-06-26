@@ -2,6 +2,7 @@ package com.randomstuff.notestest;
 
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.app.LoaderManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-public class NoteListFragment extends ListFragment implements DatabaseHelper.ListListener {
-    boolean mDualPane;
-    long mCurNotePosition = 1L;
+public class NoteListFragment extends ListFragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
+    private boolean mDualPane;
+    private long mCurNotePosition = 1L;
+    private SimpleCursorAdapter adapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,8 +30,12 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        // Uses the DatabaseHelper to populate the listview with the note titles
-        DatabaseHelper.getInstance(getActivity()).getListAsync(this);
+        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                null, new String[] { Provider.Constants.COLUMN_TITLE },
+                new int[] {R.id.notes_list}, 0);
+
+        setListAdapter(adapter);
+        getLoaderManager().initLoader(0, null, this);
 
         View notesFrame = getActivity().findViewById(R.id.notes);
         mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
@@ -42,15 +49,6 @@ public class NoteListFragment extends ListFragment implements DatabaseHelper.Lis
             //might need to iterate through cursor and match the id to the position
             showNote(mCurNotePosition, 0);
         }
-    }
-
-    @Override
-    public void setList(Cursor listHere) {
-        //something with listNote
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, listHere, new String[] { "title" },
-                new int[] { android.R.id.text1}, 0);
-        setListAdapter(adapter);
     }
 
     @Override

@@ -75,12 +75,18 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public int update(Uri uri, ContentValues cv, String selection,
                                    String[] selectionArgs) {
-        return 0;
+        int count = db.getWritableDatabase().update(DATABASE_NAME, cv, selection, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return count;
     }
 
     @Override
     synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int count = db.getWritableDatabase().delete(DATABASE_NAME, selection, selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return count;
     }
 }
 
