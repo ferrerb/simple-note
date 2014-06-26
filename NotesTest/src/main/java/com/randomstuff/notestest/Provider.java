@@ -3,6 +3,7 @@ package com.randomstuff.notestest;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -14,27 +15,37 @@ public class Provider extends ContentProvider {
     private DatabaseHelper db=null;
 
     private static final String DATABASE_NAME = "notes";
+    private static final int NOTES = 1;
+    private static final int NOTE_ID = 2;
+    private static final String AUTHORITY = "com.randomstuff.notestest.provider.Provider";
+    private static final String BASE_PATH = "";
 
     public static final class Constants implements BaseColumns {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_NOTE = "note";
+        public static final Uri CONTENT_URI =
+                Uri.parse("content://" + AUTHORITY + "/" + DATABASE_NAME);
+    }
+
+    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static {
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH, NOTES);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", NOTE_ID);
     }
 
     public boolean onCreate() {
         db= new DatabaseHelper(getContext());
-        return ((db != null));
+        return (db != null);
     }
 
     @Override
-    public String getType(Uri uri) {
+    synchronized public String getType(Uri uri) {
         /// implement uri matcher
-        if (isCollectionUri(uri)) {
-
-        }
+        return null;
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    synchronized public Cursor query(Uri uri, String[] projection, String selection,
                       String[] selectionArgs, String sort) {
         //query!
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -42,12 +53,12 @@ public class Provider extends ContentProvider {
 
         Cursor c = qb.query(db.getReadableDatabase(), projection, selection, selectionArgs, null, null, sort);
         c.setNotificationUri(getContext().getContentResolver(), uri);
-        return(c);
+        return c;
 
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues cv) {
+    synchronized public Uri insert(Uri uri, ContentValues cv) {
         long rowID = db.getWritableDatabase().insert(DATABASE_NAME, null, cv);
 
         if (rowID > 0) {
@@ -61,5 +72,15 @@ public class Provider extends ContentProvider {
 
     }
 
+    @Override
+    synchronized public int update(Uri uri, ContentValues cv, String selection,
+                                   String[] selectionArgs) {
+        return 0;
+    }
+
+    @Override
+    synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
+        return 0;
+    }
 }
 
