@@ -89,12 +89,16 @@ public class NoteListFragment extends ListFragment implements
         }
     }
 
-    public void fillList() {
-        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
-                null, new String[] { Provider.Constants.COLUMN_TITLE },
-                new int[] {R.id.notes_list}, 0);
+    private void fillList() {
+        adapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[] { Provider.Constants.COLUMN_TITLE },
+                new int[] {android.R.id.text1},
+                0);
 
         setListAdapter(adapter);
+
         getLoaderManager().initLoader(0, null, this);
     }
 

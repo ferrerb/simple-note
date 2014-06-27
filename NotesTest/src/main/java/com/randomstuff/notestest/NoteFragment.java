@@ -59,7 +59,7 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
 
         //if logic about -1 making a new note, otherwise getnoteasync
         if (getShownIndex() != -1) {
-            //cursorloader call here
+            fillNote();
         }
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
@@ -113,6 +113,11 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         }
 
         super.onPause();
+    }
+
+    private void fillNote() {
+
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
