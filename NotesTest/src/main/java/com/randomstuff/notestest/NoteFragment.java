@@ -6,6 +6,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +18,7 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class NoteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class NoteFragment extends Fragment {
     private EditText editTitle = null;
     private EditText editNote = null;
     private boolean isDeleted = false;
@@ -26,20 +27,28 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
     static NoteFragment newInstance(long id, int index) {
         NoteFragment frag = new NoteFragment();
 
+        Uri noteUri;
+        if (id > 0) {
+            noteUri = Uri.parse(Provider.Constants.CONTENT_URI + "/" + id);
+        }
+        else {
+            noteUri = null;
+        }
+
         Bundle args = new Bundle();
         args.putInt("index", index);
-        args.putLong("id", id);
+        args.putParcelable("noteUri", noteUri);
         frag.setArguments(args);
 
         return (frag);
     }
 
-    public int getShownIndex() {
-        return getArguments().getInt("index", 0);
+    public Uri getShownUri() {
+        return getArguments().getParcelable("noteUri");
     }
 
-    public long getShownId() {
-        return getArguments().getLong("id", 0L);
+    public int getShownIndex() {
+        return getArguments().getInt("index", 0);
     }
 
     @Override
@@ -58,8 +67,8 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         editNote = (EditText) result.findViewById(R.id.edit_note);
 
         //if logic about -1 making a new note, otherwise getnoteasync
-        if (getShownIndex() != -1) {
-            fillNote();
+        if (getShownUri() != null) {
+            fillNote(getShownUri());
         }
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
@@ -82,7 +91,7 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
             //call delete note and maybe move to another note
             //must do something diff for portrait and land
             isDeleted = true;
-            //DatabaseHelper.getInstance(getActivity()).deleteNoteAsync(getShownId());
+            //call provider delete
 
             if (mDualPane) {
                 NoteFragment noteFrag = new NoteFragment();
@@ -103,10 +112,10 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         boolean titleEmpty = editTitle.getText().toString().isEmpty();
         boolean noteEmpty = editNote.getText().toString().isEmpty();
 
-        if (!isDeleted && !titleEmpty && !noteEmpty) {
-            //DatabaseHelper.getInstance(getActivity()).saveNoteAsync(getShownId(),
-                    //editTitle.getText().toString(),
-                    //editNote.getText().toString());
+        if (!isDeleted && !titleEmpty && !noteEmpty && getShownUri() != null) {
+            //call provider insert
+        } else if (!isDeleted && !titleEmpty && !noteEmpty && getShownUri() == null) {
+            //call provider update
         } else {
             CharSequence saveFail = "Save failed. Must have a title and a note";
             Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
@@ -115,26 +124,25 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onPause();
     }
 
-    private void fillNote() {
+    private void fillNote(Uri uri) {
+        //possibvly use asyncqueryhandler
+        String[] projection = { };
 
-        getLoaderManager().initLoader(0, null, this);
+        Cursor c = getActivity().getContentResolver().query(uri, projection,null, null, null);
+
+        if (c != null && c.moveToFirst()) {
+            editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
+            editNote.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_NOTE)));
+
+            c.close();
+        }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
-        String[] projection = new String[]
-                {Provider.Constants._ID, Provider.Constants.COLUMN_TITLE};
-        return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
-                projection, null, null, null);
+    private void saveNote() {
+
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        //adapter.swapCursor(cursor);
-    }
+    private void createNote() {
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        //adapter.swapCursor(null);
     }
 }
