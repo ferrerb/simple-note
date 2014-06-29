@@ -3,6 +3,7 @@ package com.randomstuff.notestest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -23,6 +24,7 @@ public class NoteFragment extends Fragment {
     private EditText editNote = null;
     private boolean isDeleted = false;
     private boolean mDualPane;
+    private Uri noteUri;
 
     static NoteFragment newInstance(long id, int index) {
         NoteFragment frag = new NoteFragment();
@@ -43,10 +45,6 @@ public class NoteFragment extends Fragment {
         return (frag);
     }
 
-    public Uri getShownUri() {
-        return getArguments().getParcelable("noteUri");
-    }
-
     public int getShownIndex() {
         return getArguments().getInt("index", 0);
     }
@@ -55,6 +53,8 @@ public class NoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        noteUri = getArguments().getParcelable("noteUri");
     }
 
     @Override
@@ -67,8 +67,8 @@ public class NoteFragment extends Fragment {
         editNote = (EditText) result.findViewById(R.id.edit_note);
 
         //if logic about -1 making a new note, otherwise getnoteasync
-        if (getShownUri() != null) {
-            fillNote(getShownUri());
+        if (noteUri != null) {
+            fillNote(noteUri);
         }
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
@@ -108,18 +108,7 @@ public class NoteFragment extends Fragment {
 
     @Override
     public void onPause() {
-        //check if the edittexts are empty, dont save, or something
-        boolean titleEmpty = editTitle.getText().toString().isEmpty();
-        boolean noteEmpty = editNote.getText().toString().isEmpty();
-
-        if (!isDeleted && !titleEmpty && !noteEmpty && getShownUri() != null) {
-            //call provider insert
-        } else if (!isDeleted && !titleEmpty && !noteEmpty && getShownUri() == null) {
-            //call provider update
-        } else {
-            CharSequence saveFail = "Save failed. Must have a title and a note";
-            Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
-        }
+        saveNote();
 
         super.onPause();
     }
@@ -139,10 +128,29 @@ public class NoteFragment extends Fragment {
     }
 
     private void saveNote() {
+        boolean titleEmpty = editTitle.getText().toString().isEmpty();
+        boolean noteEmpty = editNote.getText().toString().isEmpty();
+
+        if (!isDeleted && !titleEmpty && !noteEmpty && noteUri != null) {
+            ContentValues cv = new ContentValues();
+
+            cv.put("title", editTitle.getText().toString());
+            cv.put("note", editNote.getText().toString());
+
+            getActivity().getContentResolver().update(noteUri, cv, null, null);
+        } else if (!isDeleted && !titleEmpty && !noteEmpty && noteUri == null) {
+            ContentValues cv = new ContentValues();
+
+            cv.put("title", editTitle.getText().toString());
+            cv.put("note", editNote.getText().toString());
+
+            noteUri = getActivity().getContentResolver().insert(Provider.Constants.CONTENT_URI, cv);
+        } else {
+            CharSequence saveFail = "Save failed. Must have a title and a note";
+            Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
-    private void createNote() {
-
-    }
 }
