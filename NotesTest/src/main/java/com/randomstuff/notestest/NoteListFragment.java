@@ -17,7 +17,7 @@ import android.widget.SimpleCursorAdapter;
 public class NoteListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
     private boolean mDualPane;
-    private long mCurNotePosition = 1L;
+    private long mCurNotePosition;
     private SimpleCursorAdapter adapter = null;
 
     @Override

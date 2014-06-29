@@ -86,10 +86,9 @@ public class NoteFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //deal with delete
+        //maybe add confirm button in portrait mode
         if (item.getItemId() == R.id.delete) {
-            //call delete note and maybe move to another note
-            //must do something diff for portrait and land
+            getActivity().getContentResolver().delete(noteUri, null, null);
             isDeleted = true;
             //call provider delete
 
@@ -115,9 +114,11 @@ public class NoteFragment extends Fragment {
 
     private void fillNote(Uri uri) {
         //possibvly use asyncqueryhandler
-        String[] projection = { };
+        String[] projection = { Provider.Constants.COLUMN_ID,
+                Provider.Constants.COLUMN_TITLE,
+                Provider.Constants.COLUMN_NOTE };
 
-        Cursor c = getActivity().getContentResolver().query(uri, projection,null, null, null);
+        Cursor c = getActivity().getContentResolver().query(uri, projection, null, null, null);
 
         if (c != null && c.moveToFirst()) {
             editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
