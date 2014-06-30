@@ -52,6 +52,8 @@ public class NotesTest extends Activity {
             case(R.id.help):
                 return true;
             case(R.id.about):
+                //could use a custom dialog here, fragment using
+                //<activity android:theme="@android:style/Theme.Holo.Dialog" >
                 return true;
         }
         return super.onOptionsItemSelected(item);
