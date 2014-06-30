@@ -89,7 +89,11 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public int update(Uri uri, ContentValues cv, String selection,
                                    String[] selectionArgs) {
-        int count = db.getWritableDatabase().update(DATABASE_NAME, cv, selection, selectionArgs);
+        String noteId = uri.getLastPathSegment();
+        int count = db.getWritableDatabase().update(DATABASE_NAME,
+                cv,
+                Provider.Constants.COLUMN_ID + "=" + noteId,
+                selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
 
         return count;
