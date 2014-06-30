@@ -97,7 +97,11 @@ public class Provider extends ContentProvider {
 
     @Override
     synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int count = db.getWritableDatabase().delete(DATABASE_NAME, selection, selectionArgs);
+        //could chagne this to allow delete multiple items, or database
+        String noteId = uri.getLastPathSegment();
+        int count = db.getWritableDatabase().delete(DATABASE_NAME,
+                Provider.Constants.COLUMN_ID + "=" + noteId ,
+                selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
 
         return count;

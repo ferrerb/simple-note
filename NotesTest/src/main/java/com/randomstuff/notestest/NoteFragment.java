@@ -83,11 +83,11 @@ public class NoteFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         //maybe add confirm button in portrait mode
         if (item.getItemId() == R.id.delete) {
+            Log.d("noteuri during delete", " + " + noteUri);
             if (noteUri != null) {
                 getActivity().getContentResolver().delete(noteUri, null, null);
             }
             isDeleted = true;
-            //call provider delete
 
             if (mDualPane) {
                 NoteFragment noteFrag = new NoteFragment();
