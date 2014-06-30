@@ -44,7 +44,6 @@ public class NoteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 
         long mId = getArguments().getLong("id");
         if ( mId > 0) {
@@ -69,6 +68,10 @@ public class NoteFragment extends Fragment {
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
 
+        setHasOptionsMenu(true);
+
+        if (!mDualPane) {
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);}
         return (result);
     }
 
@@ -82,23 +85,33 @@ public class NoteFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //maybe add confirm button in portrait mode
-        if (item.getItemId() == R.id.delete) {
-            Log.d("noteuri during delete", " + " + noteUri);
-            if (noteUri != null) {
-                getActivity().getContentResolver().delete(noteUri, null, null);
-            }
-            isDeleted = true;
+        switch (item.getItemId()){
+            case (android.R.id.home):
+                if (mDualPane) {
+                    NoteFragment noteFrag = new NoteFragment();
 
-            if (mDualPane) {
-                NoteFragment noteFrag = new NoteFragment();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.remove(noteFrag).commit();
+                } else {
+                    getActivity().finish();
+                }
+            case (R.id.delete):
+                Log.d("noteuri during delete", " + " + noteUri);
+                if (noteUri != null) {
+                    getActivity().getContentResolver().delete(noteUri, null, null);
+                }
+                isDeleted = true;
 
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.remove(noteFrag).commit();
-            } else {
-                getActivity().finish();
-            }
+                if (mDualPane) {
+                    NoteFragment noteFrag = new NoteFragment();
 
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.remove(noteFrag).commit();
+                } else {
+                    getActivity().finish();
+                }
         }
+
         return (super.onOptionsItemSelected(item));
     }
 
