@@ -2,20 +2,17 @@ package com.randomstuff.notestest;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,22 +21,17 @@ public class NoteFragment extends Fragment {
     private EditText editNote = null;
     private boolean isDeleted = false;
     private boolean mDualPane;
-    private Uri noteUri;
+
+    public Uri noteUri = null;
 
     static NoteFragment newInstance(long id, int index) {
         NoteFragment frag = new NoteFragment();
+        Log.d("id + index", String.valueOf(id) + " " + String.valueOf(index));
 
-        Uri noteUri;
-        if (id > 0) {
-            noteUri = Uri.parse(Provider.Constants.CONTENT_URI + "/" + id);
-        }
-        else {
-            noteUri = null;
-        }
 
         Bundle args = new Bundle();
+        args.putLong("id", id);
         args.putInt("index", index);
-        args.putParcelable("noteUri", noteUri);
         frag.setArguments(args);
 
         return (frag);
@@ -54,7 +46,10 @@ public class NoteFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        noteUri = getArguments().getParcelable("noteUri");
+        long mId = getArguments().getLong("id");
+        if ( mId > 0) {
+            noteUri = Uri.parse(Provider.Constants.CONTENT_URI + "/" + mId);
+        }
     }
 
     @Override
@@ -66,7 +61,7 @@ public class NoteFragment extends Fragment {
         editTitle = (EditText) result.findViewById(R.id.edit_title);
         editNote = (EditText) result.findViewById(R.id.edit_note);
 
-        //if logic about -1 making a new note, otherwise getnoteasync
+        Log.d("index + uri", String.valueOf(getShownIndex()) + " " + noteUri);
         if (noteUri != null) {
             fillNote(noteUri);
         }
@@ -88,7 +83,9 @@ public class NoteFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         //maybe add confirm button in portrait mode
         if (item.getItemId() == R.id.delete) {
-            getActivity().getContentResolver().delete(noteUri, null, null);
+            if (noteUri != null) {
+                getActivity().getContentResolver().delete(noteUri, null, null);
+            }
             isDeleted = true;
             //call provider delete
 
@@ -107,7 +104,9 @@ public class NoteFragment extends Fragment {
 
     @Override
     public void onPause() {
-        saveNote();
+        if (!isDeleted) {
+            saveNote();
+        }
 
         super.onPause();
     }
@@ -132,14 +131,14 @@ public class NoteFragment extends Fragment {
         boolean titleEmpty = editTitle.getText().toString().isEmpty();
         boolean noteEmpty = editNote.getText().toString().isEmpty();
 
-        if (!isDeleted && !titleEmpty && !noteEmpty && noteUri != null) {
+        if (!titleEmpty && !noteEmpty && noteUri != null) {
             ContentValues cv = new ContentValues();
 
             cv.put("title", editTitle.getText().toString());
             cv.put("note", editNote.getText().toString());
 
             getActivity().getContentResolver().update(noteUri, cv, null, null);
-        } else if (!isDeleted && !titleEmpty && !noteEmpty && noteUri == null) {
+        } else if (!titleEmpty && !noteEmpty && noteUri == null) {
             ContentValues cv = new ContentValues();
 
             cv.put("title", editTitle.getText().toString());
