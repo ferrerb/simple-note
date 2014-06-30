@@ -17,9 +17,10 @@ import android.widget.SimpleCursorAdapter;
 
 public class NoteListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private boolean mDualPane;
-    private long mCurNotePosition;
-    private SimpleCursorAdapter adapter = null;
+    private boolean mDualPane;                          // To store the current layout
+    private long mCurNotePosition;                      // Stores the current note _id
+    private int mCurNoteIndex;                          // stores the current note index
+    private SimpleCursorAdapter adapter = null;         // Populates the listview
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,26 +34,33 @@ public class NoteListFragment extends ListFragment implements
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
+        // A function that starts the cursorloader
         fillList();
 
+        // Basic check for the layout, borrowed from google
         View notesFrame = getActivity().findViewById(R.id.notes);
         mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
 
+        // checks the saved bundle for a note to display based on _id
         if (savedInstanceState != null) {
-            mCurNotePosition = savedInstanceState.getLong("curNote", 1);
+            mCurNotePosition = savedInstanceState.getLong("curNote", 1L);
+            mCurNoteIndex = savedInstanceState.getInt("curIndex", 0);
         }
 
+        // if the layout has both panes, shows that saved note
         if (mDualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            //getListView().setSelector(R.color.darkBlue);
             //might need to iterate through cursor and match the id to the position
-            showNote(mCurNotePosition, 0);
+            showNote(mCurNotePosition, mCurNoteIndex);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong("curNote", mCurNotePosition);
+        outState.putLong("curNote", mCurNotePosition);          // Saving the current note _id
+        outState.putInt("curIndex", mCurNoteIndex);             // Saving the current note index
     }
 
 
@@ -64,8 +72,9 @@ public class NoteListFragment extends ListFragment implements
     }
 
     void showNote(long id, int index) {
-        // deal with showing the fragment
         mCurNotePosition = id;
+        mCurNoteIndex = index;
+
         Log.d("id + index", String.valueOf(id) + " " + String.valueOf(index));
         if (mDualPane) {
             // Highlights the currently selected note
@@ -91,16 +100,16 @@ public class NoteListFragment extends ListFragment implements
     }
 
     private void fillList() {
-        adapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1,
-                null,
-                new String[] { Provider.Constants.COLUMN_TITLE },
+        adapter = new SimpleCursorAdapter(getActivity(),                // Context
+                android.R.layout.simple_list_item_1,                    // provides a layout
+                null,                                                   // empty initial cursor
+                new String[] { Provider.Constants.COLUMN_TITLE },       // table column to get strings from
                 new int[] {android.R.id.text1},
                 0);
 
-        setListAdapter(adapter);
+        setListAdapter(adapter);                                        // Sets current listview to the cursoradapter
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(0, null, this);                   // Begins cursorloader
     }
 
     @Override

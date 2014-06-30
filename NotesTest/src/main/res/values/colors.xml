@@ -2,4 +2,5 @@
 <resources>
     <color name="lightBlue">#33B5E5</color>
     <color name="lightUrple">#AA66CC</color>
+    <color name="darkBlue">#0099CC</color>
 </resources>

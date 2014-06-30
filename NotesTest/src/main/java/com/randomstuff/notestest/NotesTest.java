@@ -12,6 +12,7 @@ public class NotesTest extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Sets the initial layout, currently based on either landscape or portrait
         setContentView(R.layout.main);
     }
 
@@ -25,11 +26,12 @@ public class NotesTest extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here
+        // Handle action bar / menu item clicks here
         switch (item.getItemId()) {
             case(R.id.add_note):
                 //call notefragment and make new note
                 if (getFragmentManager().findFragmentById(R.id.notes) == null){
+                    // this happens only in portrait mode
                     Intent i=new Intent(this, NoteActivity.class);
                     i.putExtra("id", 0L);
                     i.putExtra("index", -1);

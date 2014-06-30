@@ -19,7 +19,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //create the database
+        //creates the database with beautiful sql syntax
+        //consider making a more complex table, possibly with date modified/created
         try {
             db.beginTransaction();
             db.execSQL("CREATE TABLE notes (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
