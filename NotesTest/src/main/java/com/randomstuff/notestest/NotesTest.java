@@ -53,12 +53,12 @@ public class NotesTest extends Activity {
                 return true;
             case(R.id.help):
                 Intent i = new Intent(this, SimpleDisplayActivity.class);
-                i.putExtra("file", "file:///android_assets/misc/help.txt");
+                i.putExtra("file", "help.txt");
                 startActivity(i);
                 return true;
             case(R.id.about):
                 i = new Intent(this, SimpleDisplayActivity.class);
-                i.putExtra("file", "file:///android_assets/misc/about.txt");
+                i.putExtra("file", "about.txt");
                 startActivity(i);
                 return true;
         }

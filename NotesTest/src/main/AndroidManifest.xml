@@ -22,6 +22,8 @@
         </activity>
         <activity android:name="com.randomstuff.notestest.NoteActivity">
         </activity>
+        <activity android:name="com.randomstuff.notestest.SimpleDisplayActivity">
+        </activity>
     </application>
 
 </manifest>

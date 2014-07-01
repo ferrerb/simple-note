@@ -87,14 +87,8 @@ public class NoteFragment extends Fragment {
         //maybe add confirm button in portrait mode
         switch (item.getItemId()){
             case (android.R.id.home):
-                if (mDualPane) {
-                    NoteFragment noteFrag = new NoteFragment();
-
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.remove(noteFrag).commit();
-                } else {
-                    getActivity().finish();
-                }
+                //getActivity().finish();
+                return true;
             case (R.id.delete):
                 Log.d("noteuri during delete", " + " + noteUri);
                 if (noteUri != null) {
