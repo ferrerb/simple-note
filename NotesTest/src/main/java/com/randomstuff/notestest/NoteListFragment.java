@@ -78,7 +78,8 @@ public class NoteListFragment extends ListFragment implements
         Log.d("id + index", String.valueOf(id) + " " + String.valueOf(index));
         if (mDualPane) {
             // Highlights the currently selected note
-            getListView().setItemChecked(index, true);
+            //getListView().setItemChecked(index, true);
+            getListView().setSelected(true);
 
             NoteFragment noteFrag = (NoteFragment)
                     getFragmentManager().findFragmentById(R.id.notes);

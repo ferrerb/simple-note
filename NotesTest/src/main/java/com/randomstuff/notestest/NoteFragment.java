@@ -22,7 +22,7 @@ public class NoteFragment extends Fragment {
     private boolean isDeleted = false;
     private boolean mDualPane;
 
-    public Uri noteUri = null;
+    private Uri noteUri = null;
 
     static NoteFragment newInstance(long id, int index) {
         NoteFragment frag = new NoteFragment();

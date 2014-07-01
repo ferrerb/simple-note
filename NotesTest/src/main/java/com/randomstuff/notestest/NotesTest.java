@@ -52,10 +52,14 @@ public class NotesTest extends Activity {
             case(R.id.settings):
                 return true;
             case(R.id.help):
+                Intent i = new Intent(this, SimpleDisplayActivity.class);
+                i.putExtra("file", "file:///android_assets/misc/help.txt");
+                startActivity(i);
                 return true;
             case(R.id.about):
-                //could use a custom dialog here, fragment using
-                //<activity android:theme="@android:style/Theme.Holo.Dialog" >
+                i = new Intent(this, SimpleDisplayActivity.class);
+                i.putExtra("file", "file:///android_assets/misc/about.txt");
+                startActivity(i);
                 return true;
         }
         return super.onOptionsItemSelected(item);

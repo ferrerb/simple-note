@@ -1,0 +1,2 @@
+Currently, notes need to have a title and some text in the body to save.
+Notes are saved automatically.

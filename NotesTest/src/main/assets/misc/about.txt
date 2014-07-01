@@ -1,0 +1,7 @@
+A simple note app that should get more complex and unwieldy as I try to learn things.
+
+So far, uses:
+Fragments
+Content Provider
+CursorLoader
+SQLite
