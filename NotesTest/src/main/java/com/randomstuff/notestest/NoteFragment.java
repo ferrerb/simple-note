@@ -3,6 +3,7 @@ package com.randomstuff.notestest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -86,8 +87,12 @@ public class NoteFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         //maybe add confirm button in portrait mode
         switch (item.getItemId()){
+            //Should only be enabled if in portrait mode
             case (android.R.id.home):
-                //getActivity().finish();
+                Intent i = new Intent(getActivity(), NotesTest.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                getActivity().finish();
                 return true;
             case (R.id.delete):
                 Log.d("noteuri during delete", " + " + noteUri);
@@ -104,6 +109,7 @@ public class NoteFragment extends Fragment {
                 } else {
                     getActivity().finish();
                 }
+                return true;
         }
 
         return (super.onOptionsItemSelected(item));

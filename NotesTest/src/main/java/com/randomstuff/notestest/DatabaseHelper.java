@@ -23,8 +23,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
         //consider making a more complex table, possibly with date modified/created
         try {
             db.beginTransaction();
-            db.execSQL("CREATE TABLE notes (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_TITLE + " TEXT, " + COLUMN_NOTE + " TEXT);");
+            db.execSQL("CREATE TABLE notes (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_TITLE + " TEXT, " +
+                    COLUMN_NOTE + " TEXT);");
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
