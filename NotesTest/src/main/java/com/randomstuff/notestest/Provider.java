@@ -24,6 +24,7 @@ public class Provider extends ContentProvider {
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_NOTE = "note";
+        public static final String COLUMN_NOTE_MODIFIED = "note_mod";
         public static final Uri CONTENT_URI =
                 Uri.parse("content://" + AUTHORITY + "/" + DATABASE_NAME);
     }

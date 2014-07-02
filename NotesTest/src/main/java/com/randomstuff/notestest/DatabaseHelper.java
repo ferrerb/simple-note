@@ -29,7 +29,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_TITLE + " TEXT, " +
                     COLUMN_NOTE + " TEXT, " +
-                    COLUMN_NOTE_MODIFIED + "TEXT);");
+                    COLUMN_NOTE_MODIFIED + " INTEGER);");
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -45,7 +45,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
             case (1):
                 db.execSQL("ALTER TABLE " +
                         TABLE_NAME + " ADD COLUMN " +
-                        COLUMN_NOTE_MODIFIED + " TEXT");
+                        COLUMN_NOTE_MODIFIED + " INTEGER");
+            default:
+                throw new RuntimeException(ctxt.getString(R.string.sql_upgrade_error));
         }
     }
 }

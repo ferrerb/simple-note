@@ -16,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class NoteFragment extends Fragment {
     private EditText editTitle = null;
     private EditText editNote = null;
+    private TextView textDateModified = null;
     private boolean isDeleted = false;
     private boolean mDualPane;
     private Uri noteUri = null;
@@ -61,6 +63,7 @@ public class NoteFragment extends Fragment {
 
         editTitle = (EditText) result.findViewById(R.id.edit_title);
         editNote = (EditText) result.findViewById(R.id.edit_note);
+        textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
 
         Log.d("index + uri", String.valueOf(getShownIndex()) + " " + noteUri);
         if (noteUri != null) {
@@ -146,14 +149,15 @@ public class NoteFragment extends Fragment {
         //possibvly use asyncqueryhandler
         String[] projection = { Provider.Constants.COLUMN_ID,
                 Provider.Constants.COLUMN_TITLE,
-                Provider.Constants.COLUMN_NOTE };
+                Provider.Constants.COLUMN_NOTE,
+                Provider.Constants.COLUMN_NOTE_MODIFIED };
 
         Cursor c = getActivity().getContentResolver().query(uri, projection, null, null, null);
 
         if (c != null && c.moveToFirst()) {
             editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
             editNote.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_NOTE)));
-
+            textDateModified.setText()
             c.close();
         }
     }
@@ -165,15 +169,17 @@ public class NoteFragment extends Fragment {
         if (!titleEmpty && !noteEmpty && noteUri != null) {
             ContentValues cv = new ContentValues();
 
-            cv.put("title", editTitle.getText().toString());
-            cv.put("note", editNote.getText().toString());
+            cv.put(Provider.Constants.COLUMN_TITLE, editTitle.getText().toString());
+            cv.put(Provider.Constants.COLUMN_NOTE, editNote.getText().toString());
+            cv.put(Provider.Constants.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
 
             getActivity().getContentResolver().update(noteUri, cv, null, null);
         } else if (!titleEmpty && !noteEmpty && noteUri == null) {
             ContentValues cv = new ContentValues();
 
-            cv.put("title", editTitle.getText().toString());
-            cv.put("note", editNote.getText().toString());
+            cv.put(Provider.Constants.COLUMN_TITLE, editTitle.getText().toString());
+            cv.put(Provider.Constants.COLUMN_NOTE, editNote.getText().toString());
+            cv.put(Provider.Constants.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
 
             noteUri = getActivity().getContentResolver().insert(Provider.Constants.CONTENT_URI, cv);
         } else {

@@ -117,7 +117,7 @@ public class NoteListFragment extends ListFragment implements
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         String[] projection =
                 { Provider.Constants.COLUMN_ID, Provider.Constants.COLUMN_TITLE };
-        String sortOrder = Provider.Constants.COLUMN_ID + " DESC";
+        String sortOrder = Provider.Constants.COLUMN_NOTE_MODIFIED + " DESC";
 
         return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
                                 projection, null, null, sortOrder);
