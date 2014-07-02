@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ public class NoteFragment extends Fragment {
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
+    private TextWatcher editTitleWatcher = null;
+    private TextWatcher editNoteWatcher = null;
 
     private boolean isDeleted = false;
     private boolean mDualPane;
@@ -71,6 +74,9 @@ public class NoteFragment extends Fragment {
         if (noteUri != null) {
             fillNote(noteUri);
         }
+
+        editTitle.addTextChangedListener(editTitleWatcher);
+        editNote.addTextChangedListener(editNoteWatcher);
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
