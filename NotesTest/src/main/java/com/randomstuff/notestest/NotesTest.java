@@ -38,15 +38,15 @@ public class NotesTest extends Activity {
                     startActivity(i);
                 }
                 else {
-                    NoteFragment noteFrag = (NoteFragment)
-                            getFragmentManager().findFragmentById(R.id.notes);
+                    NoteFragment noteFrag; // (NoteFragment)
+                            //getFragmentManager().findFragmentById(R.id.notes);
 
-                    if (noteFrag == null || noteFrag.getShownIndex() != -1) {
+                    //if (noteFrag == null || noteFrag.getShownIndex() != -1) {
                         noteFrag = NoteFragment.newInstance(0L, -1);
 
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.replace(R.id.notes, noteFrag).commit();
-                    }
+
                 }
                 return true;
             case(R.id.settings):
