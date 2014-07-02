@@ -12,5 +12,6 @@
     <string name="edit_title">Title</string>
     <string name="edit_note">Notes</string>
     <string name="sql_upgrade_error">This should not be running</string>
+    <string name="share_choose">Send note to</string>
 
 </resources>

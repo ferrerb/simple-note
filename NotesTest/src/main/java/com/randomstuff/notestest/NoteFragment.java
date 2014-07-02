@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 public class NoteFragment extends Fragment {
@@ -22,8 +23,8 @@ public class NoteFragment extends Fragment {
     private EditText editNote = null;
     private boolean isDeleted = false;
     private boolean mDualPane;
-
     private Uri noteUri = null;
+    private ShareActionProvider mShareActionProvider;
 
     static NoteFragment newInstance(long id, int index) {
         NoteFragment frag = new NoteFragment();
@@ -81,6 +82,16 @@ public class NoteFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
 
+        MenuItem share = menu.findItem(R.id.share);
+
+        mShareActionProvider = (ShareActionProvider) share.getActionProvider();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+        shareIntent.setType("text/plain");
+        startActivity(shareIntent);
+
+        setShare(shareIntent);
     }
 
     @Override
@@ -113,6 +124,13 @@ public class NoteFragment extends Fragment {
         }
 
         return (super.onOptionsItemSelected(item));
+    }
+
+    private void setShare (Intent share) {
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(Intent.createChooser(share,
+                    getResources().getString(R.string.share_choose)));
+        }
     }
 
     @Override
