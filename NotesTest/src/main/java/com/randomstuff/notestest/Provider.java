@@ -14,7 +14,7 @@ import android.text.TextUtils;
 public class Provider extends ContentProvider {
     private DatabaseHelper db=null;
 
-    private static final String DATABASE_NAME = "notes";
+    private static final String TABLE_NAME = "notes";
     private static final int NOTES = 1;
     private static final int NOTE_ID = 2;
     private static final String AUTHORITY = "com.randomstuff.notestest.Provider";
@@ -26,7 +26,7 @@ public class Provider extends ContentProvider {
         public static final String COLUMN_NOTE = "note";
         public static final String COLUMN_NOTE_MODIFIED = "note_mod";
         public static final Uri CONTENT_URI =
-                Uri.parse("content://" + AUTHORITY + "/" + DATABASE_NAME);
+                Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     }
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -51,7 +51,7 @@ public class Provider extends ContentProvider {
                       String[] selectionArgs, String sort) {
         //query!
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(DATABASE_NAME);
+        qb.setTables(TABLE_NAME);
 
         int uriType = sURIMatcher.match(uri);
 
@@ -74,7 +74,7 @@ public class Provider extends ContentProvider {
 
     @Override
     synchronized public Uri insert(Uri uri, ContentValues cv) {
-        long rowID = db.getWritableDatabase().insert(DATABASE_NAME, null, cv);
+        long rowID = db.getWritableDatabase().insert(TABLE_NAME, null, cv);
 
         if (rowID > 0) {
             Uri newUri = ContentUris.withAppendedId(uri, rowID);
@@ -91,7 +91,7 @@ public class Provider extends ContentProvider {
     synchronized public int update(Uri uri, ContentValues cv, String selection,
                                    String[] selectionArgs) {
         String noteId = uri.getLastPathSegment();
-        int count = db.getWritableDatabase().update(DATABASE_NAME,
+        int count = db.getWritableDatabase().update(TABLE_NAME,
                 cv,
                 Provider.Constants.COLUMN_ID + "=" + noteId,
                 selectionArgs);
@@ -104,7 +104,7 @@ public class Provider extends ContentProvider {
     synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
         //could chagne this to allow delete multiple items, or database
         String noteId = uri.getLastPathSegment();
-        int count = db.getWritableDatabase().delete(DATABASE_NAME,
+        int count = db.getWritableDatabase().delete(TABLE_NAME,
                 Provider.Constants.COLUMN_ID + "=" + noteId ,
                 selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);

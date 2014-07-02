@@ -42,12 +42,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
         //tell it that if its upgrading, monkeys in the system
         //throw new RuntimeException(ctxt.getString(R.string.sql_upgrade_error));
         switch (oldVersion) {
-            case (1):
+            case 1:
                 db.execSQL("ALTER TABLE " +
                         TABLE_NAME + " ADD COLUMN " +
                         COLUMN_NOTE_MODIFIED + " INTEGER");
-            default:
-                throw new RuntimeException(ctxt.getString(R.string.sql_upgrade_error));
         }
     }
 }

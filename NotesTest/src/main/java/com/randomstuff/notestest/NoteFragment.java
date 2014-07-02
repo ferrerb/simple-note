@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,7 @@ public class NoteFragment extends Fragment {
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
+
     private boolean isDeleted = false;
     private boolean mDualPane;
     private Uri noteUri = null;
@@ -85,16 +87,9 @@ public class NoteFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
 
-        MenuItem share = menu.findItem(R.id.share);
+        MenuItem share = menu.findItem(R.id.share_button);
 
         mShareActionProvider = (ShareActionProvider) share.getActionProvider();
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-        shareIntent.setType("text/plain");
-        startActivity(shareIntent);
-
-        setShare(shareIntent);
     }
 
     @Override
@@ -107,6 +102,16 @@ public class NoteFragment extends Fragment {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 getActivity().finish();
+                return true;
+            case (R.id.share_button):
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+                shareIntent.setType("text/plain");
+                startActivity(shareIntent);
+
+                setShare(shareIntent);
+
                 return true;
             case (R.id.delete):
                 Log.d("noteuri during delete", " + " + noteUri);
@@ -157,7 +162,12 @@ public class NoteFragment extends Fragment {
         if (c != null && c.moveToFirst()) {
             editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
             editNote.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_NOTE)));
-            textDateModified.setText()
+
+            long dateModified = c.getLong(c.getColumnIndex(Provider.Constants.COLUMN_NOTE_MODIFIED));
+            Log.d("dateMOdified", Long.toString(dateModified));
+            textDateModified.setText("Last Modified " +
+                    DateFormat.format("h:m a, LLL d", dateModified));
+
             c.close();
         }
     }
