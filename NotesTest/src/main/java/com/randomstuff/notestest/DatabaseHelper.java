@@ -9,6 +9,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final int SCHEMA_VERSION = 1;
     private Context ctxt=null;
 
+    private static final String TABLE_NAME ="notes";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_NOTE = "note";
@@ -23,7 +24,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
         //consider making a more complex table, possibly with date modified/created
         try {
             db.beginTransaction();
-            db.execSQL("CREATE TABLE notes (" +
+            db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_TITLE + " TEXT, " +
                     COLUMN_NOTE + " TEXT);");
