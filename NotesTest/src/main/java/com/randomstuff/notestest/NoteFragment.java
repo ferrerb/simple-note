@@ -87,9 +87,9 @@ public class NoteFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
 
-        MenuItem share = menu.findItem(R.id.share_button);
-
-        mShareActionProvider = (ShareActionProvider) share.getActionProvider();
+        mShareActionProvider = (ShareActionProvider) menu
+                .findItem(R.id.share_button).getActionProvider();
+        doShare();
     }
 
     @Override
@@ -102,16 +102,6 @@ public class NoteFragment extends Fragment {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 getActivity().finish();
-                return true;
-            case (R.id.share_button):
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-                shareIntent.setType("text/plain");
-                startActivity(shareIntent);
-
-                setShare(shareIntent);
-
                 return true;
             case (R.id.delete):
                 Log.d("noteuri during delete", " + " + noteUri);
@@ -134,10 +124,17 @@ public class NoteFragment extends Fragment {
         return (super.onOptionsItemSelected(item));
     }
 
-    private void setShare (Intent share) {
+    private void doShare () {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+        shareIntent.setType("text/plain");
+
         if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(Intent.createChooser(share,
+            mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
                     getResources().getString(R.string.share_choose)));
+
+            //mShareActionProvider.setShareIntent(shareIntent);
         }
     }
 
