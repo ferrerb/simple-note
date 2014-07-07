@@ -14,6 +14,7 @@ import java.io.InputStream;
 public class SimpleDisplayFragment extends Fragment {
     private TextView mText = null;
 
+    // remove this?
     static SimpleDisplayFragment newInstance(String s) {
         SimpleDisplayFragment frag = new SimpleDisplayFragment();
 

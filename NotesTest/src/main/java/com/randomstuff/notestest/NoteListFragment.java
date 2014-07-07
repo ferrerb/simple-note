@@ -10,6 +10,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -26,6 +29,8 @@ public class NoteListFragment extends ListFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.notes_list, container, false);
+
+        setHasOptionsMenu(true);
 
         return(result);
     }
@@ -63,6 +68,52 @@ public class NoteListFragment extends ListFragment implements
         outState.putInt("curIndex", mCurNoteIndex);             // Saving the current note index
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.options, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar / menu item clicks here
+        switch (item.getItemId()) {
+            case(R.id.add_note):
+                //call notefragment and make new note
+                if (getFragmentManager().findFragmentById(R.id.notes) == null){
+                    // this happens only in portrait mode
+                    Intent i=new Intent(getActivity(), NoteActivity.class);
+                    i.putExtra("id", 0L);
+                    i.putExtra("index", -1);
+                    startActivity(i);
+                }
+                else {
+                    NoteFragment noteFrag  = (NoteFragment) getFragmentManager().findFragmentById(R.id.notes);
+
+                    if (noteFrag == null || noteFrag.getShownIndex() == -1) {
+                        noteFrag = NoteFragment.newInstance(0L, -1);
+
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.notes, noteFrag).commit();
+                    }
+                }
+                return true;
+            case(R.id.settings):
+                return true;
+            case(R.id.help):
+                Intent i = new Intent(getActivity(), SimpleDisplayActivity.class);
+                i.putExtra("file", "help.txt");
+                startActivity(i);
+                return true;
+            case(R.id.about):
+                i = new Intent(getActivity(), SimpleDisplayActivity.class);
+                i.putExtra("file", "about.txt");
+                startActivity(i);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -119,7 +170,7 @@ public class NoteListFragment extends ListFragment implements
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         String[] projection =
                 { Provider.Constants.COLUMN_ID, Provider.Constants.COLUMN_TITLE };
-        String sortOrder = Provider.Constants.COLUMN_NOTE_MODIFIED + " DESC";
+        String sortOrder = Provider.Constants.COLUMN_ID + " DESC";
 
         return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
                                 projection, null, null, sortOrder);

@@ -3,18 +3,26 @@
     <item android:id="@+id/add_note"
         android:icon="@drawable/ic_action_new"
         android:showAsAction="ifRoom"
-        android:title="@string/add_note"/>
+        android:title="@string/add_note"
+        android:menuCategory="system"
+        android:orderInCategory="1"/>
     <item android:id="@+id/settings"
         android:icon="@drawable/ic_action_settings"
         android:title="@string/settings"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:menuCategory="system"
+        android:orderInCategory="19" />
     <item android:id="@+id/help"
         android:icon="@drawable/ic_action_help"
         android:title="@string/help"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:menuCategory="system"
+        android:orderInCategory="20"/>
     <item android:id="@+id/about"
         android:icon="@drawable/ic_action_about"
         android:title="@string/about"
-        android:showAsAction="never"/>
+        android:showAsAction="never"
+        android:menuCategory="system"
+        android:orderInCategory="21"/>
 
 </menu>

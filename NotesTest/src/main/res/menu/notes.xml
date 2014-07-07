@@ -7,12 +7,16 @@
         android:icon="@drawable/ic_action_share"
         android:showAsAction="ifRoom"
         android:title="@string/share"
+        android:menuCategory="system"
+        android:orderInCategory="2"
         android:actionProviderClass=
             "android.widget.ShareActionProvider" />
     <item
         android:id="@+id/delete"
         android:icon="@drawable/ic_action_discard"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/delete_button" />
+        android:title="@string/delete_button"
+        android:menuCategory="system"
+        android:orderInCategory="3"/>
 
 </menu>
