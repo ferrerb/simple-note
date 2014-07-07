@@ -75,8 +75,8 @@ public class NoteFragment extends Fragment {
             fillNote(noteUri);
         }
 
-        editTitle.addTextChangedListener(editTitleWatcher);
-        editNote.addTextChangedListener(editNoteWatcher);
+        //editTitle.addTextChangedListener(editTitleWatcher);
+        //editNote.addTextChangedListener(editNoteWatcher);
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);

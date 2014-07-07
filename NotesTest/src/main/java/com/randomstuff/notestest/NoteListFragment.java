@@ -79,6 +79,8 @@ public class NoteListFragment extends ListFragment implements
         if (mDualPane) {
             // Highlights the currently selected note
             //getListView().setItemChecked(index, true);
+            getListView().setItemChecked(index, true);
+            getListView().setSelection(index);
             getListView().setSelected(true);
 
             NoteFragment noteFrag = (NoteFragment)
