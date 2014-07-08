@@ -1,10 +1,12 @@
 package com.randomstuff.notestest;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -115,14 +117,7 @@ public class NoteFragment extends Fragment implements TextWatcher {
                 return true;
             case (R.id.delete):
                 Log.d("noteuri during delete", " + " + noteUri);
-                if (noteUri != null) {
-                    NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
-                            getContentResolver());
-                    mHandle.startDelete(4, null, noteUri, null, null);
-
-                    //getActivity().getContentResolver().delete(noteUri, null, null);
-                }
-                isDeleted = true;
+                deleteNote();
 
                 if (mDualPane) {
                     NoteFragment noteFrag = new NoteFragment();
@@ -218,8 +213,30 @@ public class NoteFragment extends Fragment implements TextWatcher {
             CharSequence saveFail = "Save failed. Must have a title and a note";
             Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
         }
+    }
 
+    private void deleteNote() {
+        //alertDIALOG!
+        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
+        deleteDialog.setMessage(R.string.delete_button)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        if (noteUri != null) {
+                            NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
+                                getContentResolver());
+                            mHandle.startDelete(4, null, noteUri, null, null);
 
+                            //getActivity().getContentResolver().delete(noteUri, null, null);
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        // nothing!
+                    }
+                });
+        deleteDialog.create();
+        isDeleted = true;
     }
 
     private class NoteAsyncQueryHandler extends AsyncQueryHandler {
