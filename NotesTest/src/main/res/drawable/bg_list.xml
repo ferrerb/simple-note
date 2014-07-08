@@ -9,5 +9,6 @@
         android:drawable="@color/darkBlue" />
     <item
         android:state_checked="false"
+        android:state_selected="false"
         android:drawable="@android:drawable/screen_background_light" />
 </selector>
