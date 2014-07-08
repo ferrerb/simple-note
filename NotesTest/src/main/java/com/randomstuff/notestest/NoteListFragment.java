@@ -54,8 +54,7 @@ public class NoteListFragment extends ListFragment implements
         // if the layout has both panes, shows that saved note
         if (mDualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            //getListView().setSelector(R.color.darkBlue);
-            //might need to iterate through cursor and match the id to the position
+
             if (mCurNotePosition != 0) {
                 showNote(mCurNotePosition);
             }
@@ -121,13 +120,9 @@ public class NoteListFragment extends ListFragment implements
     void showNote(long id) {
         mCurNotePosition = id;
 
-        Log.d("id + index", String.valueOf(id) + " " + String.valueOf(index));
         if (mDualPane) {
-            // Highlights the currently selected note
-            //getListView().setItemChecked(index, true);
             getListView().setItemChecked(index, true);
             getListView().setSelection(index);
-            getListView().setSelected(true);
 
             NoteFragment noteFrag = (NoteFragment)
                     getFragmentManager().findFragmentById(R.id.notes);

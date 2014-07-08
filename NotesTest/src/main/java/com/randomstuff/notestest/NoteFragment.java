@@ -1,14 +1,11 @@
 package com.randomstuff.notestest;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -29,7 +26,7 @@ import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NoteFragment extends Fragment implements TextWatcher {
+public class NoteFragment extends Fragment{
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
@@ -38,6 +35,7 @@ public class NoteFragment extends Fragment implements TextWatcher {
 
     private boolean isDeleted = false;
     private boolean isChanged = false;
+
     private boolean mDualPane;
     private Uri noteUri = null;
     private ShareActionProvider mShareActionProvider;
@@ -83,10 +81,7 @@ public class NoteFragment extends Fragment implements TextWatcher {
             fillNote(noteUri);
         }
 
-        //editTitle.addTextChangedListener(editTitleWatcher);
-        editNote.addTextChangedListener(this);
-
-        shareIntent.setType("text/plain");
+        noteWatcher();
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
@@ -105,6 +100,15 @@ public class NoteFragment extends Fragment implements TextWatcher {
 
         mShareActionProvider = (ShareActionProvider) menu
                 .findItem(R.id.share_button).getActionProvider();
+
+        shareIntent.setType("text/plain");
+        if (!isChanged) {
+            shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
+                        getResources().getString(R.string.share_choose)));
+            }
+        }
     }
 
     @Override
@@ -137,32 +141,34 @@ public class NoteFragment extends Fragment implements TextWatcher {
         super.onPause();
     }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
-                    getResources().getString(R.string.share_choose)));
-        }
+    public void noteWatcher() {
+        editNote.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("asdf", "why ist his called ");
+                isChanged = true;
 
-        //add boolean for saving if text is changed
-        isChanged = true;
+                shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+                if (mShareActionProvider != null) {
+                    mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
+                            getResources().getString(R.string.share_choose)));
+                }
+            }
+
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int after) {
+                // nothing
+            }
+        });
     }
-
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int after) {
-        // nothing
-    }
-
 
     private void fillNote(Uri uri) {
-        //possibvly use asyncqueryhandler
         String[] projection = { Provider.Constants.COLUMN_ID,
                 Provider.Constants.COLUMN_TITLE,
                 Provider.Constants.COLUMN_NOTE,
@@ -171,14 +177,13 @@ public class NoteFragment extends Fragment implements TextWatcher {
         NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                 getContentResolver());
         mHandle.startQuery(1, null, uri, projection, null, null, null);
-
-        //Cursor c = getActivity().getContentResolver().query(uri, projection, null, null, null);
-        // and all that stuff in query about if cursor != null etc
     }
 
     private void saveNote() {
         boolean titleEmpty = editTitle.getText().toString().isEmpty();
         boolean noteEmpty = editNote.getText().toString().isEmpty();
+
+        Log.d("isCHanged = ", Boolean.toString(isChanged));
 
         if (!titleEmpty && !noteEmpty && noteUri != null && isChanged) {
             ContentValues cv = new ContentValues();
@@ -190,8 +195,6 @@ public class NoteFragment extends Fragment implements TextWatcher {
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
             mHandle.startUpdate(3, null, noteUri, cv, null, null);
-
-            //getActivity().getContentResolver().update(noteUri, cv, null, null);
         } else if (!titleEmpty && !noteEmpty && noteUri == null) {
             ContentValues cv = new ContentValues();
 
@@ -203,7 +206,6 @@ public class NoteFragment extends Fragment implements TextWatcher {
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
             mHandle.startInsert(2, null, noteUri, cv);
-            //noteUri = getActivity().getContentResolver().insert(Provider.Constants.CONTENT_URI, cv);
         } else {
             CharSequence saveFail = "Save failed. Must have a title and a note";
             Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
@@ -211,7 +213,6 @@ public class NoteFragment extends Fragment implements TextWatcher {
     }
 
     private void deleteNote() {
-        //alertDIALOG!
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
         deleteDialog.setMessage(R.string.delete_dialog)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -229,8 +230,6 @@ public class NoteFragment extends Fragment implements TextWatcher {
                         } else {
                             getActivity().finish();
                         }
-                        //getActivity().getContentResolver().delete(noteUri, null, null);
-
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -264,7 +263,7 @@ public class NoteFragment extends Fragment implements TextWatcher {
                 long dateModified = c.getLong(c.getColumnIndex(Provider.Constants.COLUMN_NOTE_MODIFIED));
                 Log.d("dateMOdified", Long.toString(dateModified));
                 textDateModified.setText("Last Modified " +
-                        DateFormat.format("h:m a, LLL d", dateModified));
+                        DateFormat.format("h:mm a, LLL d", dateModified));
 
                 c.close();
             }
