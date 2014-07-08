@@ -22,7 +22,7 @@ public class NoteListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
     private boolean mDualPane;                          // To store the current layout
     private long mCurNotePosition;                      // Stores the current note _id
-    private int mCurNoteIndex;                          // stores the current note index
+    private int index;
     private SimpleCursorAdapter adapter = null;         // Populates the listview
 
     @Override
@@ -49,15 +49,16 @@ public class NoteListFragment extends ListFragment implements
         // checks the saved bundle for a note to display based on _id
         if (savedInstanceState != null) {
             mCurNotePosition = savedInstanceState.getLong("curNote", 1L);
-            mCurNoteIndex = savedInstanceState.getInt("curIndex", 0);
         }
-
+        Log.d("mCurNotePosition = ", Long.toString(mCurNotePosition));
         // if the layout has both panes, shows that saved note
         if (mDualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             //getListView().setSelector(R.color.darkBlue);
             //might need to iterate through cursor and match the id to the position
-            showNote(mCurNotePosition, mCurNoteIndex);
+            if (mCurNotePosition != 0) {
+                showNote(mCurNotePosition);
+            }
         }
     }
 
@@ -65,7 +66,6 @@ public class NoteListFragment extends ListFragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("curNote", mCurNotePosition);          // Saving the current note _id
-        outState.putInt("curIndex", mCurNoteIndex);             // Saving the current note index
     }
 
 
@@ -89,14 +89,10 @@ public class NoteListFragment extends ListFragment implements
                     startActivity(i);
                 }
                 else {
-                    NoteFragment noteFrag  = (NoteFragment) getFragmentManager().findFragmentById(R.id.notes);
-
-                    if (noteFrag == null || noteFrag.getShownIndex() == -1) {
-                        noteFrag = NoteFragment.newInstance(0L, -1);
-
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.notes, noteFrag).commit();
-                    }
+                    NoteFragment noteFrag;
+                    noteFrag = NoteFragment.newInstance(0L);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.notes, noteFrag).commit();
                 }
                 return true;
             case(R.id.settings):
@@ -118,13 +114,12 @@ public class NoteListFragment extends ListFragment implements
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-
-        showNote(id, position);
+        index = position;
+        showNote(id);
     }
 
-    void showNote(long id, int index) {
+    void showNote(long id) {
         mCurNotePosition = id;
-        mCurNoteIndex = index;
 
         Log.d("id + index", String.valueOf(id) + " " + String.valueOf(index));
         if (mDualPane) {
@@ -137,8 +132,8 @@ public class NoteListFragment extends ListFragment implements
             NoteFragment noteFrag = (NoteFragment)
                     getFragmentManager().findFragmentById(R.id.notes);
 
-            if (noteFrag == null || noteFrag.getShownIndex() != index) {
-                noteFrag = NoteFragment.newInstance(id, index);
+            if (noteFrag == null || noteFrag.getShownId() != id) {
+                noteFrag = NoteFragment.newInstance(id);
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.notes, noteFrag).commit();
@@ -148,7 +143,6 @@ public class NoteListFragment extends ListFragment implements
             Intent i = new Intent();
             i.setClass(getActivity(), NoteActivity.class);
             i.putExtra("id", id);
-            i.putExtra("index", index);
             startActivity(i);
         }
     }

@@ -14,17 +14,6 @@ import java.io.InputStream;
 public class SimpleDisplayFragment extends Fragment {
     private TextView mText = null;
 
-    // remove this?
-    static SimpleDisplayFragment newInstance(String s) {
-        SimpleDisplayFragment frag = new SimpleDisplayFragment();
-
-        Bundle args = new Bundle();
-        args.putString("file", s);
-        frag.setArguments(args);
-
-        return frag;
-    }
-
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup v, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.simple_display, v, false);

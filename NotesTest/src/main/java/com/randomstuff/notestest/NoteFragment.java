@@ -33,21 +33,20 @@ public class NoteFragment extends Fragment {
     private Uri noteUri = null;
     private ShareActionProvider mShareActionProvider;
 
-    static NoteFragment newInstance(long id, int index) {
+    static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
-        Log.d("id + index", String.valueOf(id) + " " + String.valueOf(index));
+        Log.d("id", String.valueOf(id));
 
 
         Bundle args = new Bundle();
         args.putLong("id", id);
-        args.putInt("index", index);
         frag.setArguments(args);
 
         return (frag);
     }
 
-    public int getShownIndex() {
-        return getArguments().getInt("index", 0);
+    public long getShownId() {
+        return getArguments().getLong("id", 0L);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class NoteFragment extends Fragment {
         editNote = (EditText) result.findViewById(R.id.edit_note);
         textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
 
-        Log.d("index + uri", String.valueOf(getShownIndex()) + " " + noteUri);
+        Log.d("id + uri", String.valueOf(getShownId()) + " " + noteUri);
         if (noteUri != null) {
             fillNote(noteUri);
         }

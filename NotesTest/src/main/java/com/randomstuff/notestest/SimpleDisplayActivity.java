@@ -10,8 +10,6 @@ public class SimpleDisplayActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         if (getFragmentManager().findFragmentById(android.R.id.content) == null) {
-            // take this out?
-            String file = getIntent().getStringExtra("file");
             SimpleDisplayFragment f = new SimpleDisplayFragment();
             f.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().add(android.R.id.content, f).commit();
