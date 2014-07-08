@@ -8,7 +8,7 @@
     <string name="about">About</string>
     <string name="share">Share</string>
     <string name="delete_button">Delete</string>
-    <string nmae="delete_dialog">Delete this note?</string>
+    <string name="delete_dialog">Delete this note?</string>
     <string name="edit_title">Title</string>
     <string name="edit_note">Notes</string>
     <string name="sql_upgrade_error">O noes, sql syntax is ugly</string>

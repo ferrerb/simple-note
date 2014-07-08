@@ -1,11 +1,14 @@
 package com.randomstuff.notestest;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -116,17 +119,9 @@ public class NoteFragment extends Fragment implements TextWatcher {
                 getActivity().finish();
                 return true;
             case (R.id.delete):
-                Log.d("noteuri during delete", " + " + noteUri);
+                isDeleted = true;
                 deleteNote();
 
-                if (mDualPane) {
-                    NoteFragment noteFrag = new NoteFragment();
-
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.remove(noteFrag).commit();
-                } else {
-                    getActivity().finish();
-                }
                 return true;
         }
 
@@ -218,26 +213,42 @@ public class NoteFragment extends Fragment implements TextWatcher {
     private void deleteNote() {
         //alertDIALOG!
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
-        deleteDialog.setMessage(R.string.delete_button)
+        deleteDialog.setMessage(R.string.delete_dialog)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
                         if (noteUri != null) {
                             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
-                                getContentResolver());
+                                    getContentResolver());
                             mHandle.startDelete(4, null, noteUri, null, null);
-
-                            //getActivity().getContentResolver().delete(noteUri, null, null);
                         }
+                        if (mDualPane) {
+                            NoteFragment noteFrag = new NoteFragment();
+
+                            FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            ft.remove(noteFrag).commit();
+                        } else {
+                            getActivity().finish();
+                        }
+                        //getActivity().getContentResolver().delete(noteUri, null, null);
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
-                        // nothing!
+                        if (mDualPane) {
+                            NoteFragment noteFrag = new NoteFragment();
+
+                            FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            ft.remove(noteFrag).commit();
+                        } else {
+                            getActivity().finish();
+                        }
                     }
                 });
-        deleteDialog.create();
-        isDeleted = true;
+        deleteDialog.show();
+
     }
+
 
     private class NoteAsyncQueryHandler extends AsyncQueryHandler {
         public NoteAsyncQueryHandler (ContentResolver cr) {
