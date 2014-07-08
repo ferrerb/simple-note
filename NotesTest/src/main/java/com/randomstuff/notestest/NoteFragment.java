@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -21,14 +22,15 @@ import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NoteFragment extends Fragment {
+public class NoteFragment extends Fragment implements TextWatcher {
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
-    private TextWatcher editTitleWatcher = null;
-    private TextWatcher editNoteWatcher = null;
+
+    private Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND);
 
     private boolean isDeleted = false;
+    private boolean isChanged = false;
     private boolean mDualPane;
     private Uri noteUri = null;
     private ShareActionProvider mShareActionProvider;
@@ -75,7 +77,9 @@ public class NoteFragment extends Fragment {
         }
 
         //editTitle.addTextChangedListener(editTitleWatcher);
-        //editNote.addTextChangedListener(editNoteWatcher);
+        editNote.addTextChangedListener(this);
+
+        shareIntent.setType("text/plain");
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
@@ -94,7 +98,6 @@ public class NoteFragment extends Fragment {
 
         mShareActionProvider = (ShareActionProvider) menu
                 .findItem(R.id.share_button).getActionProvider();
-        doShare();
     }
 
     @Override
@@ -129,20 +132,6 @@ public class NoteFragment extends Fragment {
         return (super.onOptionsItemSelected(item));
     }
 
-    private void doShare () {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-        shareIntent.setType("text/plain");
-
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
-                    getResources().getString(R.string.share_choose)));
-
-            //mShareActionProvider.setShareIntent(shareIntent);
-        }
-    }
-
     @Override
     public void onPause() {
         if (!isDeleted) {
@@ -151,6 +140,30 @@ public class NoteFragment extends Fragment {
 
         super.onPause();
     }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
+                    getResources().getString(R.string.share_choose)));
+        }
+
+        //add boolean for saving if text is changed
+        isChanged = true;
+    }
+
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // nothing
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int after) {
+        // nothing
+    }
+
 
     private void fillNote(Uri uri) {
         //possibvly use asyncqueryhandler
