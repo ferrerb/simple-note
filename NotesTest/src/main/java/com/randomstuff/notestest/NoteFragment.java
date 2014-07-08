@@ -30,6 +30,7 @@ public class NoteFragment extends Fragment{
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
+    private TextWatcher noteChangedListener;
 
     private Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND);
 
@@ -81,15 +82,14 @@ public class NoteFragment extends Fragment{
             fillNote(noteUri);
         }
 
-        noteWatcher();
-
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
-
+        Log.d("is dual frame =", Boolean.toString(mDualPane));
         setHasOptionsMenu(true);
 
         if (!mDualPane) {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);}
+
         return (result);
     }
 
@@ -102,7 +102,7 @@ public class NoteFragment extends Fragment{
                 .findItem(R.id.share_button).getActionProvider();
 
         shareIntent.setType("text/plain");
-        if (!isChanged) {
+        if (!isChanged && !editNote.getText().toString().isEmpty()) {
             shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
@@ -123,9 +123,10 @@ public class NoteFragment extends Fragment{
                 getActivity().finish();
                 return true;
             case (R.id.delete):
-                isDeleted = true;
-                deleteNote();
+                deleteNoteDialog();
+                if (isDeleted) {
 
+                }
                 return true;
         }
 
@@ -134,6 +135,7 @@ public class NoteFragment extends Fragment{
 
     @Override
     public void onPause() {
+        editNote.removeTextChangedListener(noteChangedListener);
         if (!isDeleted) {
             saveNote();
         }
@@ -142,7 +144,7 @@ public class NoteFragment extends Fragment{
     }
 
     public void noteWatcher() {
-        editNote.addTextChangedListener(new TextWatcher() {
+        noteChangedListener = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 Log.d("asdf", "why ist his called ");
@@ -165,7 +167,8 @@ public class NoteFragment extends Fragment{
             public void onTextChanged(CharSequence s, int start, int before, int after) {
                 // nothing
             }
-        });
+        };
+        editNote.addTextChangedListener(noteChangedListener);
     }
 
     private void fillNote(Uri uri) {
@@ -195,7 +198,8 @@ public class NoteFragment extends Fragment{
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
             mHandle.startUpdate(3, null, noteUri, cv, null, null);
-        } else if (!titleEmpty && !noteEmpty && noteUri == null) {
+        }
+        if (!titleEmpty && !noteEmpty && noteUri == null) {
             ContentValues cv = new ContentValues();
 
             cv.put(Provider.Constants.COLUMN_TITLE, editTitle.getText().toString());
@@ -205,23 +209,22 @@ public class NoteFragment extends Fragment{
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
-            mHandle.startInsert(2, null, noteUri, cv);
-        } else {
-            CharSequence saveFail = "Save failed. Must have a title and a note";
-            Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
-        }
+            mHandle.startInsert(2, null, Provider.Constants.CONTENT_URI, cv);
+        } 
     }
 
-    private void deleteNote() {
+    private void deleteNoteDialog() {
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
         deleteDialog.setMessage(R.string.delete_dialog)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int position) {
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isDeleted = true;
                         if (noteUri != null) {
                             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                                     getContentResolver());
                             mHandle.startDelete(4, null, noteUri, null, null);
                         }
+
                         if (mDualPane) {
                             NoteFragment noteFrag = new NoteFragment();
 
@@ -232,19 +235,13 @@ public class NoteFragment extends Fragment{
                         }
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int position) {
-                        if (mDualPane) {
-                            NoteFragment noteFrag = new NoteFragment();
-
-                            FragmentTransaction ft = getFragmentManager().beginTransaction();
-                            ft.remove(noteFrag).commit();
-                        } else {
-                            getActivity().finish();
-                        }
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // nothing
                     }
                 });
-        deleteDialog.show();
+        AlertDialog deleteAlert = deleteDialog.create();
+        deleteAlert.show();
 
     }
 
@@ -266,12 +263,13 @@ public class NoteFragment extends Fragment{
                         DateFormat.format("h:mm a, LLL d", dateModified));
 
                 c.close();
+                noteWatcher();
             }
         }
 
         @Override
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
-            noteUri = uri;
+            // ????
         }
 
         @Override
