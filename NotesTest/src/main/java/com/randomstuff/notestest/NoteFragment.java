@@ -2,6 +2,8 @@ package com.randomstuff.notestest;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -114,7 +116,11 @@ public class NoteFragment extends Fragment implements TextWatcher {
             case (R.id.delete):
                 Log.d("noteuri during delete", " + " + noteUri);
                 if (noteUri != null) {
-                    getActivity().getContentResolver().delete(noteUri, null, null);
+                    NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
+                            getContentResolver());
+                    mHandle.startDelete(4, null, noteUri, null, null);
+
+                    //getActivity().getContentResolver().delete(noteUri, null, null);
                 }
                 isDeleted = true;
 
@@ -172,33 +178,30 @@ public class NoteFragment extends Fragment implements TextWatcher {
                 Provider.Constants.COLUMN_NOTE,
                 Provider.Constants.COLUMN_NOTE_MODIFIED };
 
-        Cursor c = getActivity().getContentResolver().query(uri, projection, null, null, null);
+        NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
+                getContentResolver());
+        mHandle.startQuery(1, null, uri, projection, null, null, null);
 
-        if (c != null && c.moveToFirst()) {
-            editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
-            editNote.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_NOTE)));
-
-            long dateModified = c.getLong(c.getColumnIndex(Provider.Constants.COLUMN_NOTE_MODIFIED));
-            Log.d("dateMOdified", Long.toString(dateModified));
-            textDateModified.setText("Last Modified " +
-                    DateFormat.format("h:m a, LLL d", dateModified));
-
-            c.close();
-        }
+        //Cursor c = getActivity().getContentResolver().query(uri, projection, null, null, null);
+        // and all that stuff in query about if cursor != null etc
     }
 
     private void saveNote() {
         boolean titleEmpty = editTitle.getText().toString().isEmpty();
         boolean noteEmpty = editNote.getText().toString().isEmpty();
 
-        if (!titleEmpty && !noteEmpty && noteUri != null) {
+        if (!titleEmpty && !noteEmpty && noteUri != null && isChanged) {
             ContentValues cv = new ContentValues();
 
             cv.put(Provider.Constants.COLUMN_TITLE, editTitle.getText().toString());
             cv.put(Provider.Constants.COLUMN_NOTE, editNote.getText().toString());
             cv.put(Provider.Constants.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
 
-            getActivity().getContentResolver().update(noteUri, cv, null, null);
+            NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
+                    getContentResolver());
+            mHandle.startUpdate(3, null, noteUri, cv, null, null);
+
+            //getActivity().getContentResolver().update(noteUri, cv, null, null);
         } else if (!titleEmpty && !noteEmpty && noteUri == null) {
             ContentValues cv = new ContentValues();
 
@@ -206,7 +209,11 @@ public class NoteFragment extends Fragment implements TextWatcher {
             cv.put(Provider.Constants.COLUMN_NOTE, editNote.getText().toString());
             cv.put(Provider.Constants.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
 
-            noteUri = getActivity().getContentResolver().insert(Provider.Constants.CONTENT_URI, cv);
+
+            NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
+                    getContentResolver());
+            mHandle.startInsert(2, null, noteUri, cv);
+            //noteUri = getActivity().getContentResolver().insert(Provider.Constants.CONTENT_URI, cv);
         } else {
             CharSequence saveFail = "Save failed. Must have a title and a note";
             Toast.makeText(getActivity(), saveFail, Toast.LENGTH_SHORT).show();
@@ -215,4 +222,34 @@ public class NoteFragment extends Fragment implements TextWatcher {
 
     }
 
+    private class NoteAsyncQueryHandler extends AsyncQueryHandler {
+        public NoteAsyncQueryHandler (ContentResolver cr) {
+            super(cr);
+        }
+
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor c) {
+            if (c != null && c.moveToFirst()) {
+                editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
+                editNote.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_NOTE)));
+
+                long dateModified = c.getLong(c.getColumnIndex(Provider.Constants.COLUMN_NOTE_MODIFIED));
+                Log.d("dateMOdified", Long.toString(dateModified));
+                textDateModified.setText("Last Modified " +
+                        DateFormat.format("h:m a, LLL d", dateModified));
+
+                c.close();
+            }
+        }
+
+        @Override
+        protected void onInsertComplete(int token, Object cookie, Uri uri) {
+            noteUri = uri;
+        }
+
+        @Override
+        protected void onDeleteComplete(int token, Object cookie, int result) {
+            // ???
+        }
+    }
 }
