@@ -80,11 +80,14 @@ public class NoteListFragment extends ListFragment implements
         switch (item.getItemId()) {
             case(R.id.add_note):
                 //call notefragment and make new note
-                NoteFragment noteFrag = (NoteFragment)getFragmentManager().findFragmentById(R.id.notes);
-                if ( noteFrag == null || noteFrag.getShownId() > -1L){
-                    noteFrag = NoteFragment.newInstance(0L);
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.notes, noteFrag).commit();
+
+                if (mDualPane) {
+                    NoteFragment noteFrag = (NoteFragment)getFragmentManager().findFragmentById(R.id.notes);
+                    if (noteFrag == null || noteFrag.getShownId() > -1L) {
+                        noteFrag = NoteFragment.newInstance(0L);
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.notes, noteFrag).commit();
+                    }
                 }
                 else {
                     // this happens only in portrait mode
@@ -121,8 +124,6 @@ public class NoteListFragment extends ListFragment implements
 
         if (mDualPane) {
             getListView().setItemChecked(index, true);
-            getListView().setSelection(index);
-            getListView().setSelected(true);
 
             NoteFragment noteFrag = (NoteFragment)
                     getFragmentManager().findFragmentById(R.id.notes);
