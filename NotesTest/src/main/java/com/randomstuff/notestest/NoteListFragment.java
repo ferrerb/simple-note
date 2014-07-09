@@ -84,7 +84,6 @@ public class NoteListFragment extends ListFragment implements
                     // this happens only in portrait mode
                     Intent i=new Intent(getActivity(), NoteActivity.class);
                     i.putExtra("id", 0L);
-                    i.putExtra("index", -1);
                     startActivity(i);
                 }
                 else {

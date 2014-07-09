@@ -7,7 +7,5 @@
     <item
         android:state_pressed="true"
         android:drawable="@color/lightBlue" />
-    <item
-        android:state_activated="false"
-        android:drawable="@android:drawable/screen_background_light" />
+
 </selector>

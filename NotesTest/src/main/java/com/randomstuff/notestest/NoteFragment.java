@@ -102,13 +102,6 @@ public class NoteFragment extends Fragment{
                 .findItem(R.id.share_button).getActionProvider();
 
         shareIntent.setType("text/plain");
-        if (!isChanged && !editNote.getText().toString().isEmpty()) {
-            shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-            if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
-                        getResources().getString(R.string.share_choose)));
-            }
-        }
     }
 
     @Override
@@ -265,11 +258,17 @@ public class NoteFragment extends Fragment{
                 c.close();
                 noteWatcher();
             }
+
+            shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
+                        getResources().getString(R.string.share_choose)));
+            }
         }
 
         @Override
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
-            // ????
+            noteUri = uri;
         }
 
         @Override
