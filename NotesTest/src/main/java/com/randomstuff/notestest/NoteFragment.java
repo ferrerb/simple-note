@@ -210,7 +210,7 @@ public class NoteFragment extends Fragment{
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
             mHandle.startInsert(2, null, Provider.Constants.CONTENT_URI, cv);
-        } 
+        }
     }
 
     private void deleteNoteDialog() {
