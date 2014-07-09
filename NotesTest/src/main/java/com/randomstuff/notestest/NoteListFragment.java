@@ -145,10 +145,10 @@ public class NoteListFragment extends ListFragment implements
 
     private void fillList() {
         adapter = new SimpleCursorAdapter(getActivity(),                // Context
-                android.R.layout.simple_list_item_1,                    // provides a layout
+                android.R.layout.simple_list_item_2,                    // provides a layout
                 null,                                                   // empty initial cursor
-                new String[] { Provider.Constants.COLUMN_TITLE },       // table column to get strings from
-                new int[] {android.R.id.text1},
+                new String[] { Provider.Constants.COLUMN_TITLE, Provider.Constants.COLUMN_NOTE },
+                new int[] {android.R.id.text1, android.R.id.text2},
                 0);
 
         setListAdapter(adapter);                                        // Sets current listview to the cursoradapter

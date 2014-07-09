@@ -11,6 +11,15 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-        <!-- android:listSelector="@drawable/bg_list"/> -->
+        <!-- android:listSelector="@drawable/bg_list"> -->
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    <TextView
+        android:id="@android:id/text2"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:maxLength="30" />
 
 </LinearLayout>
