@@ -211,7 +211,7 @@ public class NoteFragment extends Fragment{
     private void deleteNoteDialog() {
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
         deleteDialog.setMessage(R.string.delete_dialog)
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         isDeleted = true;
                         if (noteUri != null) {
@@ -230,7 +230,7 @@ public class NoteFragment extends Fragment{
                         }
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // nothing
                     }
@@ -254,7 +254,7 @@ public class NoteFragment extends Fragment{
 
                 long dateModified = c.getLong(c.getColumnIndex(Provider.Constants.COLUMN_NOTE_MODIFIED));
                 Log.d("dateMOdified", Long.toString(dateModified));
-                textDateModified.setText("Last Modified " +
+                textDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format("h:mm a, LLL d", dateModified));
 
                 c.close();
