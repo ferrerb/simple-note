@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class NoteFragment extends Fragment{
     private EditText editTitle = null;
@@ -41,7 +40,7 @@ public class NoteFragment extends Fragment{
     private Uri noteUri = null;
     private ShareActionProvider mShareActionProvider;
 
-    static NoteFragment newInstance(long id) {
+    public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
         Log.d("id", String.valueOf(id));
 
@@ -50,7 +49,7 @@ public class NoteFragment extends Fragment{
         args.putLong("id", id);
         frag.setArguments(args);
 
-        return (frag);
+        return frag;
     }
 
     public long getShownId() {
@@ -80,15 +79,18 @@ public class NoteFragment extends Fragment{
         Log.d("id + uri", String.valueOf(getShownId()) + " " + noteUri);
         if (noteUri != null) {
             fillNote(noteUri);
+        } else {
+            noteWatcher();
         }
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
-        Log.d("is dual frame =", Boolean.toString(mDualPane));
+
         setHasOptionsMenu(true);
 
         if (!mDualPane) {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);}
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         return (result);
     }

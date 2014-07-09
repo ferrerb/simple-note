@@ -80,17 +80,17 @@ public class NoteListFragment extends ListFragment implements
         switch (item.getItemId()) {
             case(R.id.add_note):
                 //call notefragment and make new note
-                if (getFragmentManager().findFragmentById(R.id.notes) == null){
+                NoteFragment noteFrag = (NoteFragment)getFragmentManager().findFragmentById(R.id.notes);
+                if ( noteFrag == null || noteFrag.getShownId() > -1L){
+                    noteFrag = NoteFragment.newInstance(0L);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.notes, noteFrag).commit();
+                }
+                else {
                     // this happens only in portrait mode
                     Intent i=new Intent(getActivity(), NoteActivity.class);
                     i.putExtra("id", 0L);
                     startActivity(i);
-                }
-                else {
-                    NoteFragment noteFrag;
-                    noteFrag = NoteFragment.newInstance(0L);
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.notes, noteFrag).commit();
                 }
                 return true;
             case(R.id.settings):
