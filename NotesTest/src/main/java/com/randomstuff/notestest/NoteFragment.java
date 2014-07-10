@@ -167,10 +167,10 @@ public class NoteFragment extends Fragment{
     }
 
     private void fillNote(Uri uri) {
-        String[] projection = { Provider.Constants.COLUMN_ID,
-                Provider.Constants.COLUMN_TITLE,
-                Provider.Constants.COLUMN_NOTE,
-                Provider.Constants.COLUMN_NOTE_MODIFIED };
+        String[] projection = { NotesContract.Notes.COLUMN_ID,
+                NotesContract.Notes.COLUMN_TITLE,
+                NotesContract.Notes.COLUMN_NOTE,
+                NotesContract.Notes.COLUMN_NOTE_MODIFIED };
 
         NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                 getContentResolver());
@@ -186,9 +186,9 @@ public class NoteFragment extends Fragment{
         if (!titleEmpty && !noteEmpty && noteUri != null && isChanged) {
             ContentValues cv = new ContentValues();
 
-            cv.put(Provider.Constants.COLUMN_TITLE, editTitle.getText().toString());
-            cv.put(Provider.Constants.COLUMN_NOTE, editNote.getText().toString());
-            cv.put(Provider.Constants.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
+            cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
@@ -197,14 +197,14 @@ public class NoteFragment extends Fragment{
         if (!titleEmpty && !noteEmpty && noteUri == null) {
             ContentValues cv = new ContentValues();
 
-            cv.put(Provider.Constants.COLUMN_TITLE, editTitle.getText().toString());
-            cv.put(Provider.Constants.COLUMN_NOTE, editNote.getText().toString());
-            cv.put(Provider.Constants.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
+            cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
 
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
-            mHandle.startInsert(2, null, Provider.Constants.CONTENT_URI, cv);
+            mHandle.startInsert(2, null, NotesContract.Notes.CONTENT_URI, cv);
         }
     }
 
@@ -249,10 +249,10 @@ public class NoteFragment extends Fragment{
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor c) {
             if (c != null && c.moveToFirst()) {
-                editTitle.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_TITLE)));
-                editNote.setText(c.getString(c.getColumnIndex(Provider.Constants.COLUMN_NOTE)));
+                editTitle.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)));
+                editNote.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));
 
-                long dateModified = c.getLong(c.getColumnIndex(Provider.Constants.COLUMN_NOTE_MODIFIED));
+                long dateModified = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
                 Log.d("dateMOdified", Long.toString(dateModified));
                 textDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format("h:mm a, LLL d", dateModified));

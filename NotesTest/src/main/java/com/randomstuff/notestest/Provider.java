@@ -14,7 +14,6 @@ import android.text.TextUtils;
 public class Provider extends ContentProvider {
     private DatabaseHelper db=null;
 
-    private static final String TABLE_NAME = "notes";
     private static final int NOTES = 1;
     private static final int NOTE_ID = 2;
     private static final String BASE_PATH = "notes";
