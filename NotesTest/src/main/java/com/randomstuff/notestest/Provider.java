@@ -20,8 +20,8 @@ public class Provider extends ContentProvider {
 
         private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
-        sURIMatcher.addURI(NotesContract.AUTHORITY, BASE_PATH, NOTES);
-        sURIMatcher.addURI(NotesContract.AUTHORITY, BASE_PATH + "/#", NOTE_ID);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, NotesContract.BASE_PATH, NOTES);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, NotesContract.BASE_PATH + "/#", NOTE_ID);
     }
 
     public boolean onCreate() {
