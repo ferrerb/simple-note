@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notestest.db";
     private static final int SCHEMA_VERSION = 2;
-    private Context ctxt=null;
 
     private static final String TABLE_NAME ="notes";
     private static final String COLUMN_ID = "_id";

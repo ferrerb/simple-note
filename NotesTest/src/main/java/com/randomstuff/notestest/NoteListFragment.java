@@ -148,7 +148,7 @@ public class NoteListFragment extends ListFragment implements
                 getActivity(),                                          // Context
                 R.layout.simple_list_item_2,                    // provides a layout
                 null,                                                   // empty initial cursor
-                new String[] { Provider.Constants.COLUMN_TITLE, Provider.Constants.COLUMN_NOTE },
+                new String[] { NotesContract.Notes.COLUMN_TITLE, NotesContract.Notes.COLUMN_NOTE },
                 new int[] {android.R.id.text1, android.R.id.text2},
                 0);
 
@@ -160,11 +160,11 @@ public class NoteListFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         String[] projection =
-                { Provider.Constants.COLUMN_ID, Provider.Constants.COLUMN_TITLE,
-                        Provider.Constants.COLUMN_NOTE };
-        String sortOrder = Provider.Constants.COLUMN_ID + " DESC";
+                { NotesContract.Notes.COLUMN_ID, NotesContract.Notes.COLUMN_TITLE,
+                        NotesContract.Notes.COLUMN_NOTE };
+        String sortOrder = NotesContract.Notes.COLUMN_ID + " DESC";
 
-        return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
+        return new CursorLoader(getActivity(), NotesContract.Notes.CONTENT_URI,
                                 projection, null, null, sortOrder);
     }
 

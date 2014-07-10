@@ -62,7 +62,7 @@ public class NoteFragment extends Fragment{
 
         long mId = getArguments().getLong("id");
         if ( mId > 0) {
-            noteUri = Uri.parse(Provider.Constants.CONTENT_URI + "/" + mId);
+            noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + mId);
         }
     }
 
