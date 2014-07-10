@@ -144,8 +144,9 @@ public class NoteListFragment extends ListFragment implements
     }
 
     private void fillList() {
-        adapter = new SimpleCursorAdapter(getActivity(),                // Context
-                android.R.layout.simple_list_item_2,                    // provides a layout
+        adapter = new SimpleCursorAdapter(
+                getActivity(),                                          // Context
+                R.layout.simple_list_item_2,                    // provides a layout
                 null,                                                   // empty initial cursor
                 new String[] { Provider.Constants.COLUMN_TITLE, Provider.Constants.COLUMN_NOTE },
                 new int[] {android.R.id.text1, android.R.id.text2},
@@ -159,7 +160,8 @@ public class NoteListFragment extends ListFragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         String[] projection =
-                { Provider.Constants.COLUMN_ID, Provider.Constants.COLUMN_TITLE };
+                { Provider.Constants.COLUMN_ID, Provider.Constants.COLUMN_TITLE,
+                        Provider.Constants.COLUMN_NOTE };
         String sortOrder = Provider.Constants.COLUMN_ID + " DESC";
 
         return new CursorLoader(getActivity(), Provider.Constants.CONTENT_URI,
