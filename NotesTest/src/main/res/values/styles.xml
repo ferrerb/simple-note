@@ -8,4 +8,7 @@
     <style name="ActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/lightBlue</item>
     </style>
+    <style name="activated" parent="android:Theme.Holo">
+        <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
+    </style>
 </resources>
