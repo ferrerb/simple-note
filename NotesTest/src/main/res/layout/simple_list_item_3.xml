@@ -24,14 +24,19 @@
     style="@style/activated"
     >
 
-    <TextView android:id="@android:id/text1"
+    <TextView
+        android:id="@+id/month_separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView android:id="@+id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dip"
         android:textAppearance="?android:attr/textAppearanceListItem"
         />
 
-    <TextView android:id="@android:id/text2"
+    <TextView android:id="@+id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@android:id/text1"

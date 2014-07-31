@@ -146,7 +146,7 @@ public class NoteListFragment extends ListFragment implements
     private void fillList() {
         adapter = new SimpleCursorAdapter(
                 getActivity(),                                          // Context
-                R.layout.simple_list_item_2,                    // provides a layout
+                R.layout.simple_list_item_3,                    // provides a layout
                 null,                                                   // empty initial cursor
                 new String[] { NotesContract.Notes.COLUMN_TITLE, NotesContract.Notes.COLUMN_NOTE },
                 new int[] {android.R.id.text1, android.R.id.text2},
@@ -162,7 +162,7 @@ public class NoteListFragment extends ListFragment implements
         String[] projection =
                 { NotesContract.Notes.COLUMN_ID, NotesContract.Notes.COLUMN_TITLE,
                         NotesContract.Notes.COLUMN_NOTE };
-        String sortOrder = NotesContract.Notes.COLUMN_ID + " DESC";
+        String sortOrder = NotesContract.Notes.COLUMN_NOTE_MODIFIED + " DESC";
 
         return new CursorLoader(getActivity(), NotesContract.Notes.CONTENT_URI,
                                 projection, null, null, sortOrder);

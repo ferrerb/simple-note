@@ -12,7 +12,7 @@
     <string name="cancel">Cancel</string>
     <string name="edit_title">Title</string>
     <string name="edit_note">Notes</string>
-    <string name="last_modified">Last Modified </string>
+    <string name="last_modified">"Last Modified "</string>
     <string name="sql_upgrade_error">O noes, sql syntax is ugly</string>
     <string name="share_choose">Send note to</string>
 

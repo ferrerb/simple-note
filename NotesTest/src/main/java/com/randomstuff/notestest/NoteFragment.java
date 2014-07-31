@@ -72,6 +72,9 @@ public class NoteFragment extends Fragment{
 
         View result = inflater.inflate(R.layout.notes_detail, container, false);
 
+        View notesListFrame = getActivity().findViewById(R.id.notes_list);
+        mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
+
         editTitle = (EditText) result.findViewById(R.id.edit_title);
         editNote = (EditText) result.findViewById(R.id.edit_note);
         textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
@@ -82,9 +85,6 @@ public class NoteFragment extends Fragment{
         } else {
             noteWatcher();
         }
-
-        View notesListFrame = getActivity().findViewById(R.id.notes_list);
-        mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
 
         setHasOptionsMenu(true);
 
