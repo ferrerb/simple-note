@@ -3,6 +3,7 @@ package com.randomstuff.notestest;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,10 @@ public class NotesCursorAdapter extends CursorAdapter {
         final CursorViewHolder holder = (CursorViewHolder) view.getTag();
         boolean needSeparator = false;
         final int position = c.getPosition();
+        Log.d("position", String.valueOf(position));
 
         long dateModLong = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-        String dateMod = DateFormat.format("LLL y", dateModLong).toString();
+        String dateMod = DateFormat.format("LLLL yyyy", dateModLong).toString();
 
         if (!dateMod.equals(dateModPrev)) {
             needSeparator = true;
@@ -59,25 +61,10 @@ public class NotesCursorAdapter extends CursorAdapter {
 
         CursorViewHolder holder = new CursorViewHolder();
         holder.separator = (TextView) v.findViewById(R.id.month_separator);
-        holder.titleView = (TextView) v.findViewById(R.id.text1);
-        holder.noteView = (TextView) v.findViewById(R.id.text2);
+        holder.titleView = (TextView) v.findViewById(R.id.list_note_title);
+        holder.noteView = (TextView) v.findViewById(R.id.list_note_body);
 
         v.setTag(holder);
         return v;
-    }
-
-    @Override
-    public int getCount() {
-        return 0;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 2;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position % 2;
     }
 }

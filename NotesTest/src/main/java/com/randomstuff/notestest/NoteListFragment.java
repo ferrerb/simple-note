@@ -23,7 +23,7 @@ public class NoteListFragment extends ListFragment implements
     private boolean mDualPane;                          // To store the current layout
     private long mCurNotePosition;                      // Stores the current note _id
     private int index;
-    private SimpleCursorAdapter adapter = null;         // Populates the listview
+    private NotesCursorAdapter adapter = null;         // Populates the listview
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -144,24 +144,19 @@ public class NoteListFragment extends ListFragment implements
     }
 
     private void fillList() {
-        adapter = new SimpleCursorAdapter(
-                getActivity(),                                          // Context
-                R.layout.simple_list_item_3,                    // provides a layout
-                null,                                                   // empty initial cursor
-                new String[] { NotesContract.Notes.COLUMN_TITLE, NotesContract.Notes.COLUMN_NOTE },
-                new int[] {android.R.id.text1, android.R.id.text2},
-                0);
-
-        setListAdapter(adapter);                                        // Sets current listview to the cursoradapter
-
-        getLoaderManager().initLoader(0, null, this);                   // Begins cursorloader
+        adapter = new NotesCursorAdapter(getActivity(), null, 0);
+        // Sets current listview to the cursoradapter
+        setListAdapter(adapter);
+        // Begins cursorloader
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         String[] projection =
                 { NotesContract.Notes.COLUMN_ID, NotesContract.Notes.COLUMN_TITLE,
-                        NotesContract.Notes.COLUMN_NOTE };
+                        NotesContract.Notes.COLUMN_NOTE,
+                        NotesContract.Notes.COLUMN_NOTE_MODIFIED };
         String sortOrder = NotesContract.Notes.COLUMN_NOTE_MODIFIED + " DESC";
 
         return new CursorLoader(getActivity(), NotesContract.Notes.CONTENT_URI,
