@@ -99,7 +99,7 @@ public class NoteFragment extends Fragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
-
+        //TODO get share to work consistently on initial load of note
         mShareActionProvider = (ShareActionProvider) menu
                 .findItem(R.id.share_button).getActionProvider();
 
