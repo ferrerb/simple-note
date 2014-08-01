@@ -13,7 +13,6 @@ import android.widget.TextView;
 /* Done with mucho help from Cyril Mottier's post on listview tips and tricks */
 public class NotesCursorAdapter extends CursorAdapter {
 
-    private String dateModPrev = null;
     public NotesCursorAdapter(Context ctxt, Cursor c, int flags) {
         super(ctxt, c, flags);
     }
@@ -32,14 +31,26 @@ public class NotesCursorAdapter extends CursorAdapter {
         final CursorViewHolder holder = (CursorViewHolder) view.getTag();
         boolean needSeparator = false;
         final int position = c.getPosition();
-        Log.d("position", String.valueOf(position));
+
 
         long dateModLong = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
         String dateMod = DateFormat.format("LLLL yyyy", dateModLong).toString();
 
-        if (!dateMod.equals(dateModPrev)) {
+        String dateModPrev = null;
+        if (c.getPosition() != 0) {
+            c.moveToPosition(position - 1);
+            long dateModLongPrev = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
+            dateModPrev = DateFormat.format("LLLL yyyy", dateModLongPrev).toString();
+            c.moveToPosition(position);
+        }
+
+
+        if (position == 0) {
             needSeparator = true;
-            dateModPrev = dateMod;
+        } else if (!dateMod.equals(dateModPrev)){
+            needSeparator = true;
+        } else {
+            needSeparator = false;
         }
 
         if (needSeparator) {
