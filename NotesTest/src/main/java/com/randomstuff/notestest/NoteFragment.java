@@ -86,6 +86,7 @@ public class NoteFragment extends Fragment{
             noteWatcher();
         }
 
+        shareIntent.setType("text/plain");
         setHasOptionsMenu(true);
 
         if (!mDualPane) {
@@ -102,8 +103,15 @@ public class NoteFragment extends Fragment{
         //TODO get share to work consistently on initial load of note, maybe just write own intent
         mShareActionProvider = (ShareActionProvider) menu
                 .findItem(R.id.share_button).getActionProvider();
+        mShareActionProvider.setShareIntent(setDefaultIntent());
 
-        shareIntent.setType("text/plain");
+
+    }
+
+    public Intent setDefaultIntent() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        return i;
     }
 
     @Override
