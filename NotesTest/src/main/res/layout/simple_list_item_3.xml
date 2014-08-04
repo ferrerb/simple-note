@@ -28,7 +28,8 @@
         android:id="@+id/month_separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="false"/>
+        style="@style/month_separator_style"
+        android:clickable="true"/>
 
     <TextView android:id="@+id/list_note_title"
         android:layout_width="match_parent"
