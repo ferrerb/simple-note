@@ -103,15 +103,14 @@ public class NoteFragment extends Fragment{
         //TODO get share to work consistently on initial load of note, maybe just write own intent
         mShareActionProvider = (ShareActionProvider) menu
                 .findItem(R.id.share_button).getActionProvider();
-        mShareActionProvider.setShareIntent(setDefaultIntent());
-
-
     }
 
-    public Intent setDefaultIntent() {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("text/plain");
-        return i;
+    public void setActionShareIntent() {
+        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
+                    getResources().getString(R.string.share_choose)));
+        }
     }
 
     @Override
@@ -151,13 +150,8 @@ public class NoteFragment extends Fragment{
                 Log.d("asdf", "why ist his called ");
                 isChanged = true;
 
-                shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-                if (mShareActionProvider != null) {
-                    mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
-                            getResources().getString(R.string.share_choose)));
-                }
+                setActionShareIntent();
             }
-
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -267,10 +261,7 @@ public class NoteFragment extends Fragment{
                 noteWatcher();
             }
 
-            shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-            if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
-                        getResources().getString(R.string.share_choose)));
+            setActionShareIntent();
             }
         }
 
