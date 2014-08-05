@@ -20,10 +20,13 @@ import android.widget.SimpleCursorAdapter;
 
 public class NoteListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private boolean mDualPane;                          // To store the current layout
-    private long mCurNotePosition;                      // Stores the current note _id
+    // To store the current layout
+    private boolean mDualPane;
+    // Stores the current note _id
+    private long mCurNotePosition;
     private int index;
-    private NotesCursorAdapter adapter = null;         // Populates the listview
+    // Populates the listview
+    private NotesCursorAdapter adapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +67,8 @@ public class NoteListFragment extends ListFragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong("curNote", mCurNotePosition);          // Saving the current note _id
+        // Saving the current note _id
+        outState.putLong("curNote", mCurNotePosition);
     }
 
 

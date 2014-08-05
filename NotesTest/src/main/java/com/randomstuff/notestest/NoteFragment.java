@@ -127,9 +127,7 @@ public class NoteFragment extends Fragment{
                 return true;
             case (R.id.delete):
                 deleteNoteDialog();
-                if (isDeleted) {
 
-                }
                 return true;
         }
 
