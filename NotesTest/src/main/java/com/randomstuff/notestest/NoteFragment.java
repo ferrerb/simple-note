@@ -31,14 +31,11 @@ public class NoteFragment extends Fragment{
     private TextView textDateModified = null;
     private TextWatcher noteChangedListener;
 
-    private Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND);
-
     private boolean isDeleted = false;
     private boolean isChanged = false;
 
     private boolean mDualPane;
     private Uri noteUri = null;
-    private ShareActionProvider mShareActionProvider;
 
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
@@ -86,7 +83,6 @@ public class NoteFragment extends Fragment{
             noteWatcher();
         }
 
-        shareIntent.setType("text/plain");
         setHasOptionsMenu(true);
 
         if (!mDualPane) {
@@ -100,18 +96,8 @@ public class NoteFragment extends Fragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.notes, menu);
-        //TODO get share to work consistently on initial load of note, maybe just write own intent
-        mShareActionProvider = (ShareActionProvider) menu
-                .findItem(R.id.share_button).getActionProvider();
     }
 
-    public void setActionShareIntent() {
-        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(Intent.createChooser(shareIntent,
-                    getResources().getString(R.string.share_choose)));
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -123,6 +109,9 @@ public class NoteFragment extends Fragment{
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 getActivity().finish();
+                return true;
+            case (R.id.share_button):
+                setActionShareIntent();
                 return true;
             case (R.id.delete):
                 deleteNoteDialog();
@@ -143,14 +132,22 @@ public class NoteFragment extends Fragment{
         super.onPause();
     }
 
+
+    public void setActionShareIntent() {
+        Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+        startActivity(Intent.createChooser(shareIntent,
+                getResources().getString(R.string.share_choose)));
+
+    }
+
     public void noteWatcher() {
         noteChangedListener = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 Log.d("asdf", "why ist his called ");
                 isChanged = true;
-
-                setActionShareIntent();
             }
 
             @Override
@@ -259,9 +256,6 @@ public class NoteFragment extends Fragment{
 
                 c.close();
                 noteWatcher();
-            }
-
-            setActionShareIntent();
             }
         }
 

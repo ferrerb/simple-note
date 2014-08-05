@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:orientation="vertical">
+    android:paddingRight="16dp">
 
     <EditText
         android:id="@+id/edit_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/edit_title"/>
 
     <EditText
         android:id="@+id/edit_note"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="left|top"
+        android:layout_below="@id/edit_title"
         android:inputType="textMultiLine"
         android:hint="@string/edit_note"/>
 
@@ -28,6 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom|right"
-        />
+        android:layout_below="@id/edit_note" />
 
-</LinearLayout>
+</RelativeLayout>

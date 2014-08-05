@@ -3,6 +3,7 @@
     <color name="lightBlue">#33B5E5</color>
     <color name="lightUrple">#AA66CC</color>
     <color name="darkBlue">#0099CC</color>
-    <color name="lightGrey">#727272</color>
+    <color name="lightGrey">#ddd</color>
     <color name="darkGrey">#34282C</color>
+    <color name="lighter_grey">#727272</color>
 </resources>
