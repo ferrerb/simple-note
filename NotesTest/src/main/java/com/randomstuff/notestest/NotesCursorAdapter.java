@@ -20,8 +20,11 @@ public class NotesCursorAdapter extends CursorAdapter {
 
     public NotesCursorAdapter(Context ctxt, Cursor c, int flags) {
         super(ctxt, c, flags);
-        rowState = (c == null) ? null : new int[c.getCount()];
-        //this.registerDataSetObserver(dataObserver);
+        //rowState = (c == null) ? null : new int[c.getCount()];
+        if (c != null) {
+            rowState = new int[c.getCount()];
+        }
+        this.registerDataSetObserver(dataObserver);
     }
 
     /* The viewholder lets you avoid calling findViewById for every bindView, and hold onto
@@ -54,7 +57,10 @@ public class NotesCursorAdapter extends CursorAdapter {
     @Override
     public void changeCursor(Cursor c) {
         super.changeCursor(c);
-        rowState = (c == null) ? null : new int[c.getCount()];
+        //rowState = (c == null) ? null : new int[c.getCount()];
+        if (c != null) {
+            rowState = new int[c.getCount()];
+        }
     }
 
     @Override
@@ -66,31 +72,34 @@ public class NotesCursorAdapter extends CursorAdapter {
         long dateModLong = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
         String dateMod = DateFormat.format("LLLL yyyy", dateModLong).toString();
 
-        switch (rowState[position]) {
-            case ROW_SEPARATOR:
-                needSeparator = true;
-                break;
-            case ROW_DEFAULT:
-                needSeparator = false;
-                break;
-            case ROW_UNKNOWN:
-            default:
-                String dateModPrev = null;
-                if (c.getPosition() != 0) {
-                    c.moveToPosition(position - 1);
-                    long dateModLongPrev = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-                    dateModPrev = DateFormat.format("LLLL yyyy", dateModLongPrev).toString();
-                    c.moveToPosition(position);
-                }
-                if (position == 0) {
+        if (rowState != null) {
+            Log.d("rowState position stuff", Integer.toString(rowState[position]));
+            switch (rowState[position]) {
+                case ROW_SEPARATOR:
                     needSeparator = true;
-                } else if (!dateMod.equals(dateModPrev)){
-                    needSeparator = true;
-                } else {
+                    break;
+                case ROW_DEFAULT:
                     needSeparator = false;
-                }
-                rowState[position] = needSeparator ? ROW_SEPARATOR : ROW_DEFAULT;
-                break;
+                    break;
+                case ROW_UNKNOWN:
+                default:
+                    String dateModPrev = null;
+                    if (c.getPosition() != 0) {
+                        c.moveToPosition(position - 1);
+                        long dateModLongPrev = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
+                        dateModPrev = DateFormat.format("LLLL yyyy", dateModLongPrev).toString();
+                        c.moveToPosition(position);
+                    }
+                    if (position == 0) {
+                        needSeparator = true;
+                    } else if (!dateMod.equals(dateModPrev)){
+                        needSeparator = true;
+                    } else {
+                        needSeparator = false;
+                    }
+                    rowState[position] = needSeparator ? ROW_SEPARATOR : ROW_DEFAULT;
+                    break;
+            }
         }
 
         if (needSeparator) {
