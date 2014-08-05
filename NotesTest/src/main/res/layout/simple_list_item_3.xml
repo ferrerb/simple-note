@@ -22,9 +22,6 @@
         android:paddingRight="12dp"
         android:background="@drawable/card_row_selector">
 
-
-
-
         <TextView android:id="@+id/list_note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
