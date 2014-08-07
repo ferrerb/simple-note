@@ -256,6 +256,9 @@ public class NoteFragment extends Fragment{
 
                 c.close();
                 noteWatcher();
+                if (!mDualPane) {
+                    getActivity().getActionBar().setTitle(editTitle.getText());
+                }
             }
         }
 

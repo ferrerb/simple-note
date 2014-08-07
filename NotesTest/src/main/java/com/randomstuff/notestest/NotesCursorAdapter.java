@@ -55,12 +55,13 @@ public class NotesCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void changeCursor(Cursor c) {
-        super.changeCursor(c);
+    public Cursor swapCursor(Cursor c) {
+
         //rowState = (c == null) ? null : new int[c.getCount()];
         if (c != null) {
             rowState = new int[c.getCount()];
         }
+        super.swapCursor(c);
     }
 
     @Override

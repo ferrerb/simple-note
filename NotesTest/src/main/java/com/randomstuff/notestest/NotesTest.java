@@ -38,6 +38,7 @@ public class NotesTest extends Activity {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             // do something, ie use code from notelistfragment new note
+            //check for dual pane, use noteactivity or not based on that
         }
     }
 }
