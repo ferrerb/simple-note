@@ -3,8 +3,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/card_row_background_selected_top" />
+        android:drawable="@drawable/card_row_background_selected_bottom" />
 
     <item
-        android:drawable="@drawable/card_row_background_top"/>
+        android:drawable="@drawable/card_row_background_bottom"/>
 </selector>

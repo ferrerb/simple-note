@@ -16,12 +16,28 @@ public class NotesTest extends Activity {
         //Sets the initial layout, currently based on either landscape or portrait
         setContentView(R.layout.main);
 
-        //need to change this to check for both fragments or something
-        View notesListFrame = findViewById(R.id.notes_list);
-        boolean mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
-
         Intent intent = getIntent();
         String action = intent.getAction();
         String shareType = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(shareType)) {
+            startShare(intent);
+        }
+
+    }
+
+    private void startShare(Intent intent) {
+        //need to change this to check for both fragments or something
+        // possibly do this in its own activity
+        // use the code from notelistfragment for creating new note
+        //
+        View notesListFrame = findViewById(R.id.notes_list);
+        View notesFrame = findViewById(R.id.notes);
+        boolean mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
+
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            // do something, ie use code from notelistfragment new note
+        }
     }
 }
