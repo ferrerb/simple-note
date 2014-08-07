@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class NoteListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -26,7 +25,7 @@ public class NoteListFragment extends ListFragment implements
     private long mCurNotePosition;
     private int index;
     // Populates the listview
-    private NotesCursorAdapter adapter = null;
+    private SeparatorCursorAdapter adapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,7 +147,7 @@ public class NoteListFragment extends ListFragment implements
     }
 
     private void fillList() {
-        adapter = new NotesCursorAdapter(getActivity(), null, 0);
+        adapter = new SeparatorCursorAdapter(getActivity(), null, 0);
         // Sets current listview to the cursoradapter
         setListAdapter(adapter);
         // Begins cursorloader
