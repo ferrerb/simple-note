@@ -18,7 +18,8 @@
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:background="@drawable/card_row_selector_top"
-        android:textAppearance="?android:attr/textAppearanceListItem" />
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:maxLength="30"/>
 
     <TextView android:id="@+id/list_note_body"
         android:layout_width="match_parent"
