@@ -61,7 +61,7 @@ public class NotesCursorAdapter extends CursorAdapter {
         if (c != null) {
             rowState = new int[c.getCount()];
         }
-        super.swapCursor(c);
+        return super.swapCursor(c);
     }
 
     @Override
