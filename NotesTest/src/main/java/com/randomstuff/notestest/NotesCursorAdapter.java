@@ -20,11 +20,7 @@ public class NotesCursorAdapter extends CursorAdapter {
 
     public NotesCursorAdapter(Context ctxt, Cursor c, int flags) {
         super(ctxt, c, flags);
-        //rowState = (c == null) ? null : new int[c.getCount()];
-        if (c != null) {
-            rowState = new int[c.getCount()];
-        }
-        this.registerDataSetObserver(dataObserver);
+        rowState = (c == null) ? null : new int[c.getCount()];
     }
 
     /* The viewholder lets you avoid calling findViewById for every bindView, and hold onto
@@ -36,31 +32,14 @@ public class NotesCursorAdapter extends CursorAdapter {
         public TextView noteView;
     }
 
-    private final DataSetObserver dataObserver = new DataSetObserver() {
-        @Override
-        public void onChanged() {
-            super.onChanged();
-            updateStateCache();
-        }
-
-        @Override
-        public void onInvalidated() {
-            super.onInvalidated();
-            updateStateCache();
-        }
-    };
-
-    private synchronized void updateStateCache() {
-        rowState = null;
-    }
-
     @Override
     public Cursor swapCursor(Cursor c) {
+        rowState = null;
+        rowState = (c == null) ? null : new int[c.getCount()];
 
-        //rowState = (c == null) ? null : new int[c.getCount()];
-        if (c != null) {
-            rowState = new int[c.getCount()];
-        }
+//        if (c != null) {
+//            rowState = new int[c.getCount()];
+//        }
         return super.swapCursor(c);
     }
 
@@ -72,36 +51,35 @@ public class NotesCursorAdapter extends CursorAdapter {
 
         long dateModLong = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
         String dateMod = DateFormat.format("LLLL yyyy", dateModLong).toString();
+        Log.d("rowState length", Integer.toString(rowState.length));
 
-        if (rowState != null) {
-            Log.d("rowState position stuff", Integer.toString(rowState[position]));
-            switch (rowState[position]) {
-                case ROW_SEPARATOR:
+        switch (rowState[position]) {
+            case ROW_SEPARATOR:
+                needSeparator = true;
+                break;
+            case ROW_DEFAULT:
+                needSeparator = false;
+                break;
+            case ROW_UNKNOWN:
+            default:
+                String dateModPrev = null;
+                if (c.getPosition() != 0) {
+                    c.moveToPosition(position - 1);
+                    long dateModLongPrev = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
+                    dateModPrev = DateFormat.format("LLLL yyyy", dateModLongPrev).toString();
+                    c.moveToPosition(position);
+                }
+                if (position == 0) {
                     needSeparator = true;
-                    break;
-                case ROW_DEFAULT:
+                } else if (!dateMod.equals(dateModPrev)){
+                    needSeparator = true;
+                } else {
                     needSeparator = false;
-                    break;
-                case ROW_UNKNOWN:
-                default:
-                    String dateModPrev = null;
-                    if (c.getPosition() != 0) {
-                        c.moveToPosition(position - 1);
-                        long dateModLongPrev = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-                        dateModPrev = DateFormat.format("LLLL yyyy", dateModLongPrev).toString();
-                        c.moveToPosition(position);
-                    }
-                    if (position == 0) {
-                        needSeparator = true;
-                    } else if (!dateMod.equals(dateModPrev)){
-                        needSeparator = true;
-                    } else {
-                        needSeparator = false;
-                    }
-                    rowState[position] = needSeparator ? ROW_SEPARATOR : ROW_DEFAULT;
-                    break;
-            }
+                }
+                rowState[position] = needSeparator ? ROW_SEPARATOR : ROW_DEFAULT;
+                break;
         }
+
 
         if (needSeparator) {
             holder.separator.setText(dateMod);
