@@ -38,6 +38,7 @@ public class SeparatorCursorAdapter extends CursorAdapter {
         public TextView noteView;
     }
 
+    // Have to override swapcursor with cursorloader as opposed to changecursor
     @Override
     public Cursor swapCursor(Cursor c) {
          /* Sets the cache to null to make sure the data is cleared when the cursor is changed.

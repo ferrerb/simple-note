@@ -31,14 +31,25 @@ public class NotesTest extends Activity {
         // possibly do this in its own activity
         // use the code from notelistfragment for creating new note
         //
-        View notesListFrame = findViewById(R.id.notes_list);
+        //View notesListFrame = findViewById(R.id.notes_list);
         View notesFrame = findViewById(R.id.notes);
-        boolean mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
+        boolean mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
 
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             // do something, ie use code from notelistfragment new note
             //check for dual pane, use noteactivity or not based on that
+            if (mDualPane) {
+                NoteFragment noteFrag;
+                noteFrag = NoteFragment.newInstance(-1L, sharedText);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.notes, noteFrag).commit();
+            } else {
+                Intent i=new Intent(this, NoteActivity.class);
+                i.putExtra("id", -1L);
+                i.putExtra("share", sharedText);
+                startActivity(i);
+            }
         }
     }
 }

@@ -86,7 +86,7 @@ public class NoteListFragment extends ListFragment implements
 
                 if (mDualPane) {
                     NoteFragment noteFrag = (NoteFragment)getFragmentManager().findFragmentById(R.id.notes);
-                    if (noteFrag == null || noteFrag.getShownId() > -1L) {
+                    if (noteFrag == null || noteFrag.getShownId() > -2L) {
                         noteFrag = NoteFragment.newInstance(0L);
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.replace(R.id.notes, noteFrag).commit();

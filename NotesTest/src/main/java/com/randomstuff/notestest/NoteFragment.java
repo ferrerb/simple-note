@@ -49,6 +49,19 @@ public class NoteFragment extends Fragment{
         return frag;
     }
 
+    public static NoteFragment newInstance(long id, String shareText) {
+        NoteFragment frag = new NoteFragment();
+        Log.d("id", String.valueOf(id));
+
+
+        Bundle args = new Bundle();
+        args.putLong("id", id);
+        args.putString("share", shareText);
+        frag.setArguments(args);
+
+        return frag;
+    }
+
     public long getShownId() {
         return getArguments().getLong("id", 0L);
     }
@@ -76,9 +89,11 @@ public class NoteFragment extends Fragment{
         editNote = (EditText) result.findViewById(R.id.edit_note);
         textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
 
-        Log.d("id + uri", String.valueOf(getShownId()) + " " + noteUri);
         if (noteUri != null) {
             fillNote(noteUri);
+        } else if (getShownId() == -1L) {
+            editNote.setText(getArguments().getString("share"));
+            noteWatcher();
         } else {
             noteWatcher();
         }
