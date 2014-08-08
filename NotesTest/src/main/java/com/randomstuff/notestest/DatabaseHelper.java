@@ -21,7 +21,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creates the database with beautiful sql syntax
-        /* TODO add 2 tables, one 2 hold notebook/tag types, and 1 to hold note=tag */
+        /* TODO add 2 tables, one to hold notebook/tag types, and 1 to hold note=tag */
         try {
             db.beginTransaction();
             db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
