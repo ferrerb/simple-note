@@ -83,7 +83,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         inflater.inflate(R.menu.options, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setIconified(true);
+        searchView.setQueryHint(getString(R.string.search_hint));
         searchView.setOnQueryTextListener(this);
 
     }
@@ -187,8 +187,8 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
             // Change the projection to use the proper contract types, ie ROWID ????
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,
-                    NotesContract.Notes.COLUMN_TITLE,
-                    NotesContract.Notes.COLUMN_NOTE };
+                    NotesContract.NotesVirtual.COLUMN_TITLE,
+                    NotesContract.NotesVirtual.COLUMN_NOTE };
         } else {
             baseUri = NotesContract.Notes.CONTENT_URI;
             projection = new String[] {

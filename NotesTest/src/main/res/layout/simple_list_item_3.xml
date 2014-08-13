@@ -6,6 +6,7 @@
         android:id="@+id/month_separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
         style="@style/month_separator_style" />
 
     <TextView android:id="@+id/list_note_title"
