@@ -179,17 +179,25 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         Uri baseUri;
+        String[] projection;
         if (mCurrentFilter != null) {
             // add the filter to a filter URI
             // the filter URI should use the virtual table
             baseUri = NotesContract.NotesVirtual.CONTENT_VIRTUAL_NOTES;
+            // Change the projection to use the proper contract types, ie ROWID ????
+            projection = new String[] {
+                    NotesContract.Notes.COLUMN_ID,
+                    NotesContract.Notes.COLUMN_TITLE,
+                    NotesContract.Notes.COLUMN_NOTE };
         } else {
             baseUri = NotesContract.Notes.CONTENT_URI;
+            projection = new String[] {
+                    NotesContract.Notes.COLUMN_ID,
+                    NotesContract.Notes.COLUMN_TITLE,
+                    NotesContract.Notes.COLUMN_NOTE,
+                    NotesContract.Notes.COLUMN_NOTE_MODIFIED };
         }
-        String[] projection =
-                { NotesContract.Notes.COLUMN_ID, NotesContract.Notes.COLUMN_TITLE,
-                        NotesContract.Notes.COLUMN_NOTE,
-                        NotesContract.Notes.COLUMN_NOTE_MODIFIED };
+
         return new CursorLoader(getActivity(), baseUri,
                                 projection, null, null,
                                 NotesContract.Notes.SORT_ORDER_DEFAULT);
