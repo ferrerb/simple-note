@@ -26,7 +26,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //creates the database with beautiful sql syntax
         /* TODO add 2 tables, one to hold notebook/tag types, and 1 to hold note=tag */
-        /* create virtual table and set rowid/docid the same as _id in notes table */
+        /* create virtual table and set rowid/docid the same as _id in notes table
+        * Could i do create virtual table x using fts3 (content="table_notes", y z )?
+        * and then get the _id int he query
+        * */
         try {
             db.beginTransaction();
             db.execSQL("CREATE TABLE " + TABLE_NOTES + " (" +
@@ -34,6 +37,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_TITLE + " TEXT, " +
                     COLUMN_NOTE + " TEXT, " +
                     COLUMN_NOTE_MODIFIED + " INTEGER);");
+            db.execSQL("CREATE VIRTUAL TABLE " + VIRTUAL_TABLE_NOTES + " USING fts3" +
+                    "(content=\"notes\", " +
+                    COLUMN_TITLE + ", " +
+                    COLUMN_NOTE + ");");
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();

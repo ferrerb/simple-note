@@ -47,7 +47,7 @@ public final class NotesContract {
          */
         private NotesVirtual() {}
 
-        public static final Uri CONTENT_VIRTUAL_NOTES =
+        public static final Uri CONTENT_URI =
                 Uri.withAppendedPath(AUTHORITY_URI, "notes_virtual");
         public static final String TABLE_NAME = "notes_virtual";
         public static final String COLUMN_TITLE = "title";

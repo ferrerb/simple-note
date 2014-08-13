@@ -3,8 +3,6 @@ package com.randomstuff.notestest;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -183,12 +181,13 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         if (mCurrentFilter != null) {
             // add the filter to a filter URI
             // the filter URI should use the virtual table
-            baseUri = NotesContract.NotesVirtual.CONTENT_VIRTUAL_NOTES;
+            baseUri = NotesContract.NotesVirtual.CONTENT_URI;
             // Change the projection to use the proper contract types, ie ROWID ????
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,
                     NotesContract.NotesVirtual.COLUMN_TITLE,
-                    NotesContract.NotesVirtual.COLUMN_NOTE };
+                    NotesContract.NotesVirtual.COLUMN_NOTE,
+                    NotesContract.Notes.COLUMN_NOTE_MODIFIED };
         } else {
             baseUri = NotesContract.Notes.CONTENT_URI;
             projection = new String[] {
