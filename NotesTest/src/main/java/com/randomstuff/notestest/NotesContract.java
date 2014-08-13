@@ -18,8 +18,6 @@ public final class NotesContract {
      */
     public static final String AUTHORITY = "com.randomstuff.notestest.Provider";
     public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
-    public static final String BASE_PATH = "notes";
-    public static final String DATABASE_NAME = "notestest.db";
 
     /**
      *  Class to hold definitions for the Notes table
@@ -36,8 +34,24 @@ public final class NotesContract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_NOTE = "note";
         public static final String COLUMN_NOTE_MODIFIED = "note_mod";
+        public static final String SORT_ORDER_DEFAULT = COLUMN_NOTE_MODIFIED + " DESC";
     }
 
+    /**
+     * Class to hold definitions for the virtual notes table. This is an FTS table used
+     * for faster text searches.
+     */
+    public static final class NotesVirtual implements BaseColumns {
+        /**
+         * Don't allow this class to be instantiated
+         */
+        private NotesVirtual() {}
 
+        public static final Uri CONTENT_VIRTUAL_NOTES =
+                Uri.withAppendedPath(AUTHORITY_URI, "notes_virtual");
+        public static final String TABLE_NAME = "notes_virtual";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_NOTE = "note";
+    }
 
 }

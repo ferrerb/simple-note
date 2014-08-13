@@ -3,11 +3,15 @@ package com.randomstuff.notestest;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,8 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 
-public class NoteListFragment extends ListFragment implements
+public class NoteListFragment extends ListFragment implements SearchView.OnQueryTextListener,
         LoaderManager.LoaderCallbacks<Cursor> {
     // To store the current layout
     private boolean mDualPane;
@@ -26,6 +31,7 @@ public class NoteListFragment extends ListFragment implements
     private int index;
     // Populates the listview
     private SeparatorCursorAdapter adapter = null;
+    private String mCurrentFilter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,6 +81,22 @@ public class NoteListFragment extends ListFragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.options, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setIconified(true);
+        searchView.setOnQueryTextListener(this);
+
+    }
+
+    public boolean onQueryTextChange(String newText) {
+        mCurrentFilter = !TextUtils.isEmpty(newText) ? newText : null;
+        getLoaderManager().restartLoader(0, null, this);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return true;
     }
 
     @Override
@@ -156,14 +178,21 @@ public class NoteListFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        Uri baseUri;
+        if (mCurrentFilter != null) {
+            // add the filter to a filter URI
+            // the filter URI should use the virtual table
+            baseUri = NotesContract.NotesVirtual.CONTENT_VIRTUAL_NOTES;
+        } else {
+            baseUri = NotesContract.Notes.CONTENT_URI;
+        }
         String[] projection =
                 { NotesContract.Notes.COLUMN_ID, NotesContract.Notes.COLUMN_TITLE,
                         NotesContract.Notes.COLUMN_NOTE,
                         NotesContract.Notes.COLUMN_NOTE_MODIFIED };
-        String sortOrder = NotesContract.Notes.COLUMN_NOTE_MODIFIED + " DESC";
-
-        return new CursorLoader(getActivity(), NotesContract.Notes.CONTENT_URI,
-                                projection, null, null, sortOrder);
+        return new CursorLoader(getActivity(), baseUri,
+                                projection, null, null,
+                                NotesContract.Notes.SORT_ORDER_DEFAULT);
     }
 
     @Override
