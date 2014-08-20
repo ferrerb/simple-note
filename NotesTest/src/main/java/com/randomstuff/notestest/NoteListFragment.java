@@ -183,6 +183,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
             // the filter URI should use the virtual table
             baseUri = NotesContract.NotesVirtual.CONTENT_URI;
             // Change the projection to use the proper contract types, ie ROWID ????
+            // could use rawquery in provider using urimatcher, to join tables
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,
                     NotesContract.NotesVirtual.COLUMN_TITLE,
