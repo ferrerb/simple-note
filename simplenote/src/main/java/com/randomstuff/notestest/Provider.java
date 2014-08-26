@@ -17,7 +17,7 @@ public class Provider extends ContentProvider {
     private static final int NOTES = 1;
     private static final int NOTE_ID = 2;
 
-        private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes", NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes/#", NOTE_ID);

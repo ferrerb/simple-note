@@ -92,8 +92,18 @@ public class SeparatorCursorAdapter extends CursorAdapter {
             holder.separator.setVisibility(View.GONE);
         }
 
-        holder.titleView.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)));
-        holder.noteView.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));
+        if (c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)) == null) {
+            holder.titleView.setText(R.string.empty_note_section);
+        } else {
+            holder.titleView.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)));
+        }
+
+        if (c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)) == null){
+            holder.noteView.setText(R.string.empty_note_section);
+        } else {
+            holder.noteView.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));
+
+        }
 
     }
 

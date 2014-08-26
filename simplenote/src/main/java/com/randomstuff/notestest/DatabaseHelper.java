@@ -56,6 +56,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " +
                         TABLE_NOTES + " ADD COLUMN " +
                         COLUMN_NOTE_MODIFIED + " INTEGER");
+                //add fts table, and triggers, and move data to fts table
+                break;
+            case 2:
+                //add fts table, and triggers
         }
     }
 }

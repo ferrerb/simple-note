@@ -195,7 +195,7 @@ public class NoteFragment extends Fragment{
 
         Log.d("isCHanged = ", Boolean.toString(isChanged));
 
-        if (!titleEmpty && !noteEmpty && noteUri != null && isChanged) {
+        if ((!titleEmpty || !noteEmpty) && noteUri != null && isChanged) {
             ContentValues cv = new ContentValues();
 
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
@@ -206,7 +206,7 @@ public class NoteFragment extends Fragment{
                     getContentResolver());
             mHandle.startUpdate(3, null, noteUri, cv, null, null);
         }
-        if (!titleEmpty && !noteEmpty && noteUri == null) {
+        if ((!titleEmpty || !noteEmpty) && noteUri == null) {
             ContentValues cv = new ContentValues();
 
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
