@@ -79,82 +79,96 @@ class DatabaseHelper extends SQLiteOpenHelper {
         /* Adds tables or whatever is needed based on the version of the database */
         switch (oldVersion) {
             case 1:
-                // Adds a column to record the last time the note was modified
-                db.execSQL("ALTER TABLE " +
-                        TABLE_NOTES + " ADD COLUMN " +
-                        COLUMN_NOTE_MODIFIED + " INTEGER");
-                // Virtual table that allows for faster full text searches, holding just notes + titles
-                db.execSQL("CREATE VIRTUAL TABLE " + VIRTUAL_TABLE_NOTES + " USING fts3" +
-                        "(content=\"notes\", " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ");");
-                // To add all the current notes to the new virtual table
-                db.execSQL("INSERT INTO " + VIRTUAL_TABLE_NOTES + " (docid, " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ") SELECT " +
-                        COLUMN_ID + ", " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + " FROM " +
-                        TABLE_NOTES + ";");
-                // Triggers before an update to the main table, to delete the data from the virtual table
-                db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
-                        TABLE_NOTES + " BEGIN DELETE FROM " +
-                        VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
-                db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
-                        TABLE_NOTES + " BEGIN DELETE FROM " +
-                        VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
-                // Triggers after the update, to insert the new data into the virtual table
-                db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
-                        TABLE_NOTES + " BEGIN INSERT INTO " +
-                        VIRTUAL_TABLE_NOTES + "(docid, " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ") VALUES(new.rowid, new." +
-                        COLUMN_TITLE + ", new." +
-                        COLUMN_NOTE + ");");
-                db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
-                        TABLE_NOTES + " BEGIN INSERT INTO " +
-                        VIRTUAL_TABLE_NOTES + "(docid, " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ") VALUES(new.rowid, new." +
-                        COLUMN_TITLE + ", new." +
-                        COLUMN_NOTE + ");");
+                try {
+                    db.beginTransaction();
+                    // Adds a column to record the last time the note was modified
+                    db.execSQL("ALTER TABLE " +
+                            TABLE_NOTES + " ADD COLUMN " +
+                            COLUMN_NOTE_MODIFIED + " INTEGER");
+                    // Virtual table that allows for faster full text searches, holding just notes + titles
+                    db.execSQL("CREATE VIRTUAL TABLE " + VIRTUAL_TABLE_NOTES + " USING fts3" +
+                            "(content=\"notes\", " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ");");
+                    // To add all the current notes to the new virtual table
+                    db.execSQL("INSERT INTO " + VIRTUAL_TABLE_NOTES + " (docid, " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ") SELECT " +
+                            COLUMN_ID + ", " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + " FROM " +
+                            TABLE_NOTES + ";");
+                    // Triggers before an update to the main table, to delete the data from the virtual table
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
+                            TABLE_NOTES + " BEGIN DELETE FROM " +
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
+                            TABLE_NOTES + " BEGIN DELETE FROM " +
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                    // Triggers after the update, to insert the new data into the virtual table
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
+                            TABLE_NOTES + " BEGIN INSERT INTO " +
+                            VIRTUAL_TABLE_NOTES + "(docid, " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ") VALUES(new.rowid, new." +
+                            COLUMN_TITLE + ", new." +
+                            COLUMN_NOTE + ");");
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
+                            TABLE_NOTES + " BEGIN INSERT INTO " +
+                            VIRTUAL_TABLE_NOTES + "(docid, " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ") VALUES(new.rowid, new." +
+                            COLUMN_TITLE + ", new." +
+                            COLUMN_NOTE + ");");
+                    db.setTransactionSuccessful();
+                }
+                finally {
+                    db.endTransaction();
+                }
                 break;
             case 2:
-                // Virtual table that allows for faster full text searches, holding just notes + titles
-                db.execSQL("CREATE VIRTUAL TABLE " + VIRTUAL_TABLE_NOTES + " USING fts3" +
-                        "(content=\"notes\", " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ");");
-                // To add all the current notes to the new virtual table
-                db.execSQL("INSERT INTO " + VIRTUAL_TABLE_NOTES + " (docid, " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ") SELECT " +
-                        COLUMN_ID + ", " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + " FROM " +
-                        TABLE_NOTES + ";");
-                // Triggers before an update to the main table, to delete the data from the virtual table
-                db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
-                        TABLE_NOTES + " BEGIN DELETE FROM " +
-                        VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
-                db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
-                        TABLE_NOTES + " BEGIN DELETE FROM " +
-                        VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
-                // Triggers after the update, to insert the new data into the virtual table
-                db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
-                        TABLE_NOTES + " BEGIN INSERT INTO " +
-                        VIRTUAL_TABLE_NOTES + "(docid, " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ") VALUES(new.rowid, new." +
-                        COLUMN_TITLE + ", new." +
-                        COLUMN_NOTE + ");");
-                db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
-                        TABLE_NOTES + " BEGIN INSERT INTO " +
-                        VIRTUAL_TABLE_NOTES + "(docid, " +
-                        COLUMN_TITLE + ", " +
-                        COLUMN_NOTE + ") VALUES(new.rowid, new." +
-                        COLUMN_TITLE + ", new." +
-                        COLUMN_NOTE + ");");
+                try {
+                    db.beginTransaction();
+                    // Virtual table that allows for faster full text searches, holding just notes + titles
+                    db.execSQL("CREATE VIRTUAL TABLE " + VIRTUAL_TABLE_NOTES + " USING fts3" +
+                            "(content=\"notes\", " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ");");
+                    // To add all the current notes to the new virtual table
+                    db.execSQL("INSERT INTO " + VIRTUAL_TABLE_NOTES + " (docid, " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ") SELECT " +
+                            COLUMN_ID + ", " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + " FROM " +
+                            TABLE_NOTES + ";");
+                    // Triggers before an update to the main table, to delete the data from the virtual table
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
+                            TABLE_NOTES + " BEGIN DELETE FROM " +
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
+                            TABLE_NOTES + " BEGIN DELETE FROM " +
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                    // Triggers after the update, to insert the new data into the virtual table
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
+                            TABLE_NOTES + " BEGIN INSERT INTO " +
+                            VIRTUAL_TABLE_NOTES + "(docid, " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ") VALUES(new.rowid, new." +
+                            COLUMN_TITLE + ", new." +
+                            COLUMN_NOTE + ");");
+                    db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
+                            TABLE_NOTES + " BEGIN INSERT INTO " +
+                            VIRTUAL_TABLE_NOTES + "(docid, " +
+                            COLUMN_TITLE + ", " +
+                            COLUMN_NOTE + ") VALUES(new.rowid, new." +
+                            COLUMN_TITLE + ", new." +
+                            COLUMN_NOTE + ");");
+                    db.setTransactionSuccessful();
+                }
+                finally {
+                    db.endTransaction();
+                }
                 break;
         }
     }
