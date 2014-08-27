@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notestest.db";
-    private static final int SCHEMA_VERSION = 2;
+    private static final int SCHEMA_VERSION = 3;
 
     // The names of columns and the table for the notes
     private static final String TABLE_NOTES ="notes";
