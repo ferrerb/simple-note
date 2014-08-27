@@ -178,6 +178,8 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         Uri baseUri;
         String[] projection;
+        String selection;
+        String[] selectionArgs;
         if (mCurrentFilter != null) {
             // add the filter to a filter URI
             // the filter URI should use the virtual table
@@ -185,10 +187,13 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
             // Change the projection to use the proper contract types, ie ROWID ????
             // could use rawquery in provider using urimatcher, to join tables
             projection = new String[] {
-                    NotesContract.Notes.COLUMN_ID,
+                    // might need to use rawquery to get docid as _id
+                    NotesContract.NotesVirtual.COLUMN_ID + " as _id",
                     NotesContract.NotesVirtual.COLUMN_TITLE,
                     NotesContract.NotesVirtual.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
+            selection = NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?";
+            selectionArgs = new String[] { mCurrentFilter + "*" };
         } else {
             baseUri = NotesContract.Notes.CONTENT_URI;
             projection = new String[] {
@@ -196,10 +201,12 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                     NotesContract.Notes.COLUMN_TITLE,
                     NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
+            selection = null;
+            selectionArgs = null;
         }
 
         return new CursorLoader(getActivity(), baseUri,
-                                projection, null, null,
+                                projection, selection, selectionArgs,
                                 NotesContract.Notes.SORT_ORDER_DEFAULT);
     }
 

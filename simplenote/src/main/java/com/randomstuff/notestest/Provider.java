@@ -14,13 +14,18 @@ import android.text.TextUtils;
 public class Provider extends ContentProvider {
     private DatabaseHelper db=null;
 
+    // Used with the uri matcher, to allow switch statements based on URI type
     private static final int NOTES = 1;
     private static final int NOTE_ID = 2;
+    private static final int VIRTUAL_NOTES = 3;
+    private static final int VIRTUAL_NOTES_ID = 4;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes", NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes/#", NOTE_ID);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual", VIRTUAL_NOTES);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual/#", VIRTUAL_NOTES_ID);
     }
 
     public boolean onCreate() {
@@ -49,6 +54,10 @@ public class Provider extends ContentProvider {
             case NOTE_ID:
                 qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
+            case VIRTUAL_NOTES:
+
+                break;
+            case VIRTUAL_NOTES_ID:
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }

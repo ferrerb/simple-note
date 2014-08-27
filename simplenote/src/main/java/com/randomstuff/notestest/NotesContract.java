@@ -50,6 +50,7 @@ public final class NotesContract {
         public static final Uri CONTENT_URI =
                 Uri.withAppendedPath(AUTHORITY_URI, "notes_virtual");
         public static final String TABLE_NAME = "notes_virtual";
+        public static final String COLUMN_ID = "docid";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_NOTE = "note";
     }
