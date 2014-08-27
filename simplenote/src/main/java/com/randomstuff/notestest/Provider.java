@@ -58,6 +58,7 @@ public class Provider extends ContentProvider {
 
                 break;
             case VIRTUAL_NOTES_ID:
+                break;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
