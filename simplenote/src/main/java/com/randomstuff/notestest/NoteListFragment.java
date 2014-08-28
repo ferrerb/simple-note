@@ -189,9 +189,9 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
             // could use rawquery in provider using urimatcher, to join tables
             projection = new String[] {
                     // might need to use rawquery to get docid as _id
-                    NotesContract.NotesVirtual.COLUMN_ID + " AS _id",
-                    NotesContract.NotesVirtual.COLUMN_TITLE,
-                    NotesContract.NotesVirtual.COLUMN_NOTE,
+                    NotesContract.NotesVirtual.TABLE_NAME + "." + NotesContract.NotesVirtual.COLUMN_ID + " AS _id",
+                    NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_TITLE,
+                    NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
             selection = NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?";
             selectionArgs = new String[] { mCurrentFilter + "*" };

@@ -56,7 +56,7 @@ public class Provider extends ContentProvider {
                 qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             case VIRTUAL_NOTES:
-                qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
+                qb.setTables(NotesContract.NotesVirtual.TABLE_NAME + ", " + NotesContract.Notes.TABLE_NAME);
                 break;
             case VIRTUAL_NOTES_ID:
                 qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
