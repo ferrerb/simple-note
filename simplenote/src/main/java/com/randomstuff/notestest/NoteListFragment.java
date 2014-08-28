@@ -180,15 +180,16 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         String[] projection;
         String selection;
         String[] selectionArgs;
-        if (mCurrentFilter != null) {
+        if (mCurrentFilter != null && mCurrentFilter.length() > 2) {
             // add the filter to a filter URI
             // the filter URI should use the virtual table
+            Log.d("currentfilter = ", mCurrentFilter);
             baseUri = NotesContract.NotesVirtual.CONTENT_URI;
             // Change the projection to use the proper contract types, ie ROWID ????
             // could use rawquery in provider using urimatcher, to join tables
             projection = new String[] {
                     // might need to use rawquery to get docid as _id
-                    NotesContract.NotesVirtual.COLUMN_ID + " as _id",
+                    NotesContract.NotesVirtual.COLUMN_ID + " AS _id",
                     NotesContract.NotesVirtual.COLUMN_TITLE,
                     NotesContract.NotesVirtual.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };

@@ -44,20 +44,22 @@ public class Provider extends ContentProvider {
                       String[] selectionArgs, String sort) {
         //query!
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(NotesContract.Notes.TABLE_NAME);
 
         int uriType = sURIMatcher.match(uri);
 
         switch (uriType) {
             case NOTES:
+                qb.setTables(NotesContract.Notes.TABLE_NAME);
                 break;
             case NOTE_ID:
+                qb.setTables(NotesContract.Notes.TABLE_NAME);
                 qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             case VIRTUAL_NOTES:
-
+                qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
                 break;
             case VIRTUAL_NOTES_ID:
+                qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);

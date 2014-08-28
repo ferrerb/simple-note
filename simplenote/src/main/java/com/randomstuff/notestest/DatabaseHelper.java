@@ -48,10 +48,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
             // Triggers before an update to the main table, to delete the data from the virtual table
             db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
                     TABLE_NOTES + " BEGIN DELETE FROM " +
-                    VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                    VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid; END;");
             db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
                     TABLE_NOTES + " BEGIN DELETE FROM " +
-                    VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                    VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid; END;");
             // Triggers after the update, to insert the new data into the virtual table
             db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
                     TABLE_NOTES + " BEGIN INSERT INTO " +
@@ -59,14 +59,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_TITLE + ", " +
                     COLUMN_NOTE + ") VALUES(new.rowid, new." +
                     COLUMN_TITLE + ", new." +
-                    COLUMN_NOTE + ");");
+                    COLUMN_NOTE + "); END;");
             db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
                     TABLE_NOTES + " BEGIN INSERT INTO " +
                     VIRTUAL_TABLE_NOTES + "(docid, " +
                     COLUMN_TITLE + ", " +
                     COLUMN_NOTE + ") VALUES(new.rowid, new." +
                     COLUMN_TITLE + ", new." +
-                    COLUMN_NOTE + ");");
+                    COLUMN_NOTE + "); END;");
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -101,10 +101,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     // Triggers before an update to the main table, to delete the data from the virtual table
                     db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
                             TABLE_NOTES + " BEGIN DELETE FROM " +
-                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid; END;");
                     db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
                             TABLE_NOTES + " BEGIN DELETE FROM " +
-                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid; END;");
                     // Triggers after the update, to insert the new data into the virtual table
                     db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
                             TABLE_NOTES + " BEGIN INSERT INTO " +
@@ -112,14 +112,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
                             COLUMN_TITLE + ", " +
                             COLUMN_NOTE + ") VALUES(new.rowid, new." +
                             COLUMN_TITLE + ", new." +
-                            COLUMN_NOTE + ");");
+                            COLUMN_NOTE + "); END;");
                     db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
                             TABLE_NOTES + " BEGIN INSERT INTO " +
                             VIRTUAL_TABLE_NOTES + "(docid, " +
                             COLUMN_TITLE + ", " +
                             COLUMN_NOTE + ") VALUES(new.rowid, new." +
                             COLUMN_TITLE + ", new." +
-                            COLUMN_NOTE + ");");
+                            COLUMN_NOTE + "); END;");
                     db.setTransactionSuccessful();
                 }
                 finally {
@@ -145,10 +145,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     // Triggers before an update to the main table, to delete the data from the virtual table
                     db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_UPDATE + " BEFORE UPDATE ON " +
                             TABLE_NOTES + " BEGIN DELETE FROM " +
-                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid; END;");
                     db.execSQL("CREATE TRIGGER " + TRIGGER_BEFORE_DELETE + " BEFORE DELETE ON " +
                             TABLE_NOTES + " BEGIN DELETE FROM " +
-                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid;");
+                            VIRTUAL_TABLE_NOTES + " WHERE docid=old.rowid; END;");
                     // Triggers after the update, to insert the new data into the virtual table
                     db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_UPDATE + " AFTER UPDATE ON " +
                             TABLE_NOTES + " BEGIN INSERT INTO " +
@@ -156,14 +156,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
                             COLUMN_TITLE + ", " +
                             COLUMN_NOTE + ") VALUES(new.rowid, new." +
                             COLUMN_TITLE + ", new." +
-                            COLUMN_NOTE + ");");
+                            COLUMN_NOTE + "); END;");
                     db.execSQL("CREATE TRIGGER " + TRIGGER_AFTER_INSERT + " AFTER INSERT ON " +
                             TABLE_NOTES + " BEGIN INSERT INTO " +
                             VIRTUAL_TABLE_NOTES + "(docid, " +
                             COLUMN_TITLE + ", " +
                             COLUMN_NOTE + ") VALUES(new.rowid, new." +
                             COLUMN_TITLE + ", new." +
-                            COLUMN_NOTE + ");");
+                            COLUMN_NOTE + "); END;");
                     db.setTransactionSuccessful();
                 }
                 finally {
