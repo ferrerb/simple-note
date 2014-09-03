@@ -42,21 +42,36 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public Cursor query(Uri uri, String[] projection, String selection,
                       String[] selectionArgs, String sort) {
-        //query!
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        Cursor c = null;
 
         int uriType = sURIMatcher.match(uri);
 
         switch (uriType) {
             case NOTES:
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
+                c = qb.query(db.getReadableDatabase(), projection,
+                        selection, selectionArgs, null, null, sort);
                 break;
             case NOTE_ID:
+                // Uses the query builder add a WHERE clause based on note _id, from the URI
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
                 qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
+
+                c = qb.query(db.getReadableDatabase(), projection,
+                        selection, selectionArgs, null, null, sort);
                 break;
             case VIRTUAL_NOTES:
-                qb.setTables(NotesContract.NotesVirtual.TABLE_NAME + ", " + NotesContract.Notes.TABLE_NAME);
+                // This is used when searching for text, will return rows from notes
+                // Using a rawquery here as the querybuilder seemed awkward for making a nested select
+                String sql = "SELECT " + projection[0] + ", " + projection[1] + "," +
+                        projection[2] + ", " + projection[3] + " FROM " +
+                        NotesContract.Notes.TABLE_NAME + " WHERE " +
+                        NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
+                        NotesContract.NotesVirtual.COLUMN_ID + " FROM " +
+                        NotesContract.NotesVirtual.TABLE_NAME +
+                        " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?";
+                c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case VIRTUAL_NOTES_ID:
                 qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
@@ -65,9 +80,10 @@ public class Provider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
 
-        Cursor c = qb.query(db.getReadableDatabase(), projection,
-                            selection, selectionArgs, null, null, sort);
-        c.setNotificationUri(getContext().getContentResolver(), uri);
+
+        if (c != null) {
+            c.setNotificationUri(getContext().getContentResolver(), uri);
+        }
         return c;
 
     }

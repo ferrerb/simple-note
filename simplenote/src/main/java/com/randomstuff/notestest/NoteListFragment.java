@@ -178,7 +178,6 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         Uri baseUri;
         String[] projection;
-        String selection;
         String[] selectionArgs;
         if (mCurrentFilter != null && mCurrentFilter.length() > 2) {
             // add the filter to a filter URI
@@ -189,11 +188,10 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
             // could use rawquery in provider using urimatcher, to join tables
             projection = new String[] {
                     // might need to use rawquery to get docid as _id
-                    NotesContract.NotesVirtual.TABLE_NAME + "." + NotesContract.NotesVirtual.COLUMN_ID + " AS _id",
-                    NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_TITLE,
-                    NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_NOTE,
+                    NotesContract.Notes.COLUMN_ID,
+                    NotesContract.Notes.COLUMN_TITLE,
+                    NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
-            selection = NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?";
             selectionArgs = new String[] { mCurrentFilter + "*" };
         } else {
             baseUri = NotesContract.Notes.CONTENT_URI;
@@ -202,12 +200,11 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                     NotesContract.Notes.COLUMN_TITLE,
                     NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
-            selection = null;
             selectionArgs = null;
         }
 
         return new CursorLoader(getActivity(), baseUri,
-                                projection, selection, selectionArgs,
+                                projection, null, selectionArgs,
                                 NotesContract.Notes.SORT_ORDER_DEFAULT);
     }
 

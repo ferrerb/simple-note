@@ -24,6 +24,15 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRIGGER_AFTER_UPDATE = "notes_au";
     private static final String TRIGGER_AFTER_INSERT = "notes_ai";
 
+    // Names for a table to hold tags
+    private static final String TABLE_TAGS = "tags";
+    private static final String COLUMN_TAGS = "col_tags";
+
+    // Names for a table to hold tags = notes
+    private static final String TABLE_TAGS_NOTES = "tags_notes";
+    private static final String COLUMN_TAGS_ID = "tags_id";
+    private static final String COLUMN_NOTES_ID = "notes_id";
+
     public DatabaseHelper(Context ctxt) {
         super(ctxt, DATABASE_NAME, null, SCHEMA_VERSION);
     }
