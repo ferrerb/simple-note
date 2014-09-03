@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class Provider extends ContentProvider {
     private DatabaseHelper db=null;
@@ -64,13 +65,16 @@ public class Provider extends ContentProvider {
             case VIRTUAL_NOTES:
                 // This is used when searching for text, will return rows from notes
                 // Using a rawquery here as the querybuilder seemed awkward for making a nested select
-                String sql = "SELECT " + projection[0] + ", " + projection[1] + "," +
+
+                String sql = "SELECT " + projection[0] + ", " + projection[1] + ", " +
                         projection[2] + ", " + projection[3] + " FROM " +
                         NotesContract.Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
                         NotesContract.NotesVirtual.COLUMN_ID + " FROM " +
                         NotesContract.NotesVirtual.TABLE_NAME +
-                        " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?";
+                        " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH '?') ORDER BY " +
+                        sort;
+                Log.d("rawwquery", sql);
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case VIRTUAL_NOTES_ID:
