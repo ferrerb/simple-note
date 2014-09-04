@@ -72,7 +72,7 @@ public class Provider extends ContentProvider {
                         NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
                         NotesContract.NotesVirtual.COLUMN_ID + " FROM " +
                         NotesContract.NotesVirtual.TABLE_NAME +
-                        " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH '?') ORDER BY " +
+                        " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?) ORDER BY " +
                         sort;
                 Log.d("rawwquery", sql);
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
