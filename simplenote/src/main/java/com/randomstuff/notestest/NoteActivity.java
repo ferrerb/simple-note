@@ -17,10 +17,10 @@ public class NoteActivity extends Activity {
 
         // Exits this activity if the orientation changes to landscape
         // TODO Should get rid of this when decide to make layout based on screen size
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            finish();
-            return;
-        }
+        /*if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+         *   finish();
+         *   return;
+        }*/
 
         if (savedInstanceState == null) {
             NoteFragment frag = new NoteFragment();
