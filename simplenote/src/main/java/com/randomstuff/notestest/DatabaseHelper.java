@@ -33,6 +33,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TAGS_ID = "tags_id";
     private static final String COLUMN_NOTES_ID = "notes_id";
 
+    //TODO make a trigger to remove reference in tags_notes if a note with a tag is deleted
+
     // SQL strings for creating the databases/triggers
     private static final String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -83,7 +85,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creates the database with beautiful sql syntax
-        /* TODO add 2 tables, one to hold notebook/tag types, and 1 to hold note=tag */
+        // TODO have some initial inserts into tags to have some example tags (Work, Todo, etc)
         try {
             db.beginTransaction();
             // Main table to hold the notes, titles, date modified

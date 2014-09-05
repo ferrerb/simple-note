@@ -48,6 +48,7 @@ public class Provider extends ContentProvider {
 
         int uriType = sURIMatcher.match(uri);
 
+        //TODO add switch and urimatcher for tag queries
         switch (uriType) {
             case NOTES:
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
@@ -74,7 +75,6 @@ public class Provider extends ContentProvider {
                         NotesContract.NotesVirtual.TABLE_NAME +
                         " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?) ORDER BY " +
                         sort;
-                Log.d("rawwquery", sql);
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case VIRTUAL_NOTES_ID:
