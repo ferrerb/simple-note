@@ -100,6 +100,8 @@ public class NoteFragment extends Fragment{
 
         setHasOptionsMenu(true);
 
+        // Spinner stuff
+
         if (!mDualPane) {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
         }
