@@ -11,13 +11,6 @@
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1" />
-    <View
-        android:id="@+id/separator"
-        android:layout_width="4dp"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
-        android:background="@android:color/darker_gray" />
 
     <FrameLayout
         android:id="@+id/notes"
