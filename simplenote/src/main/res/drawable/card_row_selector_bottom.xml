@@ -2,7 +2,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:state_pressed="true"
+        android:state_activated="true"
         android:drawable="@drawable/card_row_background_selected_bottom" />
 
     <item
