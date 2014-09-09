@@ -9,15 +9,17 @@
 
     <EditText
         android:id="@+id/edit_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/edit_title"/>
 
     <Spinner
         android:id="@+id/tag_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/edit_title" />
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/edit_title"
+        android:gravity="end"/>
 
 
     <EditText
@@ -25,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_title"
-        android:gravity="left|top"
+        android:gravity="start|top"
         android:inputType="textMultiLine"
         android:hint="@string/edit_note"/>
 
@@ -34,6 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_note"
-        android:gravity="bottom|right" />
+        android:gravity="bottom|end" />
 
 </RelativeLayout>

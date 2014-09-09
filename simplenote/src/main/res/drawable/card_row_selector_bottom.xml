@@ -4,6 +4,9 @@
     <item
         android:state_activated="true"
         android:drawable="@drawable/card_row_background_selected_bottom" />
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/card_row_background_selected_bottom"/>
 
     <item
         android:drawable="@drawable/card_row_background_bottom"/>
