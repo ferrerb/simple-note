@@ -1,5 +1,6 @@
 package com.randomstuff.notestest;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -22,6 +23,8 @@ import android.widget.SearchView;
 
 public class NoteListFragment extends ListFragment implements SearchView.OnQueryTextListener,
         LoaderManager.LoaderCallbacks<Cursor> {
+    // Part of a callback interface
+    OnNoteSelectedListener mCallback;
     // To store the current layout
     private boolean mDualPane;
     // Stores the current note _id
@@ -30,6 +33,23 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     // Populates the listview
     private SeparatorCursorAdapter adapter = null;
     private String mCurrentFilter = null;
+
+    // Interface that hosting activity must implement
+    public interface OnNoteSelectedListener {
+        public void onNoteSelected(long id);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mCallback = (OnNoteSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() +
+                    " must implement OnNoteSelectedListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,22 +122,9 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         // Handle action bar / menu item clicks here
         switch (item.getItemId()) {
             case(R.id.add_note):
-                //call notefragment and make new note
+                //Uses same callback as if a note was selected, but passes -1 to signify new note
+                mCallback.onNoteSelected(-1L);
 
-                if (mDualPane) {
-                    NoteFragment noteFrag = (NoteFragment)getFragmentManager().findFragmentById(R.id.notes);
-                    if (noteFrag == null || noteFrag.getShownId() > -2L) {
-                        noteFrag = NoteFragment.newInstance(0L);
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.notes, noteFrag).commit();
-                    }
-                }
-                else {
-                    // this happens only in portrait mode
-                    Intent i=new Intent(getActivity(), NoteActivity.class);
-                    i.putExtra("id", 0L);
-                    startActivity(i);
-                }
                 return true;
             case(R.id.settings):
                 return true;
@@ -147,23 +154,8 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
         if (mDualPane) {
             getListView().setItemChecked(index, true);
-
-            NoteFragment noteFrag = (NoteFragment)
-                    getFragmentManager().findFragmentById(R.id.notes);
-
-            if (noteFrag == null || noteFrag.getShownId() != id) {
-                noteFrag = NoteFragment.newInstance(id);
-
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.notes, noteFrag).commit();
-            }
         }
-        else {
-            Intent i = new Intent();
-            i.setClass(getActivity(), NoteActivity.class);
-            i.putExtra("id", id);
-            startActivity(i);
-        }
+        mCallback.onNoteSelected(id);
     }
 
     private void fillList() {
@@ -182,7 +174,6 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         if (mCurrentFilter != null && mCurrentFilter.length() > 2) {
             // add the filter to a filter URI
             // the filter URI should use the virtual table
-            Log.d("currentfilter = ", mCurrentFilter);
             baseUri = NotesContract.NotesVirtual.CONTENT_URI;
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,

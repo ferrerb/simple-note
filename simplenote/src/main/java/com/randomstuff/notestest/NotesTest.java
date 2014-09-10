@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-public class NotesTest extends Activity {
+public class NotesTest extends Activity implements NoteListFragment.OnNoteSelectedListener {
+    boolean mDualPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +15,11 @@ public class NotesTest extends Activity {
         //Sets the initial layout, currently based on either landscape or portrait
         setContentView(R.layout.main);
 
+        // If the notes fragment is visible, we are in dual pane mode
+        View notesFrame = findViewById(R.id.notes);
+        mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
+
+        // Getting intent information to then deal with a share.
         Intent intent = getIntent();
         String action = intent.getAction();
         String shareType = intent.getType();
@@ -26,15 +30,45 @@ public class NotesTest extends Activity {
 
     }
 
-    private void startShare(Intent intent) {
-        //need to change this to check for both fragments or something
-        // possibly do this in its own activity
-        // use the code from notelistfragment for creating new note
-        //
-        //View notesListFrame = findViewById(R.id.notes_list);
-        View notesFrame = findViewById(R.id.notes);
-        boolean mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
+    public void onNoteSelected(long id) {
+        // fragment manager to change the note
+        if (id == -1L) {
+            if (mDualPane) {
+                NoteFragment noteFrag = (NoteFragment)
+                        getFragmentManager().findFragmentById(R.id.notes);
+                if (noteFrag == null || noteFrag.getShownId() > -2L) {
+                    noteFrag = NoteFragment.newInstance(0L);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.notes, noteFrag).commit();
+                }
+            } else {
+                // this happens only in portrait mode
+                Intent i = new Intent(this, NoteActivity.class);
+                i.putExtra("id", 0L);
+                startActivity(i);
+            }
+        } else {
+            if (mDualPane) {
+                NoteFragment noteFrag = (NoteFragment)
+                        getFragmentManager().findFragmentById(R.id.notes);
 
+                if (noteFrag == null || noteFrag.getShownId() != id) {
+                    noteFrag = NoteFragment.newInstance(id);
+
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.notes, noteFrag).commit();
+                }
+            }
+            else {
+                Intent i = new Intent();
+                i.setClass(this, NoteActivity.class);
+                i.putExtra("id", id);
+                startActivity(i);
+            }
+        }
+    }
+
+    private void startShare(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             // do something, ie use code from notelistfragment new note

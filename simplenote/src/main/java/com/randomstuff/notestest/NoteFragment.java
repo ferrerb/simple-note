@@ -21,11 +21,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class NoteFragment extends Fragment{
+public class NoteFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
@@ -139,6 +141,14 @@ public class NoteFragment extends Fragment{
         return (super.onOptionsItemSelected(item));
     }
 
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id){
+
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     @Override
     public void onPause() {
         editNote.removeTextChangedListener(noteChangedListener);
@@ -163,7 +173,6 @@ public class NoteFragment extends Fragment{
         noteChangedListener = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("asdf", "why ist his called ");
                 isChanged = true;
             }
 
