@@ -77,7 +77,11 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     }
 
     public void onDrawerItemSelected(long id) {
-        // deal with sending tag id to notelistfragment to refresh loader, or maybe can call it here
+        // deal with sending tag id to notelistfragment to refresh loader
+        NoteListFragment nFrag = NoteListFragment.newInstance(id);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.notes_list, nFrag).commit();
+
     }
 
     private void startShare(Intent intent) {
@@ -86,8 +90,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
             // do something, ie use code from notelistfragment new note
             //check for dual pane, use noteactivity or not based on that
             if (mDualPane) {
-                NoteFragment noteFrag;
-                noteFrag = NoteFragment.newInstance(-1L, sharedText);
+                NoteFragment noteFrag = NoteFragment.newInstance(-1L, sharedText);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.notes, noteFrag).commit();
             } else {

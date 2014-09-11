@@ -35,6 +35,16 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     // A static id to give the cursorloader, to allow for new queries based on tags/searches
     private static final int LOADER_ID = 0;
 
+    public static NoteListFragment newInstance(long id) {
+        NoteListFragment frag = new NoteListFragment();
+
+        Bundle args = new Bundle();
+        args.putLong("id", id);
+        frag.setArguments(args);
+
+        return frag;
+    }
+
     // Interface that hosting activity must implement
     public interface OnNoteSelectedListener {
         public void onNoteSelected(long id);
@@ -69,10 +79,11 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState){
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
 
         // A function that starts the cursorloader
+        //TODO check for a bundle with a tag id, and pass it to the filllist thing
         fillList();
 
         // Basic check for the layout, borrowed from google
@@ -92,6 +103,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                 showNote(mCurNotePosition);
             }
         }
+
     }
 
     @Override
