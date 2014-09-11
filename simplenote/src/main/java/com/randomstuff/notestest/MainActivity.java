@@ -8,8 +8,8 @@ import android.view.View;
 
 public class MainActivity extends Activity implements NoteListFragment.OnNoteSelectedListener,
         DrawerNavFragment.NavDrawerCallbacks {
-    boolean mDualPane;
-    DrawerNavFragment mDrawerNavFragment;
+    private boolean mDualPane;
+    private DrawerNavFragment mDrawerNavFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

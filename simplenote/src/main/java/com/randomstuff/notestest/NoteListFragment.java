@@ -53,6 +53,12 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.notes_list, container, false);
