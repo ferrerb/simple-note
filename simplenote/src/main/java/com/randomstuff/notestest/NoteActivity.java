@@ -15,12 +15,6 @@ public class NoteActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Exits this activity if the orientation changes to landscape
-        /*if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-         *   finish();
-         *   return;
-        }*/
-
         if (savedInstanceState == null) {
             NoteFragment frag = new NoteFragment();
             frag.setArguments(getIntent().getExtras());

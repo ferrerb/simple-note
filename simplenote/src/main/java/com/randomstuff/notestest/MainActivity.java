@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class NotesTest extends Activity implements NoteListFragment.OnNoteSelectedListener {
+public class MainActivity extends Activity implements NoteListFragment.OnNoteSelectedListener,
+        DrawerNavFragment.NavDrawerCallbacks {
     boolean mDualPane;
+    DrawerNavFragment mDrawerNavFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +20,11 @@ public class NotesTest extends Activity implements NoteListFragment.OnNoteSelect
         // If the notes fragment is visible, we are in dual pane mode
         View notesFrame = findViewById(R.id.notes);
         mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
+
+        // Setting up the navigation drawer fragment
+        mDrawerNavFragment = (DrawerNavFragment) getFragmentManager()
+                .findFragmentById(R.id.drawer_frag);
+
 
         // Getting intent information to then deal with a share.
         Intent intent = getIntent();
@@ -32,6 +39,7 @@ public class NotesTest extends Activity implements NoteListFragment.OnNoteSelect
 
     public void onNoteSelected(long id) {
         // fragment manager to change the note
+        // id == -1 is for creating a new note
         if (id == -1L) {
             if (mDualPane) {
                 NoteFragment noteFrag = (NoteFragment)
@@ -66,6 +74,10 @@ public class NotesTest extends Activity implements NoteListFragment.OnNoteSelect
                 startActivity(i);
             }
         }
+    }
+
+    public void onDrawerItemSelected(long id) {
+        // deal with sending tag id to notelistfragment to refresh loader, or maybe can call it here
     }
 
     private void startShare(Intent intent) {

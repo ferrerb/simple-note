@@ -1,7 +1,6 @@
 package com.randomstuff.notestest;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -33,6 +32,8 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     // Populates the listview
     private SeparatorCursorAdapter adapter = null;
     private String mCurrentFilter = null;
+    // A static id to give the cursorloader, to allow for new queries based on tags/searches
+    private static final int LOADER_ID = 0;
 
     // Interface that hosting activity must implement
     public interface OnNoteSelectedListener {
@@ -108,7 +109,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     public boolean onQueryTextChange(String newText) {
         mCurrentFilter = !TextUtils.isEmpty(newText) ? newText : null;
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
         return true;
     }
 
@@ -163,7 +164,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         // Sets current listview to the cursoradapter
         setListAdapter(adapter);
         // Begins cursorloader
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     @Override

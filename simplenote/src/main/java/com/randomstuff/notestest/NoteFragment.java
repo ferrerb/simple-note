@@ -23,11 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class NoteFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class NoteFragment extends Fragment {
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
@@ -38,6 +37,8 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemSelected
 
     private boolean mDualPane;
     private Uri noteUri = null;
+
+    private Spinner spin;
 
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
@@ -124,7 +125,7 @@ public class NoteFragment extends Fragment implements AdapterView.OnItemSelected
         switch (item.getItemId()){
             //Should only be enabled if in portrait mode
             case (android.R.id.home):
-                Intent i = new Intent(getActivity(), NotesTest.class);
+                Intent i = new Intent(getActivity(), MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 getActivity().finish();

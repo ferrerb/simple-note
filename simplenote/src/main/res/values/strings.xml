@@ -7,7 +7,7 @@
     <string name="add_note">Add</string>
     <string name="about">About</string>
     <string name="share">Share</string>
-    <string name="delete_button">Delete note</string>
+    <string name="delete_button">Delete</string>
     <string name="delete_dialog">Delete this note?</string>
     <string name="cancel">Cancel</string>
     <string name="edit_title">Title</string>
