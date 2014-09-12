@@ -55,4 +55,30 @@ public final class NotesContract {
         public static final String COLUMN_NOTE = "note";
     }
 
+    /**
+     * Class to hold definitions for the tags table
+     */
+    public static final class Tags implements BaseColumns {
+        /**
+         * Don't allow this class to be instantiated
+         */
+        private Tags() {}
+
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "tags");
+        public static final String TABLE_NAME = "tags";
+        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_TAGS = "col_tags";
+    }
+
+    /**
+     * Class to hold definitions for the tags_notes table
+     */
+    public static final class Tags_Notes implements BaseColumns {
+        private Tags_Notes() {}
+
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "tags_notes");
+        public static final String TABLE_NAME = "tags_notes";
+        public static final String COLUMN_TAGS_ID = "tags_id";
+        public static final String COLUMN_NOTES_ID = "notes_id";
+    }
 }

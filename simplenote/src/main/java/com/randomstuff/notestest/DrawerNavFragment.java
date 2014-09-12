@@ -242,17 +242,13 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
-        // TODO change this to get tags
-        Uri baseUri = NotesContract.Notes.CONTENT_URI;
+        Uri baseUri = NotesContract.Tags.CONTENT_URI;
         String[] projection = new String[] {
-                NotesContract.Notes.COLUMN_ID,
-                NotesContract.Notes.COLUMN_TITLE,
-                NotesContract.Notes.COLUMN_NOTE,
-                NotesContract.Notes.COLUMN_NOTE_MODIFIED };
+                NotesContract.Tags.COLUMN_ID,
+                NotesContract.Tags.COLUMN_TAGS };
 
         return new CursorLoader(getActivity(), baseUri,
-                projection, null, null,
-                NotesContract.Notes.SORT_ORDER_DEFAULT);
+                projection, null, null, null);
     }
 
     @Override

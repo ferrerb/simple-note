@@ -20,6 +20,7 @@ public class Provider extends ContentProvider {
     private static final int NOTE_ID = 2;
     private static final int VIRTUAL_NOTES = 3;
     private static final int VIRTUAL_NOTES_ID = 4;
+    private static final int TAGS = 5;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
@@ -27,6 +28,7 @@ public class Provider extends ContentProvider {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes/#", NOTE_ID);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual", VIRTUAL_NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual/#", VIRTUAL_NOTES_ID);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "tags", TAGS);
     }
 
     public boolean onCreate() {
@@ -44,19 +46,21 @@ public class Provider extends ContentProvider {
     synchronized public Cursor query(Uri uri, String[] projection, String selection,
                       String[] selectionArgs, String sort) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
         Cursor c = null;
 
         int uriType = sURIMatcher.match(uri);
 
-        //TODO add switch and urimatcher for tag queries
         switch (uriType) {
             case NOTES:
+                qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
                 c = qb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
                 break;
             case NOTE_ID:
                 // Uses the query builder add a WHERE clause based on note _id, from the URI
+                qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
                 qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
 
@@ -78,7 +82,14 @@ public class Provider extends ContentProvider {
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case VIRTUAL_NOTES_ID:
+                qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
+                break;
+            case TAGS:
+                qb = new SQLiteQueryBuilder();
+                qb.setTables(NotesContract.Tags.TABLE_NAME);
+                c = qb.query(db.getReadableDatabase(), projection,
+                        selection, selectionArgs, null, null, sort);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
