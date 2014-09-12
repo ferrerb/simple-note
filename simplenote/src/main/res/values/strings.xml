@@ -18,5 +18,6 @@
     <string name="search_hint">Search notes</string>
     <string name="action_search">Search notes</string>
     <string name="empty_note_section">…</string>
+    <string name="all_notes">All notes</string>
 
 </resources>

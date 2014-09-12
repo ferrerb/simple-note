@@ -34,12 +34,16 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     private String mCurrentFilter = null;
     // A static id to give the cursorloader, to allow for new queries based on tags/searches
     private static final int LOADER_ID = 0;
+    private static final String CURRENT_NOTE_ID = "curNote";
+    // Variables to hold the id for a tag passed in from the navigation drawer -> mainactivity
+    private static final String TAG_ID = "id";
+    private long tagId;
 
     public static NoteListFragment newInstance(long id) {
         NoteListFragment frag = new NoteListFragment();
 
         Bundle args = new Bundle();
-        args.putLong("id", id);
+        args.putLong(TAG_ID, id);
         frag.setArguments(args);
 
         return frag;
@@ -69,21 +73,11 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.notes_list, container, false);
-
-        setHasOptionsMenu(true);
-
-        return(result);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         // A function that starts the cursorloader
-        //TODO check for a bundle with a tag id, and pass it to the filllist thing
+        tagId = getArguments().getLong(TAG_ID, -1L);
         fillList();
 
         // Basic check for the layout, borrowed from google
@@ -92,7 +86,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
         // checks the saved bundle for a note to display based on _id
         if (savedInstanceState != null) {
-            mCurNotePosition = savedInstanceState.getLong("curNote", 1L);
+            mCurNotePosition = savedInstanceState.getLong(CURRENT_NOTE_ID, 1L);
         }
         Log.d("mCurNotePosition = ", Long.toString(mCurNotePosition));
         // if the layout has both panes, shows that saved note
@@ -107,10 +101,20 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View result = inflater.inflate(R.layout.notes_list, container, false);
+
+        setHasOptionsMenu(true);
+
+        return(result);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Saving the current note _id
-        outState.putLong("curNote", mCurNotePosition);
+        outState.putLong(CURRENT_NOTE_ID, mCurNotePosition);
     }
 
 
@@ -187,6 +191,8 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        //TODO check if tagID is not -1, then change list
+
         Uri baseUri;
         String[] projection;
         String[] selectionArgs;
@@ -200,7 +206,14 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                     NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
             selectionArgs = new String[] { mCurrentFilter + "*" };
-        } else {
+        } else if (tagId > -1L) {
+            // stuff to show only that tag or, do i need this. To have an 'All notes' choice, i need
+            // to either have the first entry in tags table be for all, or have separate button for all
+            baseUri = null;
+            projection = null;
+            selectionArgs = null;
+        }
+        else {
             baseUri = NotesContract.Notes.CONTENT_URI;
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,

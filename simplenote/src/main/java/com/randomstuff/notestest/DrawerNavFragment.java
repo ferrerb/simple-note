@@ -9,7 +9,11 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 public class DrawerNavFragment extends Fragment {
     // Remembers the currently selected position
@@ -75,6 +79,24 @@ public class DrawerNavFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         View result = inflater.inflate(R.layout.drawer_frag, container, false);
+        final Button notesBtn = (Button) result.findViewById(R.id.all_notes_btn);
+        notesBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // possibly send -1, and have that signify all notes, then you avoid the cursor index 0
+                selectItem(-1);
+            }
+        });
+
+        mDrawerListView = (ListView) result.findViewById(R.id.drawer_list);
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItem(position);
+            }
+        });
+        // create a cursorloader here! to setadapter
+        ListAdapter adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, null, null, 0);
+
         return result;
     }
 
