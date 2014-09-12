@@ -3,6 +3,12 @@ package com.randomstuff.notestest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,17 +16,20 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-public class DrawerNavFragment extends Fragment {
+public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     // Remembers the currently selected position
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private static final String STATE_SELECTED_INDEX = "selected_navigation_drawer_index";
     //this stores whether the user has seen the navigation drawer opened in shared preferences
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     // pointer to current callbacks instance
@@ -37,12 +46,15 @@ public class DrawerNavFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    private SimpleCursorAdapter adapter = null;
+    private static final int LOADER_ID = 1;
+
     public DrawerNavFragment() {
 
     }
 
     public interface NavDrawerCallbacks {
-        public void onDrawerItemSelected(long id);
+        void onDrawerItemSelected(long id);
     }
 
 
@@ -73,6 +85,7 @@ public class DrawerNavFragment extends Fragment {
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mCurrentSelectedIndex = savedInstanceState.getLong(STATE_SELECTED_INDEX);
             mFromSavedInstanceState = true;
         }
 
@@ -99,8 +112,12 @@ public class DrawerNavFragment extends Fragment {
                 selectItem(position, id);
             }
         });
-        // create a cursorloader here! to setadapter
-        ListAdapter adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, null, null, 0);
+        // Sets current listview to the cursoradapter
+        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, null, null, 0);
+
+        mDrawerListView.setAdapter(adapter);
+        // Begins cursorloader
+        getLoaderManager().initLoader(LOADER_ID, null, this);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return result;
     }
@@ -117,14 +134,97 @@ public class DrawerNavFragment extends Fragment {
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
                 R.drawable.ic_drawer, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                if (!isAdded()) {
+                    return;
+                }
+                getActivity().invalidateOptionsMenu();
+            }
 
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                if (!isAdded()) {
+                    return;
+                }
+
+                if (!mUserLearnedDrawer) {
+                    mUserLearnedDrawer = true;
+                    SharedPreferences sp = PreferenceManager
+                            .getDefaultSharedPreferences(getActivity());
+                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
+                }
+                getActivity().invalidateOptionsMenu();
+            }
         };
+
+        if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
+            mDrawerLayout.openDrawer(mFragmentContainerView);
+        }
+
+        mDrawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putLong(STATE_SELECTED_INDEX, mCurrentSelectedIndex);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (mDrawerLayout != null && isDrawerOpen()) {
+            inflater.inflate(R.menu.global, menu);
+            showGlobalContextActionBar();
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
+            case R.id.new_tag:
+                // create a dialog to add a new tag
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
     }
 
+    private void showGlobalContextActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setTitle(R.string.app_name);
+    }
+
+    public boolean isDrawerOpen() {
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
+    }
     //This handles both selections in the listview, and hitting the All notes button
     private void selectItem(int position, long id) {
         mCurrentSelectedPosition = position;
@@ -140,4 +240,28 @@ public class DrawerNavFragment extends Fragment {
         }
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        // TODO change this to get tags
+        Uri baseUri = NotesContract.Notes.CONTENT_URI;
+        String[] projection = new String[] {
+                NotesContract.Notes.COLUMN_ID,
+                NotesContract.Notes.COLUMN_TITLE,
+                NotesContract.Notes.COLUMN_NOTE,
+                NotesContract.Notes.COLUMN_NOTE_MODIFIED };
+
+        return new CursorLoader(getActivity(), baseUri,
+                projection, null, null,
+                NotesContract.Notes.SORT_ORDER_DEFAULT);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
+    }
 }

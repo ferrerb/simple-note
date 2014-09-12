@@ -20,6 +20,7 @@
     <string name="empty_note_section">…</string>
     <string name="all_notes">All notes</string>
     <string name="nav_drawer_open">Open Navigation Drawer</string>
-    <string name ="nav_drawer_close">Close Navigation Drawer</string>
+    <string name="nav_drawer_close">Close Navigation Drawer</string>
+    <string name="new_tag">New tag</string>
 
 </resources>

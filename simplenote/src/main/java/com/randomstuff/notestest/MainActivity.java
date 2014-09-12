@@ -1,10 +1,13 @@
 package com.randomstuff.notestest;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends Activity implements NoteListFragment.OnNoteSelectedListener,
@@ -43,8 +46,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     }
 
     public void onNoteSelected(long id) {
-        // fragment manager to change the note
-        // id == -1 is for creating a new note
+        // TODO clean this up, should only need one for new or load note
         if (id == -1L) {
             if (mDualPane) {
                 NoteFragment noteFrag = (NoteFragment)
@@ -81,19 +83,40 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         }
     }
 
+    @Override
     public void onDrawerItemSelected(long id) {
-        // deal with sending tag id to notelistfragment to refresh loader
         NoteListFragment nFrag = NoteListFragment.newInstance(id);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.notes_list, nFrag).commit();
+    }
 
+    public void restoreActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        //TODO Set this to the tag name, maybe have callback from listfragment after it gets the data
+        actionBar.setTitle(R.string.app_name);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!mDrawerNavFragment.isDrawerOpen()) {
+            getMenuInflater().inflate(R.menu.options, menu);
+            restoreActionBar();
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //TODO should i have the options.xml options here instead of in notelistfragment, search is issue
+        return super.onOptionsItemSelected(item);
     }
 
     private void startShare(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
-            // do something, ie use code from notelistfragment new note
-            //check for dual pane, use noteactivity or not based on that
             if (mDualPane) {
                 NoteFragment noteFrag = NoteFragment.newInstance(-1L, sharedText);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
