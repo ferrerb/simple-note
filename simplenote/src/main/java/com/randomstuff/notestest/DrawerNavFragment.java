@@ -1,7 +1,10 @@
 package com.randomstuff.notestest;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,7 +30,10 @@ public class DrawerNavFragment extends Fragment {
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
+    private ActionBarDrawerToggle mDrawerToggle;
+
     private int mCurrentSelectedPosition = 0;
+    private long mCurrentSelectedIndex = -1L;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -70,7 +76,7 @@ public class DrawerNavFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
-        selectItem(mCurrentSelectedPosition);
+        selectItem(mCurrentSelectedPosition, mCurrentSelectedIndex);
 
         setHasOptionsMenu(true);
     }
@@ -82,8 +88,7 @@ public class DrawerNavFragment extends Fragment {
         final Button notesBtn = (Button) result.findViewById(R.id.all_notes_btn);
         notesBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // possibly send -1, and have that signify all notes, then you avoid the cursor index 0
-                selectItem(-1);
+                selectItem(-1, -1L);
             }
         });
 
@@ -91,17 +96,48 @@ public class DrawerNavFragment extends Fragment {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+                selectItem(position, id);
             }
         });
         // create a cursorloader here! to setadapter
         ListAdapter adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, null, null, 0);
-
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return result;
     }
 
-    private void selectItem(int position) {
+    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+        mFragmentContainerView = getActivity().findViewById(fragmentId);
+        mDrawerLayout = drawerLayout;
 
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
+                R.drawable.ic_drawer, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+
+        };
+    }
+
+    private ActionBar getActionBar() {
+        return getActivity().getActionBar();
+    }
+
+    //This handles both selections in the listview, and hitting the All notes button
+    private void selectItem(int position, long id) {
+        mCurrentSelectedPosition = position;
+        mCurrentSelectedIndex = id;
+        if (mDrawerListView != null && position != -1) {
+            mDrawerListView.setItemChecked(position, true);
+        }
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
+        }
+        if (mCallbacks != null) {
+            mCallbacks.onDrawerItemSelected(id);
+        }
     }
 
 }

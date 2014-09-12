@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
 public class MainActivity extends Activity implements NoteListFragment.OnNoteSelectedListener,
@@ -24,6 +25,10 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         // Setting up the navigation drawer fragment
         mDrawerNavFragment = (DrawerNavFragment) getFragmentManager()
                 .findFragmentById(R.id.drawer_frag);
+        // TODO mtitle to get the tag name, and use it as the acion bar title
+
+        mDrawerNavFragment.setUp(R.id.drawer_frag,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
         // Getting intent information to then deal with a share.
