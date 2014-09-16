@@ -89,7 +89,7 @@ public class Provider extends ContentProvider {
                 qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.Tags.TABLE_NAME);
                 c = qb.query(db.getReadableDatabase(), projection,
-                        selection, selectionArgs, null, null, sort);
+                        null, null, null, null, null);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);

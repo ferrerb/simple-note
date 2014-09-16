@@ -5,16 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="main"/>
+    <include android:id="@+id/main" layout="@layout/main"/>
 
-    <fragment class="com.randomstuff.notestest.DrawerNavFragment"
+    <fragment
         android:id="@+id/drawer_left"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:name="com.randomstuff.notestest.DrawerNavFragment"/>
 
 </android.support.v4.widget.DrawerLayout>

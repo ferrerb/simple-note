@@ -113,7 +113,12 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
         // Sets current listview to the cursoradapter
-        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, null, null, 0);
+        adapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{ NotesContract.Tags.COLUMN_TAGS },
+                new int[]{ android.R.id.text1 },
+                0);
 
         mDrawerListView.setAdapter(adapter);
         // Begins cursorloader

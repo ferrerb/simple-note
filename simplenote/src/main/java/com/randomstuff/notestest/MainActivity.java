@@ -19,7 +19,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Sets the initial layout, currently based on either landscape or portrait
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
 
         // If the notes fragment is visible, we are in dual pane mode
         View notesFrame = findViewById(R.id.notes);
@@ -27,10 +27,10 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
 
         // Setting up the navigation drawer fragment
         mDrawerNavFragment = (DrawerNavFragment) getFragmentManager()
-                .findFragmentById(R.id.drawer_frag);
+                .findFragmentById(R.id.drawer_left);
         // TODO mtitle to get the tag name, and use it as the acion bar title
 
-        mDrawerNavFragment.setUp(R.id.drawer_frag,
+        mDrawerNavFragment.setUp(R.id.drawer_left,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 

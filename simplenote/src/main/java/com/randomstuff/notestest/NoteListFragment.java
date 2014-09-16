@@ -77,7 +77,9 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         super.onCreate(savedInstanceState);
 
         // A function that starts the cursorloader
-        tagId = getArguments().getLong(TAG_ID, -1L);
+        if ( getArguments() != null) {
+            tagId = getArguments().getLong(TAG_ID, -1L);
+        }
         fillList();
 
         // Basic check for the layout, borrowed from google
