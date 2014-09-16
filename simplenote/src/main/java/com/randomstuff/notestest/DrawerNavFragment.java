@@ -41,7 +41,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
 
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedPosition = -1;
     private long mCurrentSelectedIndex = -1L;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
@@ -123,7 +123,9 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         mDrawerListView.setAdapter(adapter);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+        if (mCurrentSelectedPosition != 0) {
+            mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+        }
         return result;
     }
 

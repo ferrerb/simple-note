@@ -37,7 +37,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     private static final String CURRENT_NOTE_ID = "curNote";
     // Variables to hold the id for a tag passed in from the navigation drawer -> mainactivity
     private static final String TAG_ID = "id";
-    private long tagId;
+    private long tagId = -1L;
 
     public static NoteListFragment newInstance(long id) {
         NoteListFragment frag = new NoteListFragment();

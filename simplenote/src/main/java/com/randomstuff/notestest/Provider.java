@@ -45,7 +45,7 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public Cursor query(Uri uri, String[] projection, String selection,
                       String[] selectionArgs, String sort) {
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        SQLiteQueryBuilder qb;
 
         Cursor c = null;
 
@@ -86,10 +86,11 @@ public class Provider extends ContentProvider {
                 qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
                 break;
             case TAGS:
+                Log.d("uri from tags", uri.toString());
                 qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.Tags.TABLE_NAME);
                 c = qb.query(db.getReadableDatabase(), projection,
-                        null, null, null, null, null);
+                        selection, selectionArgs, null, null, sort);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
