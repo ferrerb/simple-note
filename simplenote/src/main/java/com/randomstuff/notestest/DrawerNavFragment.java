@@ -210,7 +210,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         switch (item.getItemId()) {
-            case R.id.new_tag:
+            case R.id.delete_tag:
                 // create a dialog to add a new tag
                 return true;
         }

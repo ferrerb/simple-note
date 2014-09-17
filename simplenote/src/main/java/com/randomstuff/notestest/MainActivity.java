@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     }
 
     public void onNoteSelected(long id) {
-        // TODO clean this up, should only need one for new or load note
+        // This is for creating a new note
         if (id == -1L) {
             if (mDualPane) {
                 NoteFragment noteFrag = (NoteFragment)
@@ -62,6 +62,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
                 i.putExtra("id", 0L);
                 startActivity(i);
             }
+        //This is to load an existing note
         } else {
             if (mDualPane) {
                 NoteFragment noteFrag = (NoteFragment)
