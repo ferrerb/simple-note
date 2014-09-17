@@ -21,6 +21,7 @@ public class Provider extends ContentProvider {
     private static final int VIRTUAL_NOTES = 3;
     private static final int VIRTUAL_NOTES_ID = 4;
     private static final int TAGS = 5;
+    private static final int TAGS_NOTES = 6;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
@@ -29,6 +30,7 @@ public class Provider extends ContentProvider {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual", VIRTUAL_NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual/#", VIRTUAL_NOTES_ID);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags", TAGS);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "tags/notes", TAGS_NOTES);
     }
 
     public boolean onCreate() {
@@ -76,8 +78,8 @@ public class Provider extends ContentProvider {
                         NotesContract.Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
                         NotesContract.NotesVirtual.COLUMN_ID + " FROM " +
-                        NotesContract.NotesVirtual.TABLE_NAME +
-                        " WHERE " + NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?) ORDER BY " +
+                        NotesContract.NotesVirtual.TABLE_NAME + " WHERE " +
+                        NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?) ORDER BY " +
                         sort;
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
@@ -92,6 +94,17 @@ public class Provider extends ContentProvider {
                 c = qb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
                 break;
+            case TAGS_NOTES:
+                // This uri is for selecting notes with a specific tag
+                String sqlTags = "SELECT " + projection[0] + ", " + projection[1] + ", " +
+                        projection[2] + ", " + projection[3] + " FROM " +
+                        NotesContract.Notes.TABLE_NAME + " WHERE " +
+                        NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
+                        NotesContract.Tags_Notes.COLUMN_NOTES_ID + " FROM " +
+                        NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
+                        NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?) ORDER BY " +
+                        sort;
+                c = db.getReadableDatabase().rawQuery(sqlTags, selectionArgs);
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
