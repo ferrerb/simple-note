@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notestest.db";
-    private static final int SCHEMA_VERSION = 4;
+    private static final int SCHEMA_VERSION = 5;
 
     // The names of columns and the table for the notes
     private static final String TABLE_NOTES ="notes";
@@ -23,6 +23,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRIGGER_BEFORE_DELETE = "notes_bd";
     private static final String TRIGGER_AFTER_UPDATE = "notes_au";
     private static final String TRIGGER_AFTER_INSERT = "notes_ai";
+    private static final String TRIGGER_BEFORE_DELETE_NOTE = "notes_bd_tag";
 
     // Names for a table to hold tags
     private static final String TABLE_TAGS = "tags";
@@ -33,8 +34,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TAGS_ID = "tags_id";
     private static final String COLUMN_NOTES_ID = "notes_id";
 
-    //TODO make a trigger to remove reference in tags_notes if a note with a tag is deleted
-
     // SQL strings for creating the databases/triggers
     private static final String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -44,6 +43,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TAGS_TABLE = "CREATE TABLE " + TABLE_TAGS + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_TAGS + " TEXT);";
+    private static final String CREATE_EXAMPLE_TAGS = "INSERT INTO " + TABLE_TAGS + " (" +
+            COLUMN_TAGS + ") SELECT 'Important' UNION SELECT 'Work' UNION SELECT 'Todo';";
     private static final String CREATE_TAGS_NOTES_TABLE = "CREATE TABLE " +
             TABLE_TAGS_NOTES + " (" +
             COLUMN_NOTES_ID + " INTEGER PRIMARY KEY, " +
@@ -77,6 +78,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_NOTE + ") VALUES(new.rowid, new." +
             COLUMN_TITLE + ", new." +
             COLUMN_NOTE + "); END;";
+    private static final String CREATE_TRIGGER_BD_TAG = "CREATE TRIGGER " +
+            TRIGGER_BEFORE_DELETE_NOTE + "BEFORE DELETE ON " +
+            TABLE_NOTES + " BEGIN DELETE FROM " +
+            TABLE_TAGS_NOTES + " WHERE _id=old._id; END;";
 
     public DatabaseHelper(Context ctxt) {
         super(ctxt, DATABASE_NAME, null, SCHEMA_VERSION);
@@ -85,14 +90,16 @@ class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creates the database with beautiful sql syntax
-        // TODO have some initial inserts into tags to have some example tags (Work, Todo, etc)
         try {
             db.beginTransaction();
             // Main table to hold the notes, titles, date modified
             db.execSQL(CREATE_NOTES_TABLE);
             // Creates 2 tables, one to store tags, and one to store note/tag relation
             db.execSQL(CREATE_TAGS_TABLE);
+            db.execSQL(CREATE_EXAMPLE_TAGS);
             db.execSQL(CREATE_TAGS_NOTES_TABLE);
+            // Trigger to delete the reference to a note in tags_notes when a note is deleted
+            db.execSQL(CREATE_TRIGGER_BD_TAG);
             // Virtual table that allows for faster full text searches, holding just notes + titles
             db.execSQL(CREATE_VIRTUAL_NOTES_TABLE);
             // Triggers before an update to the main table, to delete the data from the virtual table
@@ -121,7 +128,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
                             COLUMN_NOTE_MODIFIED + " INTEGER");
                     // Creates 2 tables, one to store tags, and one to store note/tag relation
                     db.execSQL(CREATE_TAGS_TABLE);
+                    db.execSQL(CREATE_EXAMPLE_TAGS);
                     db.execSQL(CREATE_TAGS_NOTES_TABLE);
+                    db.execSQL(CREATE_TRIGGER_BD_TAG);
                     // Virtual table that allows for faster full text searches, holding just notes + titles
                     db.execSQL(CREATE_VIRTUAL_NOTES_TABLE);
                     // To add all the current notes to the new virtual table
@@ -149,7 +158,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     db.beginTransaction();
                     // Creates 2 tables, one to store tags, and one to store note/tag relation
                     db.execSQL(CREATE_TAGS_TABLE);
+                    db.execSQL(CREATE_EXAMPLE_TAGS);
                     db.execSQL(CREATE_TAGS_NOTES_TABLE);
+                    db.execSQL(CREATE_TRIGGER_BD_TAG);
                     // Virtual table that allows for faster full text searches, holding just notes + titles
                     db.execSQL(CREATE_VIRTUAL_NOTES_TABLE);
                     // To add all the current notes to the new virtual table
@@ -177,8 +188,20 @@ class DatabaseHelper extends SQLiteOpenHelper {
                     db.beginTransaction();
                     // Creates 2 tables, one to store tags, and one to store note/tag relation
                     db.execSQL(CREATE_TAGS_TABLE);
+                    db.execSQL(CREATE_EXAMPLE_TAGS);
                     db.execSQL(CREATE_TAGS_NOTES_TABLE);
+                    db.execSQL(CREATE_TRIGGER_BD_TAG);
                     db.setTransactionSuccessful();
+                }
+                finally {
+                    db.endTransaction();
+                }
+                break;
+            case 4:
+                try {
+                    db.beginTransaction();
+                    db.execSQL(CREATE_EXAMPLE_TAGS);
+                    db.execSQL(CREATE_TRIGGER_BD_TAG);
                 }
                 finally {
                     db.endTransaction();
