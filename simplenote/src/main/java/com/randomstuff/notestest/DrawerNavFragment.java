@@ -123,7 +123,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         mDrawerListView.setAdapter(adapter);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
-        if (mCurrentSelectedPosition != 0) {
+        if (mCurrentSelectedPosition > 0) {
             mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         }
         return result;
