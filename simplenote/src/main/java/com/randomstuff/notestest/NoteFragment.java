@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,14 +32,18 @@ public class NoteFragment extends Fragment {
     private EditText editNote = null;
     private TextView textDateModified = null;
     private TextWatcher noteChangedListener;
+    private Button tagsBtn;
+    /*
+     *TODO set currentTag to the viewed tags in noteslistview if new note, or change to the notes tag if exists
+     *So, need to pass in the current tag from the activity
+     */
+    private String currentTag;
 
     private boolean isDeleted = false;
     private boolean isChanged = false;
 
     private boolean mDualPane;
     private Uri noteUri = null;
-
-    private Spinner spin;
 
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
@@ -103,7 +108,17 @@ public class NoteFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        // Spinner stuff
+        // A button to choose a tag, text changes to the current tag
+        tagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
+        if (getShownId() > 0) {
+            //TODO change the button text to the notes tag if it has one
+
+        }
+        tagsBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO Open TagDialogFragment to choose a tag, or add a new one; use setTargetFragment etc
+            }
+        });
 
         if (!mDualPane) {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -191,6 +206,7 @@ public class NoteFragment extends Fragment {
     }
 
     private void fillNote(Uri uri) {
+        //TODO Change the projection to also retreive the notes tag
         String[] projection = { NotesContract.Notes.COLUMN_ID,
                 NotesContract.Notes.COLUMN_TITLE,
                 NotesContract.Notes.COLUMN_NOTE,

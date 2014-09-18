@@ -54,7 +54,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     public interface NavDrawerCallbacks {
-        void onDrawerItemSelected(long id);
+        void onDrawerItemSelected(long id, String tag);
     }
 
 
@@ -89,7 +89,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
             mFromSavedInstanceState = true;
         }
 
-        selectItem(mCurrentSelectedPosition, mCurrentSelectedIndex);
+        selectItem(mCurrentSelectedPosition, mCurrentSelectedIndex, null);
 
         setHasOptionsMenu(true);
     }
@@ -101,7 +101,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         final Button notesBtn = (Button) result.findViewById(R.id.all_notes_btn);
         notesBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                selectItem(-1, -1L);
+                selectItem(-1, -1L, null);
             }
         });
 
@@ -109,7 +109,8 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position, id);
+                String mSelectedTag = mDrawerListView.getItemAtPosition(position).toString();
+                selectItem(position, id, mSelectedTag);
             }
         });
         // Sets current listview to the cursoradapter
@@ -124,6 +125,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
         if (mCurrentSelectedPosition > 0) {
+            // TODO Probably need to change this to use the selected id, as position could change
             mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         }
         return result;
@@ -233,7 +235,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
     //This handles both selections in the listview, and hitting the All notes button
-    private void selectItem(int position, long id) {
+    private void selectItem(int position, long id, String tag) {
         mCurrentSelectedPosition = position;
         mCurrentSelectedIndex = id;
         if (mDrawerListView != null && position != -1) {
@@ -243,7 +245,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
-            mCallbacks.onDrawerItemSelected(id);
+            mCallbacks.onDrawerItemSelected(id, tag);
         }
     }
 

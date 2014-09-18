@@ -145,6 +145,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar / menu item clicks here
+        //TODO possibly move all this to the mainactivity
         switch (item.getItemId()) {
             case(R.id.add_note):
                 //Uses same callback as if a note was selected, but passes -1 to signify new note

@@ -14,6 +14,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         DrawerNavFragment.NavDrawerCallbacks {
     private boolean mDualPane;
     private DrawerNavFragment mDrawerNavFragment;
+    private String mCurrentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,10 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     }
 
     @Override
-    public void onDrawerItemSelected(long id) {
+    public void onDrawerItemSelected(long id, String tag) {
+        if (tag.length() > 0) {
+            getActionBar().setTitle(tag);
+        }
         NoteListFragment nFrag = NoteListFragment.newInstance(id);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.notes_list, nFrag).commit();
