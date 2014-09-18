@@ -123,7 +123,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.options, menu);
+        inflater.inflate(R.menu.notes_list, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_hint));
@@ -146,25 +146,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar / menu item clicks here
         //TODO possibly move all this to the mainactivity
-        switch (item.getItemId()) {
-            case(R.id.add_note):
-                //Uses same callback as if a note was selected, but passes -1 to signify new note
-                mCallback.onNoteSelected(-1L);
 
-                return true;
-            case(R.id.settings):
-                return true;
-            case(R.id.help):
-                Intent i = new Intent(getActivity(), SimpleDisplayActivity.class);
-                i.putExtra("file", "help.txt");
-                startActivity(i);
-                return true;
-            case(R.id.about):
-                i = new Intent(getActivity(), SimpleDisplayActivity.class);
-                i.putExtra("file", "about.txt");
-                startActivity(i);
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 

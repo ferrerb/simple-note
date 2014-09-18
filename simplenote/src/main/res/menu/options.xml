@@ -1,32 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/action_search"
-        android:title="@string/action_search"
-        android:showAsAction="ifRoom"
-        android:actionViewClass="android.widget.SearchView"/>
-    <item android:id="@+id/add_note"
-        android:icon="@drawable/ic_action_new"
-        android:showAsAction="ifRoom"
-        android:title="@string/add_note"
-        android:menuCategory="system"
-        android:orderInCategory="2"/>
-    <item android:id="@+id/settings"
-        android:icon="@drawable/ic_action_settings"
-        android:title="@string/settings"
-        android:showAsAction="never"
-        android:menuCategory="system"
-        android:orderInCategory="19" />
-    <item android:id="@+id/help"
-        android:icon="@drawable/ic_action_help"
-        android:title="@string/help"
-        android:showAsAction="never"
-        android:menuCategory="system"
-        android:orderInCategory="20"/>
-    <item android:id="@+id/about"
-        android:icon="@drawable/ic_action_about"
-        android:title="@string/about"
-        android:showAsAction="never"
-        android:menuCategory="system"
-        android:orderInCategory="21"/>
+
 
 </menu>

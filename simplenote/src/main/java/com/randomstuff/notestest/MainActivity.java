@@ -47,42 +47,26 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     }
 
     public void onNoteSelected(long id) {
-        // This is for creating a new note
-        if (id == -1L) {
-            if (mDualPane) {
-                NoteFragment noteFrag = (NoteFragment)
-                        getFragmentManager().findFragmentById(R.id.notes);
-                if (noteFrag == null || noteFrag.getShownId() > -2L) {
-                    noteFrag = NoteFragment.newInstance(0L);
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.notes, noteFrag).commit();
-                }
-            } else {
-                // this happens only in portrait mode
-                Intent i = new Intent(this, NoteActivity.class);
-                i.putExtra("id", 0L);
-                startActivity(i);
-            }
         //This is to load an existing note
-        } else {
-            if (mDualPane) {
-                NoteFragment noteFrag = (NoteFragment)
-                        getFragmentManager().findFragmentById(R.id.notes);
 
-                if (noteFrag == null || noteFrag.getShownId() != id) {
-                    noteFrag = NoteFragment.newInstance(id);
+        if (mDualPane) {
+            NoteFragment noteFrag = (NoteFragment)
+                    getFragmentManager().findFragmentById(R.id.notes);
 
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.notes, noteFrag).commit();
-                }
-            }
-            else {
-                Intent i = new Intent();
-                i.setClass(this, NoteActivity.class);
-                i.putExtra("id", id);
-                startActivity(i);
+            if (noteFrag == null || noteFrag.getShownId() != id) {
+                noteFrag = NoteFragment.newInstance(id);
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.notes, noteFrag).commit();
             }
         }
+        else {
+            Intent i = new Intent();
+            i.setClass(this, NoteActivity.class);
+            i.putExtra("id", id);
+            startActivity(i);
+        }
+
     }
 
     @Override
@@ -106,7 +90,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mDrawerNavFragment.isDrawerOpen()) {
-            getMenuInflater().inflate(R.menu.options, menu);
+            getMenuInflater().inflate(R.menu.main, menu);
             restoreActionBar();
             return true;
         }
@@ -115,7 +99,37 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //TODO should i have the options.xml options here instead of in notelistfragment, search is issue
+        switch (item.getItemId()) {
+            case(R.id.add_note):
+                if (mDualPane) {
+                    NoteFragment noteFrag = (NoteFragment)
+                            getFragmentManager().findFragmentById(R.id.notes);
+                    if (noteFrag == null || noteFrag.getShownId() > -2L) {
+                        noteFrag = NoteFragment.newInstance(0L);
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.notes, noteFrag).commit();
+                    }
+                } else {
+                    // this happens only in portrait mode
+                    Intent i = new Intent(this, NoteActivity.class);
+                    i.putExtra("id", 0L);
+                    startActivity(i);
+                }
+
+                return true;
+            case(R.id.settings):
+                return true;
+            case(R.id.help):
+                Intent i = new Intent(this, SimpleDisplayActivity.class);
+                i.putExtra("file", "help.txt");
+                startActivity(i);
+                return true;
+            case(R.id.about):
+                i = new Intent(this, SimpleDisplayActivity.class);
+                i.putExtra("file", "about.txt");
+                startActivity(i);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
