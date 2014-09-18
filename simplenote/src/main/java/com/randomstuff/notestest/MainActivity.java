@@ -71,9 +71,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
 
     @Override
     public void onDrawerItemSelected(long id, String tag) {
-        if (tag.length() > 0) {
-            getActionBar().setTitle(tag);
-        }
+        mCurrentTag = tag;
         NoteListFragment nFrag = NoteListFragment.newInstance(id);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.notes_list, nFrag).commit();
@@ -83,8 +81,12 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        //TODO Set this to the tag name, maybe have callback from listfragment after it gets the data
-        actionBar.setTitle(R.string.app_name);
+        if (mCurrentTag.length() > 0) {
+            actionBar.setTitle(mCurrentTag);
+        } else {
+            actionBar.setTitle(R.string.app_name);
+
+        }
     }
 
     @Override
