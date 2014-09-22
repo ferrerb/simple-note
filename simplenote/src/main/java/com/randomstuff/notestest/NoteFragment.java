@@ -207,14 +207,17 @@ public class NoteFragment extends Fragment {
 
     private void fillNote(Uri uri) {
         //TODO Change the projection to also retreive the notes tag
-        String[] projection = { NotesContract.Notes.COLUMN_ID,
-                NotesContract.Notes.COLUMN_TITLE,
-                NotesContract.Notes.COLUMN_NOTE,
-                NotesContract.Notes.COLUMN_NOTE_MODIFIED };
+        String[] selectionArgs = new String[]{ uri.getLastPathSegment() };
+        String[] projection = {
+                (NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_ID),
+                NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_TITLE,
+                NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_NOTE,
+                NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_NOTE_MODIFIED,
+                NotesContract.Tags.TABLE_NAME + "." + NotesContract.Tags.COLUMN_TAGS };
 
         NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                 getContentResolver());
-        mHandle.startQuery(1, null, uri, projection, null, null, null);
+        mHandle.startQuery(1, null, uri, projection, null, selectionArgs, null);
     }
 
     private void saveNote() {
@@ -296,6 +299,8 @@ public class NoteFragment extends Fragment {
                 Log.d("dateMOdified", Long.toString(dateModified));
                 textDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format("h:mm a, LLL d", dateModified));
+                //TODO do something with the note tag, either reterive the tag index for tagdialogfragment or sometning
+                tagsBtn.setText(c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS)));
 
                 c.close();
                 noteWatcher();

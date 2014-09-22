@@ -24,5 +24,6 @@
     <string name="choose_tag">Choose a tag</string>
     <string name="new_tag">New tag</string>
     <string name="delete_tag">Delete tag</string>
-
+    <string name="tag_dialog_title">Select a tag</string>
+    <string name="ok">Ok</string>
 </resources>

@@ -62,12 +62,25 @@ public class Provider extends ContentProvider {
                 break;
             case NOTE_ID:
                 // Uses the query builder add a WHERE clause based on note _id, from the URI
+                String sqlNote = "SELECT " + projection[0] + ", " + projection[1] + ", " +
+                        projection[2] + ", " + projection[3] + ", " + projection[4] + " FROM " +
+                        NotesContract.Notes.TABLE_NAME +
+                        " LEFT JOIN " +
+                        NotesContract.Tags_Notes.TABLE_NAME +
+                        " ON (" +
+                        NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_ID + "=" +
+                        NotesContract.Tags_Notes.TABLE_NAME + "." + NotesContract.Tags_Notes.COLUMN_NOTES_ID +
+                        ") LEFT JOIN " +
+                        NotesContract.Tags.TABLE_NAME +
+                        " ON (" +
+                        NotesContract.Tags_Notes.TABLE_NAME + "." + NotesContract.Tags_Notes.COLUMN_TAGS_ID + "=" +
+                        NotesContract.Tags.TABLE_NAME + "." + NotesContract.Tags.COLUMN_ID + ") WHERE " +
+                        NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_ID + "=?";
                 qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
                 qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
 
-                c = qb.query(db.getReadableDatabase(), projection,
-                        selection, selectionArgs, null, null, sort);
+                c = db.getReadableDatabase().rawQuery(sqlNote, selectionArgs);
                 break;
             case VIRTUAL_NOTES:
                 // This is used when searching for text, will return rows from notes
@@ -83,10 +96,6 @@ public class Provider extends ContentProvider {
                         sort;
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
-            case VIRTUAL_NOTES_ID:
-                qb = new SQLiteQueryBuilder();
-                qb.setTables(NotesContract.NotesVirtual.TABLE_NAME);
-                break;
             case TAGS:
                 Log.d("uri from tags", uri.toString());
                 qb = new SQLiteQueryBuilder();
@@ -95,7 +104,7 @@ public class Provider extends ContentProvider {
                         selection, selectionArgs, null, null, sort);
                 break;
             case TAGS_NOTES:
-                // This uri is for selecting notes with a specific tag
+                // This uri is for selecting all notes with a specific tag
                 String sqlTags = "SELECT " + projection[0] + ", " + projection[1] + ", " +
                         projection[2] + ", " + projection[3] + " FROM " +
                         NotesContract.Notes.TABLE_NAME + " WHERE " +
