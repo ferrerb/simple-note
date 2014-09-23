@@ -26,4 +26,5 @@
     <string name="delete_tag">Delete tag</string>
     <string name="tag_dialog_title">Select a tag</string>
     <string name="ok">Ok</string>
+    <string name="new_tag_hint">Enter new tag</string>
 </resources>

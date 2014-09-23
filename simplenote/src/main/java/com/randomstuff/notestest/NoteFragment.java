@@ -2,6 +2,7 @@ package com.randomstuff.notestest;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
@@ -110,13 +111,17 @@ public class NoteFragment extends Fragment {
 
         // A button to choose a tag, text changes to the current tag
         tagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
-        if (getShownId() > 0) {
+        if (noteUri != null) {
             //TODO change the button text to the notes tag if it has one
 
         }
         tagsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO Open TagDialogFragment to choose a tag, or add a new one; use setTargetFragment etc
+                //TODO Retrieve the current notes tag, or pass 0L for newinstance
+                FragmentManager fm = getFragmentManager();
+                TagDialogFragment frag = TagDialogFragment.newInstance(0L);
+                frag.setTargetFragment(NoteFragment.this, 0);
+                frag.show(fm, "add_tag");
             }
         });
 
@@ -125,6 +130,10 @@ public class NoteFragment extends Fragment {
         }
 
         return (result);
+    }
+
+    public void onTagChosen(String tag) {
+        //TODO add the tag to the tags_notes, tags tables, or associate tag with current note
     }
 
     @Override
