@@ -28,23 +28,29 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class NoteFragment extends Fragment {
+public class NoteFragment extends Fragment implements TagDialogFragment.TagDialogCallbacks {
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
     private TextWatcher noteChangedListener;
     private Button tagsBtn;
     /*
-     *TODO set currentTag to the viewed tags in noteslistview if new note, or change to the notes tag if exists
      *So, need to pass in the current tag from the activity
      */
     private String currentTag;
-
+    private long currentTagId = 0L;
     private boolean isDeleted = false;
     private boolean isChanged = false;
 
     private boolean mDualPane;
     private Uri noteUri = null;
+
+    private static final int NOTE_INSERT_TOKEN = 1;
+    private static final int NOTE_UPDATE_TOKEN = 2;
+    private static final int NOTE_QUERY_TOKEN = 3;
+    private static final int NOTE_DELETE_TOKEN = 4;
+    private static final int TAG_INSERT_TOKEN = 5;
+    private static final int TAG_UPDATE_TOKEN = 6;
 
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
@@ -80,7 +86,7 @@ public class NoteFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         long mId = getArguments().getLong("id");
-        if ( mId > 0) {
+        if ( mId > 0L) {
             noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + mId);
         }
     }
@@ -97,6 +103,8 @@ public class NoteFragment extends Fragment {
         editTitle = (EditText) result.findViewById(R.id.edit_title);
         editNote = (EditText) result.findViewById(R.id.edit_note);
         textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
+        tagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
+
 
         if (noteUri != null) {
             fillNote(noteUri);
@@ -109,12 +117,6 @@ public class NoteFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        // A button to choose a tag, text changes to the current tag
-        tagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
-        if (noteUri != null) {
-            //TODO change the button text to the notes tag if it has one
-
-        }
         tagsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO Retrieve the current notes tag, or pass 0L for newinstance
@@ -132,8 +134,27 @@ public class NoteFragment extends Fragment {
         return (result);
     }
 
-    public void onTagChosen(String tag) {
-        //TODO add the tag to the tags_notes, tags tables, or associate tag with current note
+    @Override
+    public void onTagChosen(String tag, long id) {
+        //TODO need to put the note id in tags_notes with tag, put in saveNote()
+        if (id == -1L) {
+            tagsBtn.setText(tag);
+            ContentValues cv = new ContentValues();
+            cv.put(NotesContract.Tags.COLUMN_TAGS, tag);
+            NoteAsyncQueryHandler mHandle =
+                    new NoteAsyncQueryHandler(getActivity().getContentResolver());
+            mHandle.startInsert(TAG_INSERT_TOKEN, null, null, cv);
+        }
+        // Need to check if note has been saved and has ID, otherwise delay the tags_notes update
+        if (!currentTag.equals(tag)) {
+            if (getShownId() > 0L) {
+                NoteAsyncQueryHandler mHandle =
+                        new NoteAsyncQueryHandler(getActivity().getContentResolver());
+                mHandle.startInsert(TAG_UPDATE_TOKEN, null, null, null);
+            }
+        }
+
+
     }
 
     @Override
@@ -164,14 +185,6 @@ public class NoteFragment extends Fragment {
         }
 
         return (super.onOptionsItemSelected(item));
-    }
-
-    public void onItemSelected(AdapterView<?> parent, View v, int position, long id){
-
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override
@@ -226,14 +239,12 @@ public class NoteFragment extends Fragment {
 
         NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                 getContentResolver());
-        mHandle.startQuery(1, null, uri, projection, null, selectionArgs, null);
+        mHandle.startQuery(NOTE_QUERY_TOKEN, null, uri, projection, null, selectionArgs, null);
     }
 
     private void saveNote() {
         boolean titleEmpty = editTitle.getText().toString().isEmpty();
         boolean noteEmpty = editNote.getText().toString().isEmpty();
-
-        Log.d("isCHanged = ", Boolean.toString(isChanged));
 
         if ((!titleEmpty || !noteEmpty) && noteUri != null && isChanged) {
             ContentValues cv = new ContentValues();
@@ -244,7 +255,7 @@ public class NoteFragment extends Fragment {
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
-            mHandle.startUpdate(3, null, noteUri, cv, null, null);
+            mHandle.startUpdate(NOTE_UPDATE_TOKEN, null, noteUri, cv, null, null);
         }
         if ((!titleEmpty || !noteEmpty) && noteUri == null) {
             ContentValues cv = new ContentValues();
@@ -256,7 +267,7 @@ public class NoteFragment extends Fragment {
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
-            mHandle.startInsert(2, null, NotesContract.Notes.CONTENT_URI, cv);
+            mHandle.startInsert(NOTE_INSERT_TOKEN, null, NotesContract.Notes.CONTENT_URI, cv);
         }
     }
 
@@ -269,7 +280,7 @@ public class NoteFragment extends Fragment {
                         if (noteUri != null) {
                             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                                     getContentResolver());
-                            mHandle.startDelete(4, null, noteUri, null, null);
+                            mHandle.startDelete(NOTE_DELETE_TOKEN, null, noteUri, null, null);
                         }
 
                         if (mDualPane) {
@@ -309,7 +320,8 @@ public class NoteFragment extends Fragment {
                 textDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format("h:mm a, LLL d", dateModified));
                 //TODO do something with the note tag, either reterive the tag index for tagdialogfragment or sometning
-                tagsBtn.setText(c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS)));
+                currentTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
+                tagsBtn.setText(currentTag);
 
                 c.close();
                 noteWatcher();
@@ -321,7 +333,12 @@ public class NoteFragment extends Fragment {
 
         @Override
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
-            noteUri = uri;
+            if (token == NOTE_INSERT_TOKEN) {
+                noteUri = uri;
+            }
+            if (token == TAG_INSERT_TOKEN) {
+                currentTagId = Long.parseLong(uri.getLastPathSegment());
+            }
         }
 
         @Override

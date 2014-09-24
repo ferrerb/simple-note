@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/choose_tag_btn"
         android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/edit_title"
         android:text="@string/choose_tag"
         style="?android:attr/borderlessButtonStyle"/>
     <EditText
