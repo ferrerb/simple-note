@@ -160,6 +160,15 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public int update(Uri uri, ContentValues cv, String selection,
                                    String[] selectionArgs) {
+        int uriType = sURIMatcher.match(uri);
+        switch (uriType) {
+            case NOTE_ID:
+                break;
+            case TAGS_NOTES_ID:
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI : " + uri);
+        }
         String noteId = uri.getLastPathSegment();
         int count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME,
                 cv,
