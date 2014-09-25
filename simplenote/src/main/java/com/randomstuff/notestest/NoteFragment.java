@@ -145,13 +145,14 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startInsert(TAG_INSERT_TOKEN, null, null, cv);
         }
-        // Need to check if note has been saved and has ID, otherwise delay the tags_notes update
-        if (!currentTag.equals(tag)) {
-            if (getShownId() > 0L) {
-                NoteAsyncQueryHandler mHandle =
-                        new NoteAsyncQueryHandler(getActivity().getContentResolver());
-                mHandle.startInsert(TAG_UPDATE_TOKEN, null, null, null);
-            }
+        // check if it is a different tag, if so update the tags_notes table
+        //for new note with a tag added before save, delay tags_notes update till saveNote called
+        if (currentTagId != id && getShownId() > 0L) {
+
+            NoteAsyncQueryHandler mHandle =
+                    new NoteAsyncQueryHandler(getActivity().getContentResolver());
+            mHandle.startUpdate(TAG_UPDATE_TOKEN, null, null, null, null, null);
+
         }
 
 
