@@ -21,7 +21,9 @@ public class Provider extends ContentProvider {
     private static final int VIRTUAL_NOTES = 3;
     private static final int VIRTUAL_NOTES_ID = 4;
     private static final int TAGS = 5;
-    private static final int TAGS_NOTES = 6;
+    private static final int TAGS_ID = 6;
+    private static final int TAGS_NOTES = 7;
+    private static final int TAGS_NOTES_ID = 8;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
@@ -30,7 +32,9 @@ public class Provider extends ContentProvider {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual", VIRTUAL_NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual/#", VIRTUAL_NOTES_ID);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags", TAGS);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "tags/#", TAGS_ID);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags/notes", TAGS_NOTES);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "tags_notes/#", TAGS_NOTES_ID);
     }
 
     public boolean onCreate() {
@@ -49,7 +53,7 @@ public class Provider extends ContentProvider {
                       String[] selectionArgs, String sort) {
         SQLiteQueryBuilder qb;
 
-        Cursor c = null;
+        Cursor c;
 
         int uriType = sURIMatcher.match(uri);
 
@@ -157,10 +161,26 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
         //could chagne this to allow delete multiple items, or database
-        String noteId = uri.getLastPathSegment();
-        int count = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
-                NotesContract.Notes.COLUMN_ID + "=" + noteId ,
-                selectionArgs);
+        int count;
+        String noteId;
+        int uriType = sURIMatcher.match(uri);
+        switch (uriType) {
+            case TAGS_NOTES_ID:
+                noteId = uri.getLastPathSegment();
+                count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
+                        NotesContract.Notes.COLUMN_ID + "=" + noteId,
+                        selectionArgs);
+                break;
+            case NOTE_ID:
+                noteId = uri.getLastPathSegment();
+                count = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
+                        NotesContract.Notes.COLUMN_ID + "=" + noteId ,
+                        selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Uri : " + uri);
+        }
+
         getContext().getContentResolver().notifyChange(uri, null);
 
         return count;

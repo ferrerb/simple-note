@@ -37,6 +37,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     /*
      *So, need to pass in the current tag from the activity
      */
+    private long currentNoteId;
     private String currentTag;
     private long currentTagId = 0L;
     private boolean isDeleted = false;
@@ -50,7 +51,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private static final int NOTE_QUERY_TOKEN = 3;
     private static final int NOTE_DELETE_TOKEN = 4;
     private static final int TAG_INSERT_TOKEN = 5;
-    private static final int TAG_UPDATE_TOKEN = 6;
+    private static final int NOTE_TAG_INSERT_TOKEN = 6;
+    private static final int NOTE_TAG_UPDATE_TOKEN = 7;
+    private static final int NOTE_TAG_DELETE_TOKEN = 8;
 
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
@@ -85,9 +88,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        long mId = getArguments().getLong("id");
-        if ( mId > 0L) {
-            noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + mId);
+        currentNoteId = getShownId();
+        if ( currentNoteId > 0L) {
+            noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + currentNoteId);
         }
     }
 
@@ -108,7 +111,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
         if (noteUri != null) {
             fillNote(noteUri);
-        } else if (getShownId() == -1L) {
+        } else if (currentNoteId == -1L) {
             editNote.setText(getArguments().getString("share"));
             noteWatcher();
         } else {
@@ -144,15 +147,26 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
             NoteAsyncQueryHandler mHandle =
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startInsert(TAG_INSERT_TOKEN, null, null, cv);
+            if (currentNoteId > 0L) {
+                // either update tag in tags_notes, or insert new with current getShownid
+                // possibly use rawquery so can use insert/update instead of 2 diff options
+            } else {
+                // delay the insert into tags_notes till note is saved
+            }
         }
         // check if it is a different tag, if so update the tags_notes table
         //for new note with a tag added before save, delay tags_notes update till saveNote called
-        if (currentTagId != id && getShownId() > 0L) {
+        if (id > 0L) {
+            if (id != currentTagId && currentTag.length() > 0) {
+                NoteAsyncQueryHandler mHandle =
+                        new NoteAsyncQueryHandler(getActivity().getContentResolver());
+                mHandle.startUpdate(NOTE_TAG_UPDATE_TOKEN, null, NotesContract.Tags_Notes.CONTENT_URI, null, null, null);
+            }
 
-            NoteAsyncQueryHandler mHandle =
-                    new NoteAsyncQueryHandler(getActivity().getContentResolver());
-            mHandle.startUpdate(TAG_UPDATE_TOKEN, null, null, null, null, null);
 
+        }
+        if (id == -2L) {
+            // remove from tags_notes based on currentnoteid
         }
 
 
