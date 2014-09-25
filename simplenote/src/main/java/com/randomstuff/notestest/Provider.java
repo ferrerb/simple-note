@@ -132,10 +132,22 @@ public class Provider extends ContentProvider {
 
     @Override
     synchronized public Uri insert(Uri uri, ContentValues cv) {
-        long rowID = db.getWritableDatabase().insert(NotesContract.Notes.TABLE_NAME, null, cv);
+        long rowId;
+        int uriType = sURIMatcher.match(uri);
+        switch (uriType) {
+            case TAGS:
+                rowId = db.getWritableDatabase().insert(NotesContract.Tags.TABLE_NAME, null, cv);
+                break;
+            case NOTES:
+                rowId = db.getWritableDatabase().insert(NotesContract.Notes.TABLE_NAME, null, cv);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI : " + uri);
 
-        if (rowID > 0) {
-            Uri newUri = ContentUris.withAppendedId(uri, rowID);
+        }
+
+        if (rowId > 0) {
+            Uri newUri = ContentUris.withAppendedId(uri, rowId);
             getContext().getContentResolver().notifyChange(uri, null);
             return newUri;
         }
@@ -160,15 +172,13 @@ public class Provider extends ContentProvider {
 
     @Override
     synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
-        //could chagne this to allow delete multiple items, or database
         int count;
         String noteId;
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case TAGS_NOTES_ID:
-                noteId = uri.getLastPathSegment();
                 count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
-                        NotesContract.Notes.COLUMN_ID + "=" + noteId,
+                        NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
                         selectionArgs);
                 break;
             case NOTE_ID:

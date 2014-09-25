@@ -78,8 +78,6 @@ public final class NotesContract {
         private Tags_Notes() {}
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "tags_notes");
-        public static final Uri REMOVE_NOTE_TAG =
-                Uri.withAppendedPath(AUTHORITY_URI, "tags_notes/remove");
         public static final String TABLE_NAME = "tags_notes";
         public static final String COLUMN_TAGS_ID = "tags_id";
         public static final String COLUMN_NOTES_ID = "notes_id";

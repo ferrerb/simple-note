@@ -146,7 +146,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
             cv.put(NotesContract.Tags.COLUMN_TAGS, tag);
             NoteAsyncQueryHandler mHandle =
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
-            mHandle.startInsert(TAG_INSERT_TOKEN, null, null, cv);
+            mHandle.startInsert(TAG_INSERT_TOKEN, null, NotesContract.Tags.CONTENT_URI, cv);
             if (currentNoteId > 0L) {
                 // either update tag in tags_notes, or insert new with current getShownid
                 // possibly use rawquery so can use insert/update instead of 2 diff options
@@ -165,8 +165,15 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
 
         }
-        if (id == -2L) {
-            // remove from tags_notes based on currentnoteid
+        if (id == -2L && currentNoteId > 0L) {
+            NoteAsyncQueryHandler mHandle =
+                    new NoteAsyncQueryHandler(getActivity().getContentResolver());
+            mHandle.startDelete(
+                    NOTE_TAG_DELETE_TOKEN,
+                    null,
+                    NotesContract.Tags_Notes.CONTENT_URI,
+                    null,
+                    new String[]{ Long.toString(currentNoteId)});
         }
 
 
