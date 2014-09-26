@@ -33,7 +33,7 @@ public class Provider extends ContentProvider {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes_virtual/#", VIRTUAL_NOTES_ID);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags", TAGS);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags/#", TAGS_ID);
-        sURIMatcher.addURI(NotesContract.AUTHORITY, "tags/notes", TAGS_NOTES);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "tags_notes", TAGS_NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags_notes/#", TAGS_NOTES_ID);
     }
 
@@ -160,20 +160,26 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public int update(Uri uri, ContentValues cv, String selection,
                                    String[] selectionArgs) {
+        int count;
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case NOTE_ID:
+                String noteId = uri.getLastPathSegment();
+                count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME,
+                        cv,
+                        NotesContract.Notes.COLUMN_ID + "=" + noteId,
+                        selectionArgs);
                 break;
-            case TAGS_NOTES_ID:
+            case TAGS_NOTES:
+                count = db.getWritableDatabase().update(NotesContract.Tags_Notes.TABLE_NAME,
+                        cv,
+                        selection,
+                        selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI : " + uri);
         }
-        String noteId = uri.getLastPathSegment();
-        int count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME,
-                cv,
-                NotesContract.Notes.COLUMN_ID + "=" + noteId,
-                selectionArgs);
+
         getContext().getContentResolver().notifyChange(uri, null);
 
         return count;

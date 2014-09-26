@@ -142,6 +142,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         //TODO need to put the note id in tags_notes with tag, put in saveNote()
         if (id == -1L) {
             tagsBtn.setText(tag);
+            currentTag = tag;
             ContentValues cv = new ContentValues();
             cv.put(NotesContract.Tags.COLUMN_TAGS, tag);
             NoteAsyncQueryHandler mHandle =
@@ -156,16 +157,29 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         }
         // check if it is a different tag, if so update the tags_notes table
         //for new note with a tag added before save, delay tags_notes update till saveNote called
+        // maybe do all the updating to the note stuff in savenote, and change notechangdd boolean
         if (id > 0L) {
-            if (id != currentTagId && currentTag.length() > 0) {
+            if (!tag.equals(currentTag) && currentTag.length() > 0) {
+                ContentValues cv = new ContentValues();
+                cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, id);
                 NoteAsyncQueryHandler mHandle =
                         new NoteAsyncQueryHandler(getActivity().getContentResolver());
-                mHandle.startUpdate(NOTE_TAG_UPDATE_TOKEN, null, NotesContract.Tags_Notes.CONTENT_URI, null, null, null);
+                mHandle.startUpdate(
+                        NOTE_TAG_UPDATE_TOKEN,
+                        null,
+                        NotesContract.Tags_Notes.CONTENT_URI,
+                        cv,
+                        NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
+                        new String[]{ Long.toString(currentNoteId)});
+            }
+            if (!tag.equals(currentTag) && currentNoteId < 0L) {
+
             }
 
 
         }
-        if (id == -2L && currentNoteId > 0L) {
+        if (id == -2L && currentTag.length() > 0) {
+            currentTag = null;
             NoteAsyncQueryHandler mHandle =
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startDelete(
@@ -341,9 +355,10 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 Log.d("dateMOdified", Long.toString(dateModified));
                 textDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format("h:mm a, LLL d", dateModified));
-                //TODO do something with the note tag, either reterive the tag index for tagdialogfragment or sometning
                 currentTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                tagsBtn.setText(currentTag);
+                if (currentTag.length() > 0) {
+                    tagsBtn.setText(currentTag);
+                }
 
                 c.close();
                 noteWatcher();
