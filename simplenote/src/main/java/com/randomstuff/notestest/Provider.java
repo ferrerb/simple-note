@@ -67,7 +67,8 @@ public class Provider extends ContentProvider {
             case NOTE_ID:
                 // Uses the query builder add a WHERE clause based on note _id, from the URI
                 String sqlNote = "SELECT " + projection[0] + ", " + projection[1] + ", " +
-                        projection[2] + ", " + projection[3] + ", " + projection[4] + " FROM " +
+                        projection[2] + ", " + projection[3] + ", " + projection[4] +
+                        projection[5] + " FROM " +
                         NotesContract.Notes.TABLE_NAME +
                         " LEFT JOIN " +
                         NotesContract.Tags_Notes.TABLE_NAME +
@@ -155,6 +156,9 @@ public class Provider extends ContentProvider {
                     db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, tagCv);
                 }
 
+                break;
+            case TAGS_NOTES:
+                rowId = db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, cv);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI : " + uri);
