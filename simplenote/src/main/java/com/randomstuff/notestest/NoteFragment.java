@@ -139,7 +139,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     @Override
     public void onTagChosen(String tag, long id) {
-        //TODO need to put the note id in tags_notes with tag, put in saveNote()
+        // If id is -1, that means the user entered a new tag
         if (id == -1L) {
             tagsBtn.setText(tag);
             currentTag = tag;
@@ -149,15 +149,11 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startInsert(TAG_INSERT_TOKEN, null, NotesContract.Tags.CONTENT_URI, cv);
             if (currentNoteId > 0L) {
-                // either update tag in tags_notes, or insert new with current getShownid
-                // possibly use rawquery so can use insert/update instead of 2 diff options
-            } else {
-                // delay the insert into tags_notes till note is saved
+                isChanged = true;
+
             }
         }
-        // check if it is a different tag, if so update the tags_notes table
-        //for new note with a tag added before save, delay tags_notes update till saveNote called
-        // maybe do all the updating to the note stuff in savenote, and change notechangdd boolean
+        // If the id is more than 0, the tag already exists, just need to tie it to the current note
         if (id > 0L) {
             if (!tag.equals(currentTag) && currentTag.length() > 0) {
                 ContentValues cv = new ContentValues();
@@ -172,14 +168,14 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                         NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
                         new String[]{ Long.toString(currentNoteId)});
             }
-            if (!tag.equals(currentTag) && currentNoteId < 0L) {
-
-            }
-
-
+            currentTag = tag;
+            currentTagId = id;
         }
+        // If -2 is passed as the id, it means to remove the tag from the current note
         if (id == -2L && currentTag.length() > 0) {
             currentTag = null;
+            currentTagId = 0L;
+            tagsBtn.setText(R.string.choose_tag);
             NoteAsyncQueryHandler mHandle =
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startDelete(
@@ -299,6 +295,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
+            cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, currentTagId);
 
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().

@@ -139,14 +139,29 @@ public class Provider extends ContentProvider {
                 rowId = db.getWritableDatabase().insert(NotesContract.Tags.TABLE_NAME, null, cv);
                 break;
             case NOTES:
-                rowId = db.getWritableDatabase().insert(NotesContract.Notes.TABLE_NAME, null, cv);
+                ContentValues mValues = new ContentValues();
+                mValues.put(NotesContract.Notes.COLUMN_TITLE,
+                        cv.getAsString(NotesContract.Notes.COLUMN_TITLE));
+                mValues.put(NotesContract.Notes.COLUMN_NOTE,
+                        cv.getAsString(NotesContract.Notes.COLUMN_NOTE));
+                mValues.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED,
+                        cv.getAsLong(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
+                rowId = db.getWritableDatabase().insert(NotesContract.Notes.TABLE_NAME, null, mValues);
+                if (rowId > 0L && cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID) > 0L) {
+                    ContentValues tagCv = new ContentValues();
+                    tagCv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, rowId);
+                    tagCv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID,
+                            cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID));
+                    db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, tagCv);
+                }
+
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI : " + uri);
 
         }
 
-        if (rowId > 0) {
+        if (rowId > 0L) {
             Uri newUri = ContentUris.withAppendedId(uri, rowId);
             getContext().getContentResolver().notifyChange(uri, null);
             return newUri;
