@@ -150,6 +150,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startInsert(TAG_INSERT_TOKEN, null, NotesContract.Tags.CONTENT_URI, cv);
             // This might be an issue as currentTagId might not be updated yet from the asynchandler
+            // besides the isChanged, and maybe hasTag, this should go in saveNote
             if (currentNoteId > 0L && currentTagId > 0L) {
                 isChanged = true;
                 if (hasTag) {
@@ -227,6 +228,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     new String[]{ Long.toString(currentNoteId)});
             currentTag = null;
             currentTagId = 0L;
+            hasTag = false;
             tagsBtn.setText(R.string.choose_tag);
         }
 
