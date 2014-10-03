@@ -144,8 +144,6 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar / menu item clicks here
-        //TODO possibly move all this to the mainactivity
 
         return super.onOptionsItemSelected(item);
     }
@@ -176,8 +174,6 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
-        //TODO check if tagID is not -1, then change list
-
         Uri baseUri;
         String[] projection;
         String[] selectionArgs;

@@ -118,9 +118,8 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
         tagsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO Retrieve the current notes tag, or pass 0L for newinstance
                 FragmentManager fm = getFragmentManager();
-                TagDialogFragment frag = TagDialogFragment.newInstance(0L);
+                TagDialogFragment frag = TagDialogFragment.newInstance(currentTagId);
                 frag.setTargetFragment(NoteFragment.this, 0);
                 frag.show(fm, "add_tag");
             }

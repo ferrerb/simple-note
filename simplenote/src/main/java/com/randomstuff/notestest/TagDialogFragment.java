@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 public class TagDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
-    //TODO everything. Do all the query in an asyncqueryhandler. 
     private TagDialogCallbacks mCallbacks;
     private View form = null;
     private static final String TAG_ID = "id";
