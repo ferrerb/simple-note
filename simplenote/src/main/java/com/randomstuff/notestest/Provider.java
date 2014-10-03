@@ -119,6 +119,7 @@ public class Provider extends ContentProvider {
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?) ORDER BY " +
                         sort;
                 c = db.getReadableDatabase().rawQuery(sqlTags, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown Uri: " + uri);
         }
@@ -183,11 +184,40 @@ public class Provider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case NOTE_ID:
+                /* This updates the note data, then uses a rawquery to associate the tag to the note
+                 * With a rawquery, we can do an insert or update, so we don't have to know if
+                 * the note already has a tag or not.
+                 */
                 String noteId = uri.getLastPathSegment();
-                count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME,
-                        cv,
-                        NotesContract.Notes.COLUMN_ID + "=" + noteId,
-                        selectionArgs);
+
+                ContentValues mValues = new ContentValues();
+                mValues.put(NotesContract.Notes.COLUMN_TITLE,
+                        cv.getAsString(NotesContract.Notes.COLUMN_TITLE));
+                mValues.put(NotesContract.Notes.COLUMN_NOTE,
+                        cv.getAsString(NotesContract.Notes.COLUMN_NOTE));
+                mValues.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED,
+                        cv.getAsLong(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
+                count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME, mValues, NotesContract.Notes.COLUMN_ID + "=" + noteId, selectionArgs);
+                if (cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID) > 0L) {
+                    /* Without an upsert command in SQLite, we first try to insert the values, and
+                     * ignore errors if the primary key already exists. NExt we use the same data
+                     * to do an update
+                     */
+                    String tagId = cv.getAsString(NotesContract.Tags_Notes.COLUMN_TAGS_ID);
+                    String[] args = new String[]{ noteId };
+                    String tagInsert = "INSERT OR IGNORE INTO " +
+                            NotesContract.Tags_Notes.TABLE_NAME + " (" +
+                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + ", " +
+                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + ") VALUES (" +
+                            noteId + ", " +
+                            tagId + ");";
+                    String tagUpdate = "UPDATE " + NotesContract.Tags_Notes.TABLE_NAME + " SET " +
+                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + "=" +
+                            tagId + " WHERE " +
+                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + " = ?;";
+                    db.getWritableDatabase().rawQuery(tagInsert, null);
+                    db.getWritableDatabase().rawQuery(tagUpdate, args);
+                }
                 break;
             case TAGS_NOTES:
                 count = db.getWritableDatabase().update(NotesContract.Tags_Notes.TABLE_NAME,

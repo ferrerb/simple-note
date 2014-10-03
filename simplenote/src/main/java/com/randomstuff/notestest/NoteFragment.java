@@ -32,12 +32,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
-    private boolean hasTag = false;
     private TextWatcher noteChangedListener;
     private Button tagsBtn;
-    /*
-     *So, need to pass in the current tag from the activity
-     */
+
     private long currentNoteId;
     private String currentTag;
     private long currentTagId = 0L;
@@ -52,9 +49,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private static final int NOTE_QUERY_TOKEN = 3;
     private static final int NOTE_DELETE_TOKEN = 4;
     private static final int TAG_INSERT_TOKEN = 5;
-    private static final int NOTE_TAG_INSERT_TOKEN = 6;
-    private static final int NOTE_TAG_UPDATE_TOKEN = 7;
-    private static final int NOTE_TAG_DELETE_TOKEN = 8;
+    private static final int NOTE_TAG_DELETE_TOKEN = 6;
 
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
@@ -142,76 +137,20 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void onTagChosen(String tag, long id) {
         // If id is -1, that means the user entered a new tag
         if (id == -1L) {
-            tagsBtn.setText(tag);
+            isChanged = true;
             currentTag = tag;
+            tagsBtn.setText(currentTag);
+
             ContentValues cv = new ContentValues();
             cv.put(NotesContract.Tags.COLUMN_TAGS, tag);
             NoteAsyncQueryHandler mHandle =
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startInsert(TAG_INSERT_TOKEN, null, NotesContract.Tags.CONTENT_URI, cv);
-            // This might be an issue as currentTagId might not be updated yet from the asynchandler
-            // besides the isChanged, and maybe hasTag, this should go in saveNote
-            if (currentNoteId > 0L && currentTagId > 0L) {
-                isChanged = true;
-                if (hasTag) {
-                    ContentValues tagCv = new ContentValues();
-                    tagCv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, id);
-                    NoteAsyncQueryHandler mTagHandler =
-                            new NoteAsyncQueryHandler(getActivity().getContentResolver());
-                    mTagHandler.startUpdate(
-                            NOTE_TAG_UPDATE_TOKEN,
-                            null,
-                            NotesContract.Tags_Notes.CONTENT_URI,
-                            tagCv,
-                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
-                            new String[]{ Long.toString(currentNoteId)});
-                } else {
-                    ContentValues tagCv = new ContentValues();
-                    tagCv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, currentNoteId);
-                    tagCv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, id);
-                    NoteAsyncQueryHandler mTagHandler =
-                            new NoteAsyncQueryHandler(getActivity().getContentResolver());
-                    mTagHandler.startInsert(
-                            NOTE_TAG_INSERT_TOKEN,
-                            null,
-                            NotesContract.Tags_Notes.CONTENT_URI,
-                            tagCv);
-                    hasTag = true;
-                }
 
-            }
         }
-        // If the id is more than 0, the tag already exists, just need to tie it to the current note
+        // If the id is more than 0, the tag already exists. Tagid will be saved on note save
         if (id > 0L) {
-            if (currentNoteId > 0L) {
-                isChanged = true;
-                if (hasTag) {
-                    ContentValues cv = new ContentValues();
-                    cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, id);
-                    NoteAsyncQueryHandler mHandle =
-                            new NoteAsyncQueryHandler(getActivity().getContentResolver());
-                    mHandle.startUpdate(
-                            NOTE_TAG_UPDATE_TOKEN,
-                            null,
-                            NotesContract.Tags_Notes.CONTENT_URI,
-                            cv,
-                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
-                            new String[]{ Long.toString(currentNoteId)});
-                } else {
-                    ContentValues cv = new ContentValues();
-                    cv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, currentNoteId);
-                    cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, id);
-                    NoteAsyncQueryHandler mHandle =
-                            new NoteAsyncQueryHandler(getActivity().getContentResolver());
-                    mHandle.startInsert(
-                            NOTE_TAG_INSERT_TOKEN,
-                            null,
-                            NotesContract.Tags_Notes.CONTENT_URI,
-                            cv);
-                    hasTag = true;
-                }
-            }
-
+            isChanged = true;
             currentTag = tag;
             currentTagId = id;
             tagsBtn.setText(currentTag);
@@ -226,9 +165,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     NotesContract.Tags_Notes.CONTENT_URI,
                     null,
                     new String[]{ Long.toString(currentNoteId)});
+            isChanged = true;
             currentTag = null;
             currentTagId = 0L;
-            hasTag = false;
             tagsBtn.setText(R.string.choose_tag);
         }
 
@@ -326,10 +265,10 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
         if ((!titleEmpty || !noteEmpty) && noteUri != null && isChanged) {
             ContentValues cv = new ContentValues();
-
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
+            cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, currentTagId);
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
@@ -337,12 +276,10 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         }
         if ((!titleEmpty || !noteEmpty) && noteUri == null) {
             ContentValues cv = new ContentValues();
-
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
             cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, currentTagId);
-
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
@@ -402,7 +339,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 if (currentTag.length() > 0) {
                     tagsBtn.setText(currentTag);
                     currentTagId = c.getLong(c.getColumnIndex(NotesContract.Tags.COLUMN_ID));
-                    hasTag = true;
                 }
 
                 c.close();
