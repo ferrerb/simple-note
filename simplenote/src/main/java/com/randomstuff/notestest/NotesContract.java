@@ -65,7 +65,7 @@ public final class NotesContract {
         private Tags() {}
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "tags");
-        public static final Uri NOTES_WITH_TAG = Uri.withAppendedPath(AUTHORITY_URI, "tags/notes");
+        public static final Uri TAGS_NOTES = Uri.withAppendedPath(AUTHORITY_URI, "tags_notes");
         public static final String TABLE_NAME = "tags";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_TAGS = "col_tags";

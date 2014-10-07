@@ -67,7 +67,7 @@ public class Provider extends ContentProvider {
             case NOTE_ID:
                 // Uses the query builder add a WHERE clause based on note _id, from the URI
                 String sqlNote = "SELECT " + projection[0] + ", " + projection[1] + ", " +
-                        projection[2] + ", " + projection[3] + ", " + projection[4] +
+                        projection[2] + ", " + projection[3] + ", " + projection[4] + ", " +
                         projection[5] + " FROM " +
                         NotesContract.Notes.TABLE_NAME +
                         " LEFT JOIN " +

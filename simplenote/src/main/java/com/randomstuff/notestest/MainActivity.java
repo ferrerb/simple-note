@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        if (mCurrentTag.length() > 0) {
+        if (mCurrentTag != null && mCurrentTag.length() > 0) {
             actionBar.setTitle(mCurrentTag);
         } else {
             actionBar.setTitle(R.string.app_name);

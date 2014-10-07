@@ -51,6 +51,8 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private static final int TAG_INSERT_TOKEN = 5;
     private static final int NOTE_TAG_DELETE_TOKEN = 6;
 
+    private static final String DATE_TIME_FORMAT = "h:mm a, LLL d";
+
     public static NoteFragment newInstance(long id) {
         NoteFragment frag = new NoteFragment();
         Log.d("id", String.valueOf(id));
@@ -333,9 +335,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 long dateModified = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
                 Log.d("dateMOdified", Long.toString(dateModified));
                 textDateModified.setText(getString(R.string.last_modified) +
-                        DateFormat.format("h:mm a, LLL d", dateModified));
+                        DateFormat.format(DATE_TIME_FORMAT, dateModified));
                 currentTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                if (currentTag.length() > 0) {
+                if (currentTag != null && currentTag.length() > 0) {
                     tagsBtn.setText(currentTag);
                     currentTagId = c.getLong(c.getColumnIndex(NotesContract.Tags.COLUMN_ID));
                 }

@@ -190,7 +190,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         } else if (tagId > -1L) {
             // stuff to show only that tag or, do i need this. To have an 'All notes' choice, i need
             // to either have the first entry in tags table be for all, or have separate button for all
-            baseUri = NotesContract.NotesVirtual.CONTENT_URI;
+            baseUri = NotesContract.Tags.TAGS_NOTES;
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,
                     NotesContract.Notes.COLUMN_TITLE,
@@ -199,7 +199,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
             selectionArgs = new String[] { Long.toString(tagId) };
         }
         else {
-            baseUri = NotesContract.Tags.NOTES_WITH_TAG;
+            baseUri = NotesContract.Notes.CONTENT_URI;
             projection = new String[] {
                     NotesContract.Notes.COLUMN_ID,
                     NotesContract.Notes.COLUMN_TITLE,
