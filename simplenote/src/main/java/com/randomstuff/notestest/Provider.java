@@ -81,9 +81,6 @@ public class Provider extends ContentProvider {
                         NotesContract.Tags_Notes.TABLE_NAME + "." + NotesContract.Tags_Notes.COLUMN_TAGS_ID + "=" +
                         NotesContract.Tags.TABLE_NAME + "." + NotesContract.Tags.COLUMN_ID + ") WHERE " +
                         NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_ID + "=?";
-                qb = new SQLiteQueryBuilder();
-                qb.setTables(NotesContract.Notes.TABLE_NAME);
-                qb.appendWhere(NotesContract.Notes.COLUMN_ID + "=" + uri.getLastPathSegment());
 
                 c = db.getReadableDatabase().rawQuery(sqlNote, selectionArgs);
                 break;
@@ -99,6 +96,7 @@ public class Provider extends ContentProvider {
                         NotesContract.NotesVirtual.TABLE_NAME + " WHERE " +
                         NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?) ORDER BY " +
                         sort;
+                Log.d("search term", selectionArgs[0]);
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case TAGS:
@@ -118,6 +116,7 @@ public class Provider extends ContentProvider {
                         NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?) ORDER BY " +
                         sort;
+                Log.d("selectionArgs from a query for notes with a certain tag", selectionArgs[0]);
                 c = db.getReadableDatabase().rawQuery(sqlTags, selectionArgs);
                 break;
             default:

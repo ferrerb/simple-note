@@ -76,10 +76,10 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        // A function that starts the cursorloader
         if ( getArguments() != null) {
             tagId = getArguments().getLong(TAG_ID, -1L);
         }
+        // A function that starts the cursorloader
         fillList();
 
         // Basic check for the layout, borrowed from google
@@ -133,7 +133,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     public boolean onQueryTextChange(String newText) {
         mCurrentFilter = !TextUtils.isEmpty(newText) ? newText : null;
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
+        restartCursorLoader();
         return true;
     }
 
@@ -155,7 +155,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         showNote(id);
     }
 
-    void showNote(long id) {
+    private void showNote(long id) {
         mCurNotePosition = id;
 
         if (mDualPane) {
@@ -170,6 +170,10 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         setListAdapter(adapter);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
+    }
+
+    private void restartCursorLoader() {
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
@@ -197,6 +201,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                     NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
             selectionArgs = new String[] { Long.toString(tagId) };
+            Log.d("tagid from notelistfragment = ", selectionArgs[0]);
         }
         else {
             baseUri = NotesContract.Notes.CONTENT_URI;
