@@ -63,6 +63,7 @@ public class Provider extends ContentProvider {
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
                 c = qb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
+                Log.d("this is the provider called for list of all notes", "yes");
                 break;
             case NOTE_ID:
                 // Uses the query builder add a WHERE clause based on note _id, from the URI

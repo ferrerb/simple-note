@@ -16,6 +16,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     private boolean mDualPane;
     private DrawerNavFragment mDrawerNavFragment;
     private String mCurrentTag;
+    private long mCurrentTagId = -1L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +73,16 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
 
     @Override
     public void onDrawerItemSelected(long id, String tag) {
-        mCurrentTag = tag;
-        Log.d("tag id passed to mainactivity from drawer", Long.toString(id));
-        NoteListFragment nFrag = NoteListFragment.newInstance(id);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.notes_list, nFrag).commit();
+        // do something here to check if the tag is changed, and see about fragment visibility
+        NoteListFragment listFrag = (NoteListFragment)getFragmentManager().findFragmentById(R.id.notes_list);
+        if (id != mCurrentTagId && listFrag != null && listFrag.isVisible()) {
+            mCurrentTag = tag;
+            mCurrentTagId = id;
+            Log.d("tag id passed to mainactivity from drawer", Long.toString(mCurrentTagId));
+            NoteListFragment nFrag = NoteListFragment.newInstance(mCurrentTagId);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.notes_list, nFrag).commit();
+        }
     }
 
     public void restoreActionBar() {

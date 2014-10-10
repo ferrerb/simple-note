@@ -123,6 +123,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        Log.d("Options menu called", "yes");
         inflater.inflate(R.menu.notes_list, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
