@@ -31,11 +31,13 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         // Setting up the navigation drawer fragment
         mDrawerNavFragment = (DrawerNavFragment) getFragmentManager()
                 .findFragmentById(R.id.drawer_left);
-        // TODO mtitle to get the tag name, and use it as the acion bar title
 
         mDrawerNavFragment.setUp(R.id.drawer_left,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        NoteListFragment nFrag = NoteListFragment.newInstance(-1L);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.notes_list, nFrag).commit();
 
         // Getting intent information to then deal with a share.
         Intent intent = getIntent();
@@ -78,6 +80,10 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         if (id != mCurrentTagId && listFrag != null && listFrag.isVisible()) {
             mCurrentTag = tag;
             mCurrentTagId = id;
+            if (mCurrentTag != null && mCurrentTag.length() > 0) {
+                getActionBar().setTitle(mCurrentTag);
+
+            }
             Log.d("tag id passed to mainactivity from drawer", Long.toString(mCurrentTagId));
             NoteListFragment nFrag = NoteListFragment.newInstance(mCurrentTagId);
             FragmentTransaction ft = getFragmentManager().beginTransaction();

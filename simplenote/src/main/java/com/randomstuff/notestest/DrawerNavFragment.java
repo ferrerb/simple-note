@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,6 +111,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String mSelectedTag = mDrawerListView.getItemAtPosition(position).toString();
+                Log.d("selected tag from navigation drawer", mSelectedTag);
                 selectItem(position, id, mSelectedTag);
             }
         });

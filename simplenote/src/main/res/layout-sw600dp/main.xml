@@ -4,9 +4,10 @@
 
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:baselineAligned="false">
 
-    <fragment class="com.randomstuff.notestest.NoteListFragment"
+    <FrameLayout
         android:id="@+id/notes_list"
         android:layout_height="match_parent"
         android:layout_width="0dp"
