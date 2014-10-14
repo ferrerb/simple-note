@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,7 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedPosition = position;
                 selectedTag = id;
+                lv.setItemChecked(selectedPosition, true);
             }
         });
 
@@ -111,6 +113,7 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
             }
             if (newTag.length() < 1L && selectedTag != curTagId) {
                 newTag = lv.getItemAtPosition(selectedPosition).toString();
+                Log.d("chosen tag in TagDialogFragment = ", newTag);
                 mCallbacks.onTagChosen(newTag, selectedTag);
             }
         }
@@ -118,9 +121,8 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mCallbacks = null;
-        c.close();
         super.onDismiss(dialog);
+        mCallbacks = null;
     }
 
 }

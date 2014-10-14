@@ -216,7 +216,9 @@ public class Provider extends ContentProvider {
                             tagId + " WHERE " +
                             NotesContract.Tags_Notes.COLUMN_NOTES_ID + " = ?;";
                     db.getWritableDatabase().rawQuery(tagInsert, null);
+                    Log.d("provider update note, the taginsert command runs, tagId = ", tagId);
                     db.getWritableDatabase().rawQuery(tagUpdate, args);
+                    Log.d("provider update note, the tagupdate command runs", "2");
                 }
                 break;
             case TAGS_NOTES:
