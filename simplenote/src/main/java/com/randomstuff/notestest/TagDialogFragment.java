@@ -112,7 +112,7 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
                 mCallbacks.onTagChosen(newTag, -1L);
             }
             if (newTag.length() < 1L && selectedTag != curTagId) {
-                newTag = lv.getItemAtPosition(selectedPosition).toString();
+                newTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
                 Log.d("chosen tag in TagDialogFragment = ", newTag);
                 mCallbacks.onTagChosen(newTag, selectedTag);
             }
