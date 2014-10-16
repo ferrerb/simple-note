@@ -204,21 +204,25 @@ public class Provider extends ContentProvider {
                      * to do an update
                      */
                     String tagId = cv.getAsString(NotesContract.Tags_Notes.COLUMN_TAGS_ID);
-                    String[] args = new String[]{ noteId };
-                    String tagInsert = "INSERT OR IGNORE INTO " +
-                            NotesContract.Tags_Notes.TABLE_NAME + " (" +
-                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + ", " +
-                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + ") VALUES (" +
-                            noteId + ", " +
-                            tagId + ");";
-                    String tagUpdate = "UPDATE " + NotesContract.Tags_Notes.TABLE_NAME + " SET " +
-                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + "=" +
-                            tagId + " WHERE " +
-                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + " = ?;";
-                    db.getWritableDatabase().rawQuery(tagInsert, null);
-                    Log.d("provider update note, the taginsert command runs, tagId = ", tagId);
-                    db.getWritableDatabase().rawQuery(tagUpdate, args);
-                    Log.d("provider update note, the tagupdate command runs", "2");
+//                    String[] args = new String[]{ noteId };
+                    ContentValues tagUpdateCv = new ContentValues();
+                    cv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, noteId);
+                    cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, tagId);
+//                    String tagInsert = "INSERT OR IGNORE INTO " +
+//                            NotesContract.Tags_Notes.TABLE_NAME + " (" +
+//                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + ", " +
+//                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + ") VALUES (" +
+//                            noteId + ", " +
+//                            tagId + ")";
+//                    Log.d("tagInsert = ", tagInsert);
+//                    String tagUpdate = "UPDATE " + NotesContract.Tags_Notes.TABLE_NAME + " SET " +
+//                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = " +
+//                            tagId + " WHERE " +
+//                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + " = ?";
+//                    Log.d("tagUpdate", tagUpdate);
+                    db.getWritableDatabase().replace(NotesContract.Tags_Notes.TABLE_NAME,
+                                                     null,
+                                                     tagUpdateCv);
                 }
                 break;
             case TAGS_NOTES:
