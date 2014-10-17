@@ -206,8 +206,8 @@ public class Provider extends ContentProvider {
                     String tagId = cv.getAsString(NotesContract.Tags_Notes.COLUMN_TAGS_ID);
 //                    String[] args = new String[]{ noteId };
                     ContentValues tagUpdateCv = new ContentValues();
-                    cv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, noteId);
-                    cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, tagId);
+                    tagUpdateCv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, noteId);
+                    tagUpdateCv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, tagId);
 //                    String tagInsert = "INSERT OR IGNORE INTO " +
 //                            NotesContract.Tags_Notes.TABLE_NAME + " (" +
 //                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + ", " +
@@ -220,9 +220,10 @@ public class Provider extends ContentProvider {
 //                            tagId + " WHERE " +
 //                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + " = ?";
 //                    Log.d("tagUpdate", tagUpdate);
-                    db.getWritableDatabase().replace(NotesContract.Tags_Notes.TABLE_NAME,
+                    long asdf = db.getWritableDatabase().replace(NotesContract.Tags_Notes.TABLE_NAME,
                                                      null,
                                                      tagUpdateCv);
+                    Log.d("sqlite replace return = " + Long.toString(asdf), "provider.java");
                 }
                 break;
             case TAGS_NOTES:
