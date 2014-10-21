@@ -199,31 +199,13 @@ public class Provider extends ContentProvider {
                         cv.getAsLong(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
                 count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME, mValues, NotesContract.Notes.COLUMN_ID + "=" + noteId, selectionArgs);
                 if (cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID) > 0L) {
-                    /* Without an upsert command in SQLite, we first try to insert the values, and
-                     * ignore errors if the primary key already exists. NExt we use the same data
-                     * to do an update
-                     */
                     String tagId = cv.getAsString(NotesContract.Tags_Notes.COLUMN_TAGS_ID);
-//                    String[] args = new String[]{ noteId };
                     ContentValues tagUpdateCv = new ContentValues();
                     tagUpdateCv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, noteId);
                     tagUpdateCv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, tagId);
-//                    String tagInsert = "INSERT OR IGNORE INTO " +
-//                            NotesContract.Tags_Notes.TABLE_NAME + " (" +
-//                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + ", " +
-//                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + ") VALUES (" +
-//                            noteId + ", " +
-//                            tagId + ")";
-//                    Log.d("tagInsert = ", tagInsert);
-//                    String tagUpdate = "UPDATE " + NotesContract.Tags_Notes.TABLE_NAME + " SET " +
-//                            NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = " +
-//                            tagId + " WHERE " +
-//                            NotesContract.Tags_Notes.COLUMN_NOTES_ID + " = ?";
-//                    Log.d("tagUpdate", tagUpdate);
-                    long asdf = db.getWritableDatabase().replace(NotesContract.Tags_Notes.TABLE_NAME,
+                    db.getWritableDatabase().replace(NotesContract.Tags_Notes.TABLE_NAME,
                                                      null,
                                                      tagUpdateCv);
-                    Log.d("sqlite replace return = " + Long.toString(asdf), "provider.java");
                 }
                 break;
             case TAGS_NOTES:

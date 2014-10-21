@@ -111,8 +111,8 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // use next line to get actual string from adapter
-                // newTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                String mSelectedTag = mDrawerListView.getItemAtPosition(position).toString();
+                Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);
+                String mSelectedTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
                 Log.d("selected tag from navigation drawer", mSelectedTag);
                 selectItem(position, id, mSelectedTag);
             }

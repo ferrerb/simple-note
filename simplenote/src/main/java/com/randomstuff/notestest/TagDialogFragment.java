@@ -82,16 +82,16 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
                 lv.setItemChecked(selectedPosition, true);
             }
         });
-
-        if (curTagId > 0L) {
-            if (c.moveToFirst()) {
+        // If the note already has a tag, this will mark that tag on the listview
+        if (curTagId > 0L && c != null && c.moveToFirst()) {
                 while (!c.isAfterLast()) {
                     if (c.getLong(0) == curTagId) {
                         selectedPosition = c.getPosition();
                     }
+                    c.moveToNext();
                 }
-            }
-            lv.performItemClick(lv, selectedPosition, curTagId);
+            //lv.performItemClick(lv, selectedPosition, curTagId);
+            lv.setItemChecked(selectedPosition, true);
         }
 
         return (builder.setTitle(R.string.tag_dialog_title)
