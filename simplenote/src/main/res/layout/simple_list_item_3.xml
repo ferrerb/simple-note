@@ -10,28 +10,20 @@
         style="@style/month_separator_style" />
 
     <TextView android:id="@+id/list_note_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="0dp"
         android:layout_below="@id/month_separator"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:background="@drawable/card_row_selector_top"
+        android:paddingTop="3dp"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:maxLength="30"/>
 
     <TextView android:id="@+id/list_note_body"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/list_note_title"
+        android:paddingBottom="3dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:background="@drawable/card_row_selector_bottom"
         android:maxLength="30" />
+
 
 </RelativeLayout>

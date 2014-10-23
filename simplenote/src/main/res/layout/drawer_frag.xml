@@ -13,6 +13,13 @@
         android:text="@string/all_notes"
         style="?android:attr/borderlessButtonStyle"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/lightGrey">
+
+    </View>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

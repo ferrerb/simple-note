@@ -96,6 +96,7 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
 
         return (builder.setTitle(R.string.tag_dialog_title)
                 .setPositiveButton(R.string.ok, this)
+                .setNeutralButton(R.string.remove_tag, this)
                 .setNegativeButton(R.string.cancel, null)).create();
     }
 
