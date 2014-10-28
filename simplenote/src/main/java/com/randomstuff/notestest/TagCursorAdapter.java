@@ -2,12 +2,16 @@ package com.randomstuff.notestest;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 /**
- * Created by mag on 10/23/14.
+ * A custom cursor adapter to add a button for each tag, allowing the user
+ * to delete the tag.
  */
 public class TagCursorAdapter extends CursorAdapter {
 
@@ -15,12 +19,33 @@ public class TagCursorAdapter extends CursorAdapter {
         super(ctxt, cursor, flags);
     }
 
-    @Override
-    public void bindView(View v, Context c, Cursor cursor) {
+    public static class CursorViewHolder {
+        public TextView noteTag;
+        public ImageButton deleteTag;
     }
 
     @Override
-    public ViewGroup newView(Context c, Cursor cursor, ViewGroup group) {
-        return null;
+    public void bindView(View v, Context c, Cursor cursor) {
+        final CursorViewHolder holder = (CursorViewHolder) v.getTag();
+        holder.noteTag.setText(cursor.getString(
+                cursor.getColumnIndex(NotesContract.Tags.COLUMN_TAGS)));
+
+        holder.deleteTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // have a callback to the fragment to set up the delete dialog
+            }
+        });
+    }
+
+    @Override
+    public View newView(Context c, Cursor cursor, ViewGroup group) {
+        View v = LayoutInflater.from(c).inflate(R.layout.list_item_with_delete, group, false);
+
+        CursorViewHolder holder = new CursorViewHolder();
+        holder.noteTag = (TextView) v.findViewById(R.id.tag_view_list_item);
+        holder.deleteTag = (ImageButton) v.findViewById(R.id.delete_tag_btn);
+        v.setTag(holder);
+        return v;
     }
 }

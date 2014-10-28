@@ -47,7 +47,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    private SimpleCursorAdapter adapter = null;
+    private TagCursorAdapter adapter = null;
     private static final int LOADER_ID = 1;
 
     public DrawerNavFragment() {
@@ -118,11 +118,8 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
         // Sets current listview to the cursoradapter
-        adapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1,
+        adapter = new TagCursorAdapter(getActivity(),
                 null,
-                new String[]{ NotesContract.Tags.COLUMN_TAGS },
-                new int[]{ android.R.id.text1 },
                 0);
 
         mDrawerListView.setAdapter(adapter);
