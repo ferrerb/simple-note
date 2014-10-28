@@ -13,7 +13,7 @@ import android.widget.TextView;
  * A custom cursor adapter to add a button for each tag, allowing the user
  * to delete the tag.
  */
-public class TagCursorAdapter extends CursorAdapter {
+public class TagCursorAdapter extends CursorAdapter implements View.OnClickListener {
 
     public TagCursorAdapter(Context ctxt, Cursor cursor, int flags) {
         super(ctxt, cursor, flags);
@@ -29,13 +29,8 @@ public class TagCursorAdapter extends CursorAdapter {
         final CursorViewHolder holder = (CursorViewHolder) v.getTag();
         holder.noteTag.setText(cursor.getString(
                 cursor.getColumnIndex(NotesContract.Tags.COLUMN_TAGS)));
-
-        holder.deleteTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // have a callback to the fragment to set up the delete dialog
-            }
-        });
+        holder.noteTag.setOnClickListener(this);
+        holder.deleteTag.setOnClickListener(this);
     }
 
     @Override
@@ -47,5 +42,11 @@ public class TagCursorAdapter extends CursorAdapter {
         holder.deleteTag = (ImageButton) v.findViewById(R.id.delete_tag_btn);
         v.setTag(holder);
         return v;
+    }
+
+    @Override
+    public void onClick(View v) {
+        // do on click things
+        
     }
 }
