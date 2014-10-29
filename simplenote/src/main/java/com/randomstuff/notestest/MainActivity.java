@@ -1,17 +1,18 @@
 package com.randomstuff.notestest;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends Activity implements NoteListFragment.OnNoteSelectedListener,
+public class MainActivity extends ActionBarActivity implements NoteListFragment.OnNoteSelectedListener,
         DrawerNavFragment.NavDrawerCallbacks {
     private boolean mDualPane;
     private DrawerNavFragment mDrawerNavFragment;
@@ -23,6 +24,10 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
         super.onCreate(savedInstanceState);
         //Sets the initial layout, currently based on either landscape or portrait
         setContentView(R.layout.activity_main);
+
+        // using the new toolbar instead of the actionbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // If the notes fragment is visible, we are in dual pane mode
         View notesFrame = findViewById(R.id.notes);
@@ -81,7 +86,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
             mCurrentTag = tag;
             mCurrentTagId = id;
             if (mCurrentTag != null && mCurrentTag.length() > 0) {
-                getActionBar().setTitle(mCurrentTag);
+                getSupportActionBar().setTitle(mCurrentTag);
 
             }
             Log.d("tag id passed to mainactivity from drawer", Long.toString(mCurrentTagId));
@@ -92,8 +97,7 @@ public class MainActivity extends Activity implements NoteListFragment.OnNoteSel
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         if (mCurrentTag != null && mCurrentTag.length() > 0) {
             actionBar.setTitle(mCurrentTag);

@@ -1,17 +1,3 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/ActionBarTheme</item>
-    </style>
-
-    <style name="ActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/lightBlue</item>
-    </style>
-    <style name="activated" parent="android:Theme.Holo">
-        <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
-    </style>
-    <style name="month_separator_style" parent="android:Theme.Holo">
-        <item name="android:textColor">@android:color/black</item>
-    </style>
 </resources>

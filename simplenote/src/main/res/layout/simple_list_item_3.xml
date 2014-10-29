@@ -7,8 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:paddingBottom="5dp"
-        style="@style/month_separator_style" />
+        android:paddingBottom="5dp" />
 
     <TextView android:id="@+id/list_note_title"
         android:layout_width="wrap_content"

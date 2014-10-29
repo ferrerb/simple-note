@@ -3,8 +3,9 @@ package com.randomstuff.notestest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
-public class SimpleDisplayActivity extends Activity {
+public class SimpleDisplayActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
