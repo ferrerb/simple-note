@@ -28,5 +28,7 @@
     <string name="ok">OK</string>
     <string name="new_tag_hint">Enter new tag</string>
     <string name="remove_tag">Remove tag</string>
+    <string name="delete_selected_tag">Delete selected tag</string>
     <string name="delete_tag_btn">Delete tag</string>
+    <string name="delete_tag_and_notes">Delete tag and tagged notes</string>
 </resources>

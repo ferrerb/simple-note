@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tag_delete_dialog">
+        <item>@string/delete_tag</item>
+        <item>@string/delete_tag_and_notes</item>
+        <item>@string/cancel</item>
+    </string-array>
+</resources>
