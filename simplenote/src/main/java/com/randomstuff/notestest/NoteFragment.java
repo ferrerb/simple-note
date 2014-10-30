@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -84,6 +86,11 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            ((ActionBarActivity)getActivity()).setSupportActionBar(toolbar);
+        }
+
         currentNoteId = getShownId();
         if ( currentNoteId > 0L) {
             noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + currentNoteId);
@@ -127,7 +134,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         });
 
         if (!mDualPane) {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         return (result);
@@ -344,7 +351,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 c.close();
                 noteWatcher();
                 if (!mDualPane) {
-                    getActivity().getActionBar().setTitle(editTitle.getText());
+                    ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(editTitle.getText());
                 }
             }
         }

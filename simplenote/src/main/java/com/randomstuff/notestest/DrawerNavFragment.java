@@ -11,11 +11,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,6 +40,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
+    private Toolbar toolbar;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -80,6 +82,8 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
@@ -142,7 +146,7 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
-                R.drawable.ic_drawer, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+                toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);

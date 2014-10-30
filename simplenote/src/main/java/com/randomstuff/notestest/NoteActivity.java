@@ -15,9 +15,6 @@ public class NoteActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         if (savedInstanceState == null) {
             NoteFragment frag = new NoteFragment();
             frag.setArguments(getIntent().getExtras());

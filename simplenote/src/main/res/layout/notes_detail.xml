@@ -8,6 +8,8 @@
     android:paddingRight="16dp"
     android:background="@drawable/note_background">
 
+    <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
+
     <EditText
         android:id="@+id/edit_title"
         android:layout_width="wrap_content"

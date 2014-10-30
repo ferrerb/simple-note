@@ -27,7 +27,9 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
 
         // using the new toolbar instead of the actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
 
         // If the notes fragment is visible, we are in dual pane mode
         View notesFrame = findViewById(R.id.notes);
