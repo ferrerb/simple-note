@@ -86,11 +86,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            ((ActionBarActivity)getActivity()).setSupportActionBar(toolbar);
-        }
-
         currentNoteId = getShownId();
         if ( currentNoteId > 0L) {
             noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + currentNoteId);

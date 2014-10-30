@@ -14,11 +14,17 @@ public class NoteActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.notes_activity);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
 
         if (savedInstanceState == null) {
             NoteFragment frag = new NoteFragment();
             frag.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().add(android.R.id.content, frag).commit();
+            getFragmentManager().beginTransaction().add(R.id.note, frag).commit();
         }
     }
 }

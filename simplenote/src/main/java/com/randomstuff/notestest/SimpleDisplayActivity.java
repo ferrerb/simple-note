@@ -8,14 +8,15 @@ public class SimpleDisplayActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.simple_display_activity);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (getFragmentManager().findFragmentById(android.R.id.content) == null) {
+        if (getFragmentManager().findFragmentById(R.id.simple_display_frag) == null) {
             SimpleDisplayFragment f = new SimpleDisplayFragment();
             f.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().add(android.R.id.content, f).commit();
+            getFragmentManager().beginTransaction().add(R.id.simple_display_frag, f).commit();
         }
     }
 }
