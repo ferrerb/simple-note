@@ -2,9 +2,7 @@ package com.randomstuff.notestest;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

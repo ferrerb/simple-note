@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * A custom cursor adapter to add a button for each tag, allowing the user

@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 
 public class SimpleDisplayFragment extends Fragment {

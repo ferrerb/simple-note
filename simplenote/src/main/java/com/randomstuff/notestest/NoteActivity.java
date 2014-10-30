@@ -1,9 +1,8 @@
 package com.randomstuff.notestest;
 
-import android.app.Activity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 
 /**
  * This class is called only on portrait mode. It either
@@ -15,6 +14,9 @@ public class NoteActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
             NoteFragment frag = new NoteFragment();
