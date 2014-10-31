@@ -23,6 +23,7 @@
         android:layout_below="@id/list_note_title"
         android:paddingBottom="3dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:singleLine="true"
         android:maxLength="30" />
 
 

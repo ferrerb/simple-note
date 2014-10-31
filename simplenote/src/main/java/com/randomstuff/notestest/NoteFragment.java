@@ -234,7 +234,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
             @Override
             public void afterTextChanged(Editable s) {
                 isChanged = true;
-                Log.d("note changed", "true");
             }
 
             @Override
@@ -268,7 +267,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         boolean noteEmpty = editNote.getText().toString().isEmpty();
 
         if ((!titleEmpty || !noteEmpty) && noteUri != null && isChanged) {
-            Log.d("save updated note", "this is from notefragment");
             ContentValues cv = new ContentValues();
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
@@ -337,7 +335,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 editNote.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));
 
                 long dateModified = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-                Log.d("dateMOdified", Long.toString(dateModified));
                 textDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format(DATE_TIME_FORMAT, dateModified));
                 currentTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
@@ -347,7 +344,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 }
 
                 c.close();
-                //noteWatcher();
                 editTitle.addTextChangedListener(noteChangedListener);
                 editNote.addTextChangedListener(noteChangedListener);
                 if (!mDualPane) {
