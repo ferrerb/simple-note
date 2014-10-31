@@ -119,7 +119,8 @@ public class TagDialogFragment extends DialogFragment
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
         // set up the provider and uri etc
-        return new CursorLoader(getActivity(), null, null, null, null, null);
+        return new CursorLoader(getActivity(),
+                NotesContract.Tags.CONTENT_URI, null, null, null, null);
     }
 
     @Override
