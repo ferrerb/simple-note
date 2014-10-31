@@ -9,18 +9,20 @@
         android:id="@+id/edit_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/edit_title"/>
+        android:singleLine="true"
+        android:hint="@string/edit_title"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/choose_tag_btn"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/choose_tag_btn"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@id/edit_title"
         android:scaleType="centerInside"
         android:adjustViewBounds="true"
-        android:text="@string/choose_tag"
-        style="?android:attr/borderlessButtonStyle"/>
+        android:hint="@string/choose_tag"
+        android:maxLength="20"/>
     <EditText
         android:id="@+id/edit_note"
         android:layout_width="match_parent"

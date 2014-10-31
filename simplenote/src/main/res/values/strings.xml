@@ -21,7 +21,7 @@
     <string name="all_notes">All notes</string>
     <string name="nav_drawer_open">Open Navigation Drawer</string>
     <string name="nav_drawer_close">Close Navigation Drawer</string>
-    <string name="choose_tag">Choose a tag</string>
+    <string name="choose_tag">Select tag</string>
     <string name="new_tag">New tag</string>
     <string name="delete_tag">Delete tag</string>
     <string name="tag_dialog_title">Select a tag</string>

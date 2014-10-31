@@ -3,7 +3,10 @@ package com.randomstuff.notestest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +16,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-public class TagDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
+public class TagDialogFragment extends DialogFragment
+        implements DialogInterface.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     private TagDialogCallbacks mCallbacks;
     private View form = null;
     private static final String TAG_ID = "id";
@@ -22,6 +26,8 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
     private long selectedTag = -1L;
     private Cursor c;
     private ListView lv;
+    private SimpleCursorAdapter adapter;
+    private static final int LOADER_ID = 2;
 
     public static TagDialogFragment newInstance(long id) {
         TagDialogFragment frag = new TagDialogFragment();
@@ -59,19 +65,16 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
         builder.setView(form);
 
         lv = (ListView)form.findViewById(R.id.tag_dialog_list);
-        c = getActivity().getContentResolver().query(
-                NotesContract.Tags.CONTENT_URI,
-                new String[]{ NotesContract.Tags.COLUMN_ID, NotesContract.Tags.COLUMN_TAGS },
-                null,
-                null,
-                null);
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(),
+
+        adapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_1,
-                c,
+                null,
                 new String[]{ NotesContract.Tags.COLUMN_TAGS},
                 new int[]{android.R.id.text1},
                 0);
         lv.setAdapter(adapter);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedPosition = position;
@@ -79,17 +82,6 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
                 lv.setItemChecked(selectedPosition, true);
             }
         });
-        // If the note already has a tag, this will mark that tag on the listview
-        if (curTagId > 0L && c != null && c.moveToFirst()) {
-                while (!c.isAfterLast()) {
-                    if (c.getLong(0) == curTagId) {
-                        selectedPosition = c.getPosition();
-                    }
-                    c.moveToNext();
-                }
-            //lv.performItemClick(lv, selectedPosition, curTagId);
-            lv.setItemChecked(selectedPosition, true);
-        }
 
         return (builder.setTitle(R.string.tag_dialog_title)
                 .setPositiveButton(R.string.ok, this)
@@ -121,6 +113,36 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         mCallbacks = null;
+        c.close();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+        // set up the provider and uri etc
+        return new CursorLoader(getActivity(), null, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        c = data;
+        adapter.swapCursor(data);
+
+        // If the note already has a tag, this will mark that tag on the listview
+        if (curTagId > 0L && c != null && c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+                if (c.getLong(0) == curTagId) {
+                    selectedPosition = c.getPosition();
+                }
+                c.moveToNext();
+            }
+            //lv.performItemClick(lv, selectedPosition, curTagId);
+            lv.setItemChecked(selectedPosition, true);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 
 }

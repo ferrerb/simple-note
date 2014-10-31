@@ -231,6 +231,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
             @Override
             public void afterTextChanged(Editable s) {
                 isChanged = true;
+                Log.d("note changed", "true");
             }
 
             @Override
@@ -266,6 +267,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         boolean noteEmpty = editNote.getText().toString().isEmpty();
 
         if ((!titleEmpty || !noteEmpty) && noteUri != null && isChanged) {
+            Log.d("save updated note", "this is from notefragment");
             ContentValues cv = new ContentValues();
             cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());

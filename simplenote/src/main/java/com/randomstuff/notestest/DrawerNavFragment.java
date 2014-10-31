@@ -3,6 +3,8 @@ package com.randomstuff.notestest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -28,7 +30,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DrawerNavFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>, TagCursorAdapter.OnTagDeleteListener {
     // Remembers the currently selected position
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
     private static final String STATE_SELECTED_INDEX = "selected_navigation_drawer_index";
@@ -123,7 +126,8 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         // Sets current listview to the cursoradapter
         adapter = new TagCursorAdapter(getActivity(),
                 null,
-                0);
+                0,
+                this);
 
         mDrawerListView.setAdapter(adapter);
         // Begins cursorloader
@@ -232,6 +236,31 @@ public class DrawerNavFragment extends Fragment implements LoaderManager.LoaderC
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(R.string.app_name);
+    }
+
+    @Override
+    public void onDeleteTag(long id, int deleteNotes) {
+        if (deleteNotes == 1) {
+            // delete tag and notes tagged
+            TagAsyncQueryHandler mHandle =
+                    new TagAsyncQueryHandler(getActivity().getContentResolver());
+        } else {
+            // delete just tag, and delete the notes in tags_notes with that tag
+            TagAsyncQueryHandler mHandle =
+                    new TagAsyncQueryHandler(getActivity().getContentResolver());
+
+        }
+    }
+
+    private class TagAsyncQueryHandler extends AsyncQueryHandler {
+        public TagAsyncQueryHandler(ContentResolver cr) {
+            super(cr);
+        }
+
+        @Override
+        public void onDeleteComplete(int token, Object cookie, int result) {
+
+        }
     }
 
     public boolean isDrawerOpen() {

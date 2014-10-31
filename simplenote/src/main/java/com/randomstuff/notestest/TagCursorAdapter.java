@@ -1,9 +1,12 @@
 package com.randomstuff.notestest;
 
 import android.app.AlertDialog;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +19,20 @@ import android.widget.TextView;
  * to delete the tag.
  */
 public class TagCursorAdapter extends CursorAdapter implements View.OnClickListener {
+    private OnTagDeleteListener mTagCallbacks;
 
-    public TagCursorAdapter(Context ctxt, Cursor cursor, int flags) {
+    public TagCursorAdapter(Context ctxt, Cursor cursor, int flags, OnTagDeleteListener mTagCallbacks) {
         super(ctxt, cursor, flags);
+        this.mTagCallbacks = mTagCallbacks;
     }
 
     public static class CursorViewHolder {
         public TextView noteTag;
         public ImageButton deleteTag;
+    }
+
+    public interface OnTagDeleteListener {
+        public void onDeleteTag(long id, int deleteNotes);
     }
 
     @Override
@@ -58,6 +67,13 @@ public class TagCursorAdapter extends CursorAdapter implements View.OnClickListe
                         .setItems(R.array.tag_delete_dialog, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do something based on the dialog choice, which = array item
+                                if (which == 0) {
+                                    mTagCallbacks.onDeleteTag(0L, 0);
+                                }
+                                if (which == 1) {
+                                    // delete the tag, and the notes tagged with it
+                                    mTagCallbacks.onDeleteTag(0L, 1);
+                                }
                             }
                         })
                         .show();
@@ -65,4 +81,5 @@ public class TagCursorAdapter extends CursorAdapter implements View.OnClickListe
         }
 
     }
+
 }
