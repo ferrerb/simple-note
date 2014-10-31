@@ -32,7 +32,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private EditText editTitle = null;
     private EditText editNote = null;
     private TextView textDateModified = null;
-    private TextWatcher noteChangedListener;
     private Button tagsBtn;
 
     private long currentNoteId;
@@ -111,9 +110,13 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
             fillNote(noteUri);
         } else if (currentNoteId == -1L) {
             editNote.setText(getArguments().getString("share"));
-            noteWatcher();
+            //noteWatcher();
+            editTitle.addTextChangedListener(noteChangedListener);
+            editNote.addTextChangedListener(noteChangedListener);
         } else {
-            noteWatcher();
+            //noteWatcher();
+            editTitle.addTextChangedListener(noteChangedListener);
+            editNote.addTextChangedListener(noteChangedListener);
         }
 
         setHasOptionsMenu(true);
@@ -208,6 +211,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     @Override
     public void onPause() {
+        editTitle.removeTextChangedListener(noteChangedListener);
         editNote.removeTextChangedListener(noteChangedListener);
         if (!isDeleted) {
             saveNote();
@@ -226,8 +230,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     }
 
-    public void noteWatcher() {
-        noteChangedListener = new TextWatcher() {
+    private TextWatcher noteChangedListener = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 isChanged = true;
@@ -244,8 +247,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 // nothing
             }
         };
-        editNote.addTextChangedListener(noteChangedListener);
-    }
 
     private void fillNote(Uri uri) {
         String[] selectionArgs = new String[]{ uri.getLastPathSegment() };
@@ -346,9 +347,12 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 }
 
                 c.close();
-                noteWatcher();
+                //noteWatcher();
+                editTitle.addTextChangedListener(noteChangedListener);
+                editNote.addTextChangedListener(noteChangedListener);
                 if (!mDualPane) {
-                    ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(editTitle.getText());
+                    ((ActionBarActivity)getActivity()).getSupportActionBar()
+                            .setTitle(editTitle.getText());
                 }
             }
         }
