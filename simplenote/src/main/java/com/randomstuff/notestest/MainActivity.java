@@ -139,8 +139,6 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
                 }
 
                 return true;
-            case(R.id.settings):
-                return true;
             case(R.id.help):
                 Intent i = new Intent(this, SimpleDisplayActivity.class);
                 i.putExtra("file", "help.txt");

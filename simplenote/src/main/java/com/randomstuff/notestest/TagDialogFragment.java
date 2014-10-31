@@ -102,10 +102,17 @@ public class TagDialogFragment extends DialogFragment
                 mCallbacks.onTagChosen(newTag, -1L);
             }
             if (newTag.length() < 1L && selectedTag != curTagId) {
-                newTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
+                if (c != null) {
+                    c.moveToPosition(selectedPosition);
+                    newTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
+                }
                 Log.d("chosen tag in TagDialogFragment = ", newTag);
                 mCallbacks.onTagChosen(newTag, selectedTag);
             }
+        }
+        if (which == -3) {
+            // this is neutral button, remove tag
+            Log.d("negative 2 !", "!");
         }
     }
 
