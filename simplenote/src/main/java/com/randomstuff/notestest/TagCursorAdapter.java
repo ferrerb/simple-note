@@ -31,10 +31,11 @@ public class TagCursorAdapter extends CursorAdapter {
     public static class CursorViewHolder {
         public TextView noteTag;
         public ImageButton deleteTag;
+        int viewPosition;
     }
 
     public interface OnTagDeleteListener {
-        public void onDeleteTag(long id, int deleteNotes);
+        public void onDeleteTag(int position, int deleteNotes);
     }
 
     @Override
@@ -46,17 +47,19 @@ public class TagCursorAdapter extends CursorAdapter {
         holder.deleteTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("holder view id cursor column", Integer.toString(holder.viewPosition));
+
                 AlertDialog.Builder deleteTagDialog = new AlertDialog.Builder(v.getContext());
                 deleteTagDialog.setTitle(R.string.delete_selected_tag)
                         .setItems(R.array.tag_delete_dialog, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do something based on the dialog choice, which = array item
                                 if (which == 0) {
-                                    mTagCallbacks.onDeleteTag(0L, 0);
+                                    mTagCallbacks.onDeleteTag(holder.viewPosition, 0);
                                 }
                                 if (which == 1) {
                                     // delete the tag, and the notes tagged with it
-                                    mTagCallbacks.onDeleteTag(0L, 1);
+                                    mTagCallbacks.onDeleteTag(holder.viewPosition, 1);
                                 }
                             }
                         })
@@ -72,6 +75,7 @@ public class TagCursorAdapter extends CursorAdapter {
         CursorViewHolder holder = new CursorViewHolder();
         holder.noteTag = (TextView) v.findViewById(R.id.tag_view_list_item);
         holder.deleteTag = (ImageButton) v.findViewById(R.id.delete_tag_btn);
+        holder.viewPosition = cursor.getPosition();
         v.setTag(holder);
         return v;
     }

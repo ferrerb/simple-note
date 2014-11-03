@@ -239,7 +239,8 @@ public class DrawerNavFragment extends Fragment implements
     }
 
     @Override
-    public void onDeleteTag(long id, int deleteNotes) {
+    public void onDeleteTag(int position, int deleteNotes) {
+        // need to take the cursor position and find the _id
         if (deleteNotes == 1) {
             // delete tag and notes tagged
             TagAsyncQueryHandler mHandle =
