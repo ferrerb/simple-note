@@ -245,6 +245,7 @@ public class DrawerNavFragment extends Fragment implements
             // delete tag and notes tagged
             TagAsyncQueryHandler mHandle =
                     new TagAsyncQueryHandler(getActivity().getContentResolver());
+            Log.d("delete tag and notes, position =" + Long.toString(mDrawerListView.getItemIdAtPosition(position)), "");
         } else {
             // delete just tag, and delete the notes in tags_notes with that tag
             TagAsyncQueryHandler mHandle =
