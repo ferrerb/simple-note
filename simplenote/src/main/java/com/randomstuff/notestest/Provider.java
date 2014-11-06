@@ -225,6 +225,12 @@ public class Provider extends ContentProvider {
         String noteId;
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
+            // delete the specified tag
+            case TAGS:
+                count = db.getWritableDatabase().delete(NotesContract.Tags.TABLE_NAME,
+                        NotesContract.Tags.COLUMN_ID + "=?",
+                        selectionArgs);
+                break;
             // delete the references to notes with a specific tag
             case TAGS_NOTES:
                 count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
@@ -239,7 +245,9 @@ public class Provider extends ContentProvider {
                 break;
             // delete all notes with a certain tag
             case TAGGED_NOTES:
-                String sqlDeleteTaggedNotes = NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
+                String sqlDeleteTaggedNotes =
+                        NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_ID +
+                        " IN (SELECT " +
                         NotesContract.Tags_Notes.COLUMN_NOTES_ID + " FROM " +
                         NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?)";

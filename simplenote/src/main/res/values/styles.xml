@@ -1,3 +1,5 @@
 <resources>
-
+    <style name="activated" parent="Theme.AppCompat">
+        <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
+    </style>
 </resources>
