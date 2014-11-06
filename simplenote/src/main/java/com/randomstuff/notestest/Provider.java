@@ -22,6 +22,7 @@ public class Provider extends ContentProvider {
     private static final int TAGS_ID = 6;
     private static final int TAGS_NOTES = 7;
     private static final int TAGS_NOTES_ID = 8;
+    private static final int TAGGED_NOTES = 9;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
@@ -33,6 +34,7 @@ public class Provider extends ContentProvider {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags/#", TAGS_ID);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags_notes", TAGS_NOTES);
         sURIMatcher.addURI(NotesContract.AUTHORITY, "tags_notes/#", TAGS_NOTES_ID);
+        sURIMatcher.addURI(NotesContract.AUTHORITY, "notes/tag", TAGGED_NOTES);
     }
 
     public boolean onCreate() {
@@ -61,7 +63,6 @@ public class Provider extends ContentProvider {
                 qb.setTables(NotesContract.Notes.TABLE_NAME);
                 c = qb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
-                Log.d("this is the provider called for list of all notes", "yes");
                 break;
             case NOTE_ID:
                 // Uses the query builder add a WHERE clause based on note _id, from the URI
@@ -95,11 +96,9 @@ public class Provider extends ContentProvider {
                         NotesContract.NotesVirtual.TABLE_NAME + " WHERE " +
                         NotesContract.NotesVirtual.TABLE_NAME + " MATCH ?) ORDER BY " +
                         sort;
-                Log.d("search term", selectionArgs[0]);
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case TAGS:
-                Log.d("uri from tags", uri.toString());
                 qb = new SQLiteQueryBuilder();
                 qb.setTables(NotesContract.Tags.TABLE_NAME);
                 c = qb.query(db.getReadableDatabase(), projection,
@@ -182,9 +181,8 @@ public class Provider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case NOTE_ID:
-                /* This updates the note data, then uses a rawquery to associate the tag to the note
-                 * With a rawquery, we can do an insert or update, so we don't have to know if
-                 * the note already has a tag or not.
+                /* This updates the note data, then uses a replace to either update an existing
+                 * note reference in tags_notes, or inserts a new one
                  */
                 String noteId = uri.getLastPathSegment();
 
@@ -227,11 +225,29 @@ public class Provider extends ContentProvider {
         String noteId;
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
+            // delete the references to notes with a specific tag
+            case TAGS_NOTES:
+                count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
+                        NotesContract.Tags_Notes.COLUMN_TAGS_ID + "=?",
+                        selectionArgs);
+                break;
+            // delete a note from the tags_notes table, making the note tagless
             case TAGS_NOTES_ID:
                 count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
                         NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
                         selectionArgs);
                 break;
+            // delete all notes with a certain tag
+            case TAGGED_NOTES:
+                String sqlDeleteTaggedNotes = NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
+                        NotesContract.Tags_Notes.COLUMN_NOTES_ID + " FROM " +
+                        NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
+                        NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?)";
+                count = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
+                        sqlDeleteTaggedNotes,
+                        selectionArgs);
+                break;
+            // delete a specific note
             case NOTE_ID:
                 noteId = uri.getLastPathSegment();
                 count = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,

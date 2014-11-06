@@ -29,6 +29,7 @@ public final class NotesContract {
         private Notes() {}
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "notes");
+        public static final Uri TAGGED_NOTES = Uri.withAppendedPath(AUTHORITY_URI, "notes/tag");
         public static final String TABLE_NAME = "notes";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_TITLE = "title";

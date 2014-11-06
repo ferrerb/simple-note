@@ -54,6 +54,9 @@ public class DrawerNavFragment extends Fragment implements
 
     private TagCursorAdapter adapter = null;
     private static final int LOADER_ID = 1;
+    private static final int HANDLER_DELETE_TAG_ID = 2;
+    private static final int HANDLER_DELETE_TAGGED_NOTES = 3;
+    private static final int HANDLER_DELETE_TAGGED_ROWS = 4;
 
     public DrawerNavFragment() {
 
@@ -245,11 +248,39 @@ public class DrawerNavFragment extends Fragment implements
             // delete tag and notes tagged
             TagAsyncQueryHandler mHandle =
                     new TagAsyncQueryHandler(getActivity().getContentResolver());
-            Log.d("delete tag and notes, position =" + Long.toString(mDrawerListView.getItemIdAtPosition(position)), "");
+            String tagId = Long.toString(mDrawerListView.getItemIdAtPosition(position));
+            String[] selectionArgs = new String[]{ tagId };
+            mHandle.startDelete(HANDLER_DELETE_TAG_ID,
+                    null,
+                    NotesContract.Tags.CONTENT_URI,
+                    null,
+                    selectionArgs);
+            /* delete the tagged notes from notes table.
+             * a trigger in the database deletes the tags_notes reference
+             */
+            mHandle.startDelete(HANDLER_DELETE_TAGGED_NOTES,
+                    null,
+                    NotesContract.Notes.TAGGED_NOTES,
+                    null,
+                    selectionArgs);
         } else {
-            // delete just tag, and delete the notes in tags_notes with that tag
+            // delete just tag, and delete the rows in tags_notes with that tag
             TagAsyncQueryHandler mHandle =
                     new TagAsyncQueryHandler(getActivity().getContentResolver());
+            String tagId = Long.toString(mDrawerListView.getItemIdAtPosition(position));
+            String[] selectionArgs = new String[]{ tagId };
+            // delete the tag from tags table
+            mHandle.startDelete(HANDLER_DELETE_TAG_ID,
+                    null,
+                    NotesContract.Tags.CONTENT_URI,
+                    null,
+                    selectionArgs);
+            //deletes the rows in tag_notes with the deleted tag
+            mHandle.startDelete(HANDLER_DELETE_TAGGED_ROWS,
+                    null,
+                    NotesContract.Tags_Notes.CONTENT_URI,
+                    null,
+                    selectionArgs);
 
         }
     }
