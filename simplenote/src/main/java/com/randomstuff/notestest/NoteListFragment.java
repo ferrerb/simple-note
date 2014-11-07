@@ -78,6 +78,13 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         if ( getArguments() != null) {
             tagId = getArguments().getLong(TAG_ID, -1L);
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View result = inflater.inflate(R.layout.notes_list, container, false);
+
         // A function that starts the cursorloader
         fillList();
 
@@ -92,20 +99,11 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         Log.d("mCurNotePosition = ", Long.toString(mCurNotePosition));
         // if the layout has both panes, shows that saved note
         if (mDualPane) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
             if (mCurNotePosition != 0) {
                 showNote(mCurNotePosition);
             }
         }
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.notes_list, container, false);
-
         setHasOptionsMenu(true);
 
         return(result);

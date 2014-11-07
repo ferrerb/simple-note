@@ -40,7 +40,8 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
                 .findFragmentById(R.id.drawer_left);
 
         mDrawerNavFragment.setUp(R.id.drawer_left,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout),
+                mDualPane);
 
         NoteListFragment nFrag = NoteListFragment.newInstance(-1L);
         FragmentTransaction ft = getFragmentManager().beginTransaction();

@@ -8,6 +8,8 @@
     android:id="@+id/main"
     android:baselineAligned="false">
 
+    <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
+
     <FrameLayout
         android:id="@+id/notes_list"
         android:layout_height="match_parent"
