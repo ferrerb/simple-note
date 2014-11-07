@@ -105,7 +105,6 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
         tagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
 
-
         if (noteUri != null) {
             fillNote(noteUri);
         } else if (currentNoteId == -1L) {
