@@ -81,7 +81,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TRIGGER_BD_TAG = "CREATE TRIGGER " +
             TRIGGER_BEFORE_DELETE_NOTE + "BEFORE DELETE ON " +
             TABLE_NOTES + " BEGIN DELETE FROM " +
-            TABLE_TAGS_NOTES + " WHERE _id=old._id; END;";
+            TABLE_TAGS_NOTES + " WHERE notes_id=OLD._id; END;";
 
     public DatabaseHelper(Context ctxt) {
         super(ctxt, DATABASE_NAME, null, SCHEMA_VERSION);

@@ -114,7 +114,6 @@ public class Provider extends ContentProvider {
                         NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?) ORDER BY " +
                         sort;
-                Log.d("selectionArgs from a query for notes with a certain tag", selectionArgs[0]);
                 c = db.getReadableDatabase().rawQuery(sqlTags, selectionArgs);
                 break;
             default:
@@ -246,8 +245,7 @@ public class Provider extends ContentProvider {
             // delete all notes with a certain tag
             case TAGGED_NOTES:
                 String sqlDeleteTaggedNotes =
-                        NotesContract.Notes.TABLE_NAME + "." + NotesContract.Notes.COLUMN_ID +
-                        " IN (SELECT " +
+                        NotesContract.Notes.COLUMN_ID + " IN (SELECT " +
                         NotesContract.Tags_Notes.COLUMN_NOTES_ID + " FROM " +
                         NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?)";
