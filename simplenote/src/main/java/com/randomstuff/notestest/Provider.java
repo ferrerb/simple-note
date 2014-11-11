@@ -51,7 +51,7 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public Cursor query(Uri uri, String[] projection, String selection,
                       String[] selectionArgs, String sort) {
-        SQLiteQueryBuilder qb;
+        SQLiteQueryBuilder mQb;
 
         Cursor c;
 
@@ -59,9 +59,9 @@ public class Provider extends ContentProvider {
 
         switch (uriType) {
             case NOTES:
-                qb = new SQLiteQueryBuilder();
-                qb.setTables(NotesContract.Notes.TABLE_NAME);
-                c = qb.query(db.getReadableDatabase(), projection,
+                mQb = new SQLiteQueryBuilder();
+                mQb.setTables(NotesContract.Notes.TABLE_NAME);
+                c = mQb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
                 break;
             case NOTE_ID:
@@ -99,9 +99,9 @@ public class Provider extends ContentProvider {
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case TAGS:
-                qb = new SQLiteQueryBuilder();
-                qb.setTables(NotesContract.Tags.TABLE_NAME);
-                c = qb.query(db.getReadableDatabase(), projection,
+                mQb = new SQLiteQueryBuilder();
+                mQb.setTables(NotesContract.Tags.TABLE_NAME);
+                c = mQb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
                 break;
             case TAGS_NOTES:
@@ -130,11 +130,11 @@ public class Provider extends ContentProvider {
 
     @Override
     synchronized public Uri insert(Uri uri, ContentValues cv) {
-        long rowId;
-        int uriType = sURIMatcher.match(uri);
-        switch (uriType) {
+        long mRowId;
+        int mUriType = sURIMatcher.match(uri);
+        switch (mUriType) {
             case TAGS:
-                rowId = db.getWritableDatabase().insert(NotesContract.Tags.TABLE_NAME, null, cv);
+                mRowId = db.getWritableDatabase().insert(NotesContract.Tags.TABLE_NAME, null, cv);
                 break;
             case NOTES:
                 ContentValues mValues = new ContentValues();
@@ -144,10 +144,10 @@ public class Provider extends ContentProvider {
                         cv.getAsString(NotesContract.Notes.COLUMN_NOTE));
                 mValues.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED,
                         cv.getAsLong(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-                rowId = db.getWritableDatabase().insert(NotesContract.Notes.TABLE_NAME, null, mValues);
-                if (rowId > 0L && cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID) > 0L) {
+                mRowId = db.getWritableDatabase().insert(NotesContract.Notes.TABLE_NAME, null, mValues);
+                if (mRowId > 0L && cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID) > 0L) {
                     ContentValues tagCv = new ContentValues();
-                    tagCv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, rowId);
+                    tagCv.put(NotesContract.Tags_Notes.COLUMN_NOTES_ID, mRowId);
                     tagCv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID,
                             cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID));
                     db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, tagCv);
@@ -155,15 +155,15 @@ public class Provider extends ContentProvider {
 
                 break;
             case TAGS_NOTES:
-                rowId = db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, cv);
+                mRowId = db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, cv);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI : " + uri);
 
         }
 
-        if (rowId > 0L) {
-            Uri newUri = ContentUris.withAppendedId(uri, rowId);
+        if (mRowId > 0L) {
+            Uri newUri = ContentUris.withAppendedId(uri, mRowId);
             getContext().getContentResolver().notifyChange(uri, null);
             return newUri;
         }
@@ -176,9 +176,9 @@ public class Provider extends ContentProvider {
     @Override
     synchronized public int update(Uri uri, ContentValues cv, String selection,
                                    String[] selectionArgs) {
-        int count;
-        int uriType = sURIMatcher.match(uri);
-        switch (uriType) {
+        int mCount;
+        int mUriType = sURIMatcher.match(uri);
+        switch (mUriType) {
             case NOTE_ID:
                 /* This updates the note data, then uses a replace to either update an existing
                  * note reference in tags_notes, or inserts a new one
@@ -192,7 +192,7 @@ public class Provider extends ContentProvider {
                         cv.getAsString(NotesContract.Notes.COLUMN_NOTE));
                 mValues.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED,
                         cv.getAsLong(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-                count = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME, mValues, NotesContract.Notes.COLUMN_ID + "=" + noteId, selectionArgs);
+                mCount = db.getWritableDatabase().update(NotesContract.Notes.TABLE_NAME, mValues, NotesContract.Notes.COLUMN_ID + "=" + noteId, selectionArgs);
                 if (cv.getAsLong(NotesContract.Tags_Notes.COLUMN_TAGS_ID) > 0L) {
                     String tagId = cv.getAsString(NotesContract.Tags_Notes.COLUMN_TAGS_ID);
                     ContentValues tagUpdateCv = new ContentValues();
@@ -204,7 +204,7 @@ public class Provider extends ContentProvider {
                 }
                 break;
             case TAGS_NOTES:
-                count = db.getWritableDatabase().update(NotesContract.Tags_Notes.TABLE_NAME,
+                mCount = db.getWritableDatabase().update(NotesContract.Tags_Notes.TABLE_NAME,
                         cv,
                         selection,
                         selectionArgs);
@@ -215,30 +215,30 @@ public class Provider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
 
-        return count;
+        return mCount;
     }
 
     @Override
     synchronized public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int count;
-        String noteId;
-        int uriType = sURIMatcher.match(uri);
-        switch (uriType) {
+        int mCount;
+        String mNoteId;
+        int mUriType = sURIMatcher.match(uri);
+        switch (mUriType) {
             // delete the specified tag
             case TAGS:
-                count = db.getWritableDatabase().delete(NotesContract.Tags.TABLE_NAME,
+                mCount = db.getWritableDatabase().delete(NotesContract.Tags.TABLE_NAME,
                         NotesContract.Tags.COLUMN_ID + "=?",
                         selectionArgs);
                 break;
             // delete the references to notes with a specific tag
             case TAGS_NOTES:
-                count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
+                mCount = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + "=?",
                         selectionArgs);
                 break;
             // delete a note from the tags_notes table, making the note tagless
             case TAGS_NOTES_ID:
-                count = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
+                mCount = db.getWritableDatabase().delete(NotesContract.Tags_Notes.TABLE_NAME,
                         NotesContract.Tags_Notes.COLUMN_NOTES_ID + "=?",
                         selectionArgs);
                 break;
@@ -249,15 +249,15 @@ public class Provider extends ContentProvider {
                         NotesContract.Tags_Notes.COLUMN_NOTES_ID + " FROM " +
                         NotesContract.Tags_Notes.TABLE_NAME + " WHERE " +
                         NotesContract.Tags_Notes.COLUMN_TAGS_ID + " = ?)";
-                count = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
+                mCount = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
                         sqlDeleteTaggedNotes,
                         selectionArgs);
                 break;
             // delete a specific note
             case NOTE_ID:
-                noteId = uri.getLastPathSegment();
-                count = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
-                        NotesContract.Notes.COLUMN_ID + "=" + noteId ,
+                mNoteId = uri.getLastPathSegment();
+                mCount = db.getWritableDatabase().delete(NotesContract.Notes.TABLE_NAME,
+                        NotesContract.Notes.COLUMN_ID + "=" + mNoteId ,
                         selectionArgs);
                 break;
             default:
@@ -266,7 +266,7 @@ public class Provider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
 
-        return count;
+        return mCount;
     }
 }
 

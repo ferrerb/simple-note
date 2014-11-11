@@ -13,7 +13,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -29,19 +28,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class NoteFragment extends Fragment implements TagDialogFragment.TagDialogCallbacks {
-    private EditText editTitle = null;
-    private EditText editNote = null;
-    private TextView textDateModified = null;
-    private Button tagsBtn;
+    private EditText mEditTitle = null;
+    private EditText mEditNote = null;
+    private TextView mTextDateModified = null;
+    private Button mTagsBtn;
 
-    private long currentNoteId;
-    private String currentTag;
-    private long currentTagId = 0L;
-    private boolean isDeleted = false;
-    private boolean isChanged = false;
+    private long mCurrentNoteId;
+    private String mCurrentTag;
+    private long mCurrentTagId = 0L;
+    private boolean mIsDeleted = false;
+    private boolean mIsChanged = false;
 
     private boolean mDualPane;
-    private Uri noteUri = null;
+    private Uri mNoteUri = null;
 
     private static final int NOTE_INSERT_TOKEN = 1;
     private static final int NOTE_UPDATE_TOKEN = 2;
@@ -53,15 +52,15 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private static final String DATE_TIME_FORMAT = "h:mm a, LLL d";
 
     public static NoteFragment newInstance(long id) {
-        NoteFragment frag = new NoteFragment();
+        NoteFragment mFrag = new NoteFragment();
         Log.d("id", String.valueOf(id));
 
 
         Bundle args = new Bundle();
         args.putLong("id", id);
-        frag.setArguments(args);
+        mFrag.setArguments(args);
 
-        return frag;
+        return mFrag;
     }
 
     public static NoteFragment newInstance(long id, String shareText) {
@@ -85,9 +84,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currentNoteId = getShownId();
-        if ( currentNoteId > 0L) {
-            noteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + currentNoteId);
+        mCurrentNoteId = getShownId();
+        if ( mCurrentNoteId > 0L) {
+            mNoteUri = Uri.parse(NotesContract.Notes.CONTENT_URI + "/" + mCurrentNoteId);
         }
     }
 
@@ -100,31 +99,31 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
 
-        editTitle = (EditText) result.findViewById(R.id.edit_title);
-        editNote = (EditText) result.findViewById(R.id.edit_note);
-        textDateModified = (TextView) result.findViewById(R.id.text_date_modified);
-        tagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
+        mEditTitle = (EditText) result.findViewById(R.id.edit_title);
+        mEditNote = (EditText) result.findViewById(R.id.edit_note);
+        mTextDateModified = (TextView) result.findViewById(R.id.text_date_modified);
+        mTagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
 
-        if (noteUri != null) {
-            fillNote(noteUri);
-        } else if (currentNoteId == -1L) {
-            editNote.setText(getArguments().getString("share"));
+        if (mNoteUri != null) {
+            fillNote(mNoteUri);
+        } else if (mCurrentNoteId == -1L) {
+            mEditNote.setText(getArguments().getString("share"));
             //noteWatcher();
-            editTitle.addTextChangedListener(noteChangedListener);
-            editNote.addTextChangedListener(noteChangedListener);
+            mEditTitle.addTextChangedListener(noteChangedListener);
+            mEditNote.addTextChangedListener(noteChangedListener);
         } else {
             //noteWatcher();
-            editTitle.addTextChangedListener(noteChangedListener);
-            editNote.addTextChangedListener(noteChangedListener);
+            mEditTitle.addTextChangedListener(noteChangedListener);
+            mEditNote.addTextChangedListener(noteChangedListener);
         }
 
         setHasOptionsMenu(true);
 
-        tagsBtn.setOnClickListener(new View.OnClickListener() {
+        mTagsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                Log.d("tag button clicked, current tag id sent = ", Long.toString(currentTagId));
-                TagDialogFragment frag = TagDialogFragment.newInstance(currentTagId);
+                Log.d("tag button clicked, current tag id sent = ", Long.toString(mCurrentTagId));
+                TagDialogFragment frag = TagDialogFragment.newInstance(mCurrentTagId);
                 frag.setTargetFragment(NoteFragment.this, 0);
                 frag.show(fm, "add_tag");
             }
@@ -141,9 +140,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void onTagChosen(String tag, long id) {
         // If id is -1, that means the user entered a new tag
         if (id == -1L) {
-            isChanged = true;
-            currentTag = tag;
-            tagsBtn.setText(currentTag);
+            mIsChanged = true;
+            mCurrentTag = tag;
+            mTagsBtn.setText(mCurrentTag);
 
             ContentValues cv = new ContentValues();
             cv.put(NotesContract.Tags.COLUMN_TAGS, tag);
@@ -154,13 +153,13 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         }
         // If the id is more than 0, the tag already exists. Tagid will be saved on note save
         if (id > 0L) {
-            isChanged = true;
-            currentTag = tag;
-            currentTagId = id;
-            tagsBtn.setText(currentTag);
+            mIsChanged = true;
+            mCurrentTag = tag;
+            mCurrentTagId = id;
+            mTagsBtn.setText(mCurrentTag);
         }
         // If -2 is passed as the id, it means to remove the tag from the current note
-        if (id == -2L && currentTag.length() > 0) {
+        if (id == -2L && mCurrentTag.length() > 0) {
             NoteAsyncQueryHandler mHandle =
                     new NoteAsyncQueryHandler(getActivity().getContentResolver());
             mHandle.startDelete(
@@ -168,11 +167,11 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     null,
                     NotesContract.Tags_Notes.CONTENT_URI,
                     null,
-                    new String[]{ Long.toString(currentNoteId)});
-            isChanged = true;
-            currentTag = null;
-            currentTagId = 0L;
-            tagsBtn.setText(R.string.choose_tag);
+                    new String[]{ Long.toString(mCurrentNoteId)});
+            mIsChanged = true;
+            mCurrentTag = null;
+            mCurrentTagId = 0L;
+            mTagsBtn.setText(R.string.choose_tag);
         }
 
 
@@ -210,9 +209,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     @Override
     public void onPause() {
-        editTitle.removeTextChangedListener(noteChangedListener);
-        editNote.removeTextChangedListener(noteChangedListener);
-        if (!isDeleted) {
+        mEditTitle.removeTextChangedListener(noteChangedListener);
+        mEditNote.removeTextChangedListener(noteChangedListener);
+        if (!mIsDeleted) {
             saveNote();
         }
 
@@ -223,7 +222,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     public void setActionShareIntent() {
         Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mEditNote.getText().toString());
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_choose)));
 
@@ -232,7 +231,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     private TextWatcher noteChangedListener = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                isChanged = true;
+                mIsChanged = true;
             }
 
             @Override
@@ -262,26 +261,26 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
     }
 
     private void saveNote() {
-        boolean titleEmpty = editTitle.getText().toString().isEmpty();
-        boolean noteEmpty = editNote.getText().toString().isEmpty();
+        boolean titleEmpty = mEditTitle.getText().toString().isEmpty();
+        boolean noteEmpty = mEditNote.getText().toString().isEmpty();
 
-        if ((!titleEmpty || !noteEmpty) && noteUri != null && isChanged) {
+        if ((!titleEmpty || !noteEmpty) && mNoteUri != null && mIsChanged) {
             ContentValues cv = new ContentValues();
-            cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
-            cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_TITLE, mEditTitle.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_NOTE, mEditNote.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
-            cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, currentTagId);
+            cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, mCurrentTagId);
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
-            mHandle.startUpdate(NOTE_UPDATE_TOKEN, null, noteUri, cv, null, null);
+            mHandle.startUpdate(NOTE_UPDATE_TOKEN, null, mNoteUri, cv, null, null);
         }
-        if ((!titleEmpty || !noteEmpty) && noteUri == null) {
+        if ((!titleEmpty || !noteEmpty) && mNoteUri == null) {
             ContentValues cv = new ContentValues();
-            cv.put(NotesContract.Notes.COLUMN_TITLE, editTitle.getText().toString());
-            cv.put(NotesContract.Notes.COLUMN_NOTE, editNote.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_TITLE, mEditTitle.getText().toString());
+            cv.put(NotesContract.Notes.COLUMN_NOTE, mEditNote.getText().toString());
             cv.put(NotesContract.Notes.COLUMN_NOTE_MODIFIED, System.currentTimeMillis());
-            cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, currentTagId);
+            cv.put(NotesContract.Tags_Notes.COLUMN_TAGS_ID, mCurrentTagId);
 
             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                     getContentResolver());
@@ -294,11 +293,11 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         deleteDialog.setMessage(R.string.delete_dialog)
                 .setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        isDeleted = true;
-                        if (noteUri != null) {
+                        mIsDeleted = true;
+                        if (mNoteUri != null) {
                             NoteAsyncQueryHandler mHandle = new NoteAsyncQueryHandler(getActivity().
                                     getContentResolver());
-                            mHandle.startDelete(NOTE_DELETE_TOKEN, null, noteUri, null, null);
+                            mHandle.startDelete(NOTE_DELETE_TOKEN, null, mNoteUri, null, null);
                         }
 
                         if (mDualPane) {
@@ -330,24 +329,24 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor c) {
             if (c != null && c.moveToFirst()) {
-                editTitle.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)));
-                editNote.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));
+                mEditTitle.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)));
+                mEditNote.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));
 
                 long dateModified = c.getLong(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE_MODIFIED));
-                textDateModified.setText(getString(R.string.last_modified) +
+                mTextDateModified.setText(getString(R.string.last_modified) +
                         DateFormat.format(DATE_TIME_FORMAT, dateModified));
-                currentTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                if (currentTag != null && currentTag.length() > 0) {
-                    tagsBtn.setText(currentTag);
-                    currentTagId = c.getLong(c.getColumnIndex(NotesContract.Tags.COLUMN_ID));
+                mCurrentTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
+                if (mCurrentTag != null && mCurrentTag.length() > 0) {
+                    mTagsBtn.setText(mCurrentTag);
+                    mCurrentTagId = c.getLong(c.getColumnIndex(NotesContract.Tags.COLUMN_ID));
                 }
 
                 c.close();
-                editTitle.addTextChangedListener(noteChangedListener);
-                editNote.addTextChangedListener(noteChangedListener);
+                mEditTitle.addTextChangedListener(noteChangedListener);
+                mEditNote.addTextChangedListener(noteChangedListener);
                 if (!mDualPane) {
                     ((ActionBarActivity)getActivity()).getSupportActionBar()
-                            .setTitle(editTitle.getText());
+                            .setTitle(mEditTitle.getText());
                 }
             }
         }
@@ -355,10 +354,10 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         @Override
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
             if (token == NOTE_INSERT_TOKEN) {
-                noteUri = uri;
+                mNoteUri = uri;
             }
             if (token == TAG_INSERT_TOKEN) {
-                currentTagId = Long.parseLong(uri.getLastPathSegment());
+                mCurrentTagId = Long.parseLong(uri.getLastPathSegment());
             }
         }
 

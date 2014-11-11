@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ *  Creates a database on first run, and provides methods for upgrading the database
+ */
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notestest.db";
     private static final int SCHEMA_VERSION = 5;
@@ -87,6 +90,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
         super(ctxt, DATABASE_NAME, null, SCHEMA_VERSION);
     }
 
+    /** Creates the database when the class is first called. Doesn't run again if database file exist
+     *
+     * @param db An SQLite database
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creates the database with beautiful sql syntax
@@ -115,6 +122,13 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    /** Changes older versions of the database.
+     *  Called when the database schema number is changed. Used to alter the database schema
+     *
+     *  @param db An SQLite database
+     *  @param newVersion int An integer corresponding to current database version
+     *  @param oldVersion int An integer corresponding to an older version of the database
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         /* Adds tables or whatever is needed based on the version of the database */

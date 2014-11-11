@@ -27,16 +27,16 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     private boolean mDualPane;
     // Stores the current note _id
     private long mCurNotePosition;
-    private int index;
+    private int mIndex;
     // Populates the listview
-    private SeparatorCursorAdapter adapter = null;
+    private SeparatorCursorAdapter mAdapter = null;
     private String mCurrentFilter = null;
     // A static id to give the cursorloader, to allow for new queries based on tags/searches
     private static final int LOADER_ID = 0;
     private static final String CURRENT_NOTE_ID = "curNote";
     // Variables to hold the id for a tag passed in from the navigation drawer -> mainactivity
     private static final String TAG_ID = "id";
-    private long tagId = -1L;
+    private long mTagId = -1L;
 
     public static NoteListFragment newInstance(long id) {
         NoteListFragment frag = new NoteListFragment();
@@ -76,7 +76,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         super.onCreate(savedInstanceState);
 
         if ( getArguments() != null) {
-            tagId = getArguments().getLong(TAG_ID, -1L);
+            mTagId = getArguments().getLong(TAG_ID, -1L);
         }
     }
 
@@ -149,7 +149,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        index = position;
+        mIndex = position;
         showNote(id);
     }
 
@@ -157,15 +157,15 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         mCurNotePosition = id;
 
         if (mDualPane) {
-            getListView().setItemChecked(index, true);
+            getListView().setItemChecked(mIndex, true);
         }
         mCallback.onNoteSelected(id);
     }
 
     private void fillList() {
-        adapter = new SeparatorCursorAdapter(getActivity(), null, 0);
+        mAdapter = new SeparatorCursorAdapter(getActivity(), null, 0);
         // Sets current listview to the cursoradapter
-        setListAdapter(adapter);
+        setListAdapter(mAdapter);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
@@ -189,7 +189,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                     NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
             selectionArgs = new String[] { mCurrentFilter + "*" };
-        } else if (tagId > -1L) {
+        } else if (mTagId > -1L) {
             // stuff to show only that tag or, do i need this. To have an 'All notes' choice, i need
             // to either have the first entry in tags table be for all, or have separate button for all
             baseUri = NotesContract.Tags.TAGS_NOTES;
@@ -198,7 +198,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                     NotesContract.Notes.COLUMN_TITLE,
                     NotesContract.Notes.COLUMN_NOTE,
                     NotesContract.Notes.COLUMN_NOTE_MODIFIED };
-            selectionArgs = new String[] { Long.toString(tagId) };
+            selectionArgs = new String[] { Long.toString(mTagId) };
             Log.d("tagid from notelistfragment = ", selectionArgs[0]);
         }
         else {
@@ -218,11 +218,11 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
+        mAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 }

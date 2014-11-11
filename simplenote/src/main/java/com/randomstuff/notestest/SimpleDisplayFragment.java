@@ -31,9 +31,9 @@ public class SimpleDisplayFragment extends Fragment {
             input.read(buffer);
             input.close();
 
-            String text = new String(buffer);
+            String mBufferText = new String(buffer);
 
-            mText.setText(text);
+            mText.setText(mBufferText);
         }
         catch (java.io.IOException e) {
             e.printStackTrace();

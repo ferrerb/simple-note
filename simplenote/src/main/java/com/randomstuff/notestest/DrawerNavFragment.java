@@ -30,6 +30,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+/** Creates and manages a navigation drawer using a fragment
+ *
+ */
 public class DrawerNavFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>, TagCursorAdapter.OnTagDeleteListener {
     // Remembers the currently selected position
@@ -43,7 +46,7 @@ public class DrawerNavFragment extends Fragment implements
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
-    private Toolbar toolbar;
+    private Toolbar mToolbar;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -52,7 +55,7 @@ public class DrawerNavFragment extends Fragment implements
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    private TagCursorAdapter adapter = null;
+    private TagCursorAdapter mAdapter = null;
     private static final int LOADER_ID = 1;
     private static final int HANDLER_DELETE_TAG_ID = 2;
     private static final int HANDLER_DELETE_TAGGED_NOTES = 3;
@@ -62,15 +65,15 @@ public class DrawerNavFragment extends Fragment implements
 
     }
 
+    /** Sends the creating activity information on the selected tag */
     public interface NavDrawerCallbacks {
         void onDrawerItemSelected(long id, String tag);
     }
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
+        // Checks if the calling activity implements the interface for tag information
         try {
             mCallbacks = (NavDrawerCallbacks) activity;
         } catch (ClassCastException e) {
@@ -89,7 +92,7 @@ public class DrawerNavFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
+        mToolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
@@ -127,12 +130,12 @@ public class DrawerNavFragment extends Fragment implements
             }
         });
         // Sets current listview to the cursoradapter
-        adapter = new TagCursorAdapter(getActivity(),
+        mAdapter = new TagCursorAdapter(getActivity(),
                 null,
                 0,
                 this);
 
-        mDrawerListView.setAdapter(adapter);
+        mDrawerListView.setAdapter(mAdapter);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
         if (mCurrentSelectedPosition > 0) {
@@ -142,6 +145,7 @@ public class DrawerNavFragment extends Fragment implements
         return result;
     }
 
+    /** Sets the responses to various navigation drawer events */
     public void setUp(int fragmentId, DrawerLayout drawerLayout, boolean mDualPane) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
@@ -155,7 +159,7 @@ public class DrawerNavFragment extends Fragment implements
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
-                toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+                mToolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -243,11 +247,11 @@ public class DrawerNavFragment extends Fragment implements
         actionBar.setTitle(R.string.app_name);
     }
 
+    /** Deletes tags, and possibly notes, based on the deleteNotes parameter */
     @Override
     public void onDeleteTag(int position, int deleteNotes) {
-        // need to take the cursor position and find the _id
+        // Delete the tag, and all the notes with that tag
         if (deleteNotes == 1) {
-            // delete tag and notes tagged
             TagAsyncQueryHandler mHandle =
                     new TagAsyncQueryHandler(getActivity().getContentResolver());
             String tagId = Long.toString(mDrawerListView.getItemIdAtPosition(position));
@@ -257,16 +261,14 @@ public class DrawerNavFragment extends Fragment implements
                     NotesContract.Tags.CONTENT_URI,
                     null,
                     selectionArgs);
-            /* delete the tagged notes from notes table.
-             * a trigger in the database deletes the tags_notes reference
-             */
+            // delete the tagged notes from notes table. A trigger on note delete removes the tags_notes row
             mHandle.startDelete(HANDLER_DELETE_TAGGED_NOTES,
                     null,
                     NotesContract.Notes.TAGGED_NOTES,
                     null,
                     selectionArgs);
+        // Delete the tag, and the references to notes with that tag in tags_notes table
         } else {
-            // delete just tag, and delete the rows in tags_notes with that tag
             TagAsyncQueryHandler mHandle =
                     new TagAsyncQueryHandler(getActivity().getContentResolver());
             String tagId = Long.toString(mDrawerListView.getItemIdAtPosition(position));
@@ -287,6 +289,7 @@ public class DrawerNavFragment extends Fragment implements
         }
     }
 
+    /** Creates an asynchronous task to handle database work, specifically deletes */
     private class TagAsyncQueryHandler extends AsyncQueryHandler {
         public TagAsyncQueryHandler(ContentResolver cr) {
             super(cr);
@@ -301,7 +304,8 @@ public class DrawerNavFragment extends Fragment implements
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
-    //This handles both selections in the listview, and hitting the All notes button
+
+    /** Informs the calling activity which tag is selected, and closes the drawer */
     private void selectItem(int position, long id, String tag) {
         mCurrentSelectedPosition = position;
         mCurrentSelectedIndex = id;
@@ -329,11 +333,11 @@ public class DrawerNavFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
+        mAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 }

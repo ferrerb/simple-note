@@ -19,12 +19,12 @@ public class SeparatorCursorAdapter extends CursorAdapter {
     private static final int ROW_DEFAULT = 1;
     private static final int ROW_SEPARATOR = 2;
     private static final int ROW_UNKNOWN = 0;
-    private int[] rowState;
+    private int[] mRowState;
 
     public SeparatorCursorAdapter(Context ctxt, Cursor c, int flags) {
         super(ctxt, c, flags);
         /* Sets the cache to null if cursor is null, or the size of the cursor */
-        rowState = (c == null) ? null : new int[c.getCount()];
+        mRowState = (c == null) ? null : new int[c.getCount()];
     }
 
     /* The viewholder lets you avoid calling findViewById for every bindView, and hold onto
@@ -40,9 +40,9 @@ public class SeparatorCursorAdapter extends CursorAdapter {
     @Override
     public Cursor swapCursor(Cursor c) {
          /* Sets the cache to null to make sure the data is cleared when the cursor is changed.
-          * Then, sets rowState to the size of the not null cursor */
-        rowState = null;
-        if (c != null) { rowState = new int[c.getCount()]; }
+          * Then, sets mRowState to the size of the not null cursor */
+        mRowState = null;
+        if (c != null) { mRowState = new int[c.getCount()]; }
 
         return super.swapCursor(c);
     }
@@ -59,7 +59,7 @@ public class SeparatorCursorAdapter extends CursorAdapter {
         String dateMod = DateFormat.format("LLLL yyyy", dateModLong).toString();
 
         // Checks the cache to decide whether a separator is needed
-        switch (rowState[position]) {
+        switch (mRowState[position]) {
             case ROW_SEPARATOR:
                 needSeparator = true;
                 break;
@@ -78,7 +78,7 @@ public class SeparatorCursorAdapter extends CursorAdapter {
                 }
                 needSeparator = (position == 0) || (!dateMod.equals(dateModPrev));
 
-                rowState[position] = needSeparator ? ROW_SEPARATOR : ROW_DEFAULT;
+                mRowState[position] = needSeparator ? ROW_SEPARATOR : ROW_DEFAULT;
                 break;
         }
 
