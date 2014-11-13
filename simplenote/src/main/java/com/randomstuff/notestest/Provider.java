@@ -24,6 +24,7 @@ public class Provider extends ContentProvider {
     private static final int TAGS_NOTES_ID = 8;
     private static final int TAGGED_NOTES = 9;
 
+    /** Matches incoming URI to then perform the correct SQLite calls */
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         sURIMatcher.addURI(NotesContract.AUTHORITY, "notes", NOTES);
@@ -44,7 +45,6 @@ public class Provider extends ContentProvider {
 
     @Override
     synchronized public String getType(Uri uri) {
-        /// implement uri matcher
         return null;
     }
 
@@ -58,6 +58,7 @@ public class Provider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
 
         switch (uriType) {
+            // Returns all notes from the notes table
             case NOTES:
                 mQb = new SQLiteQueryBuilder();
                 mQb.setTables(NotesContract.Notes.TABLE_NAME);
@@ -65,8 +66,8 @@ public class Provider extends ContentProvider {
                         selection, selectionArgs, null, null, sort);
                 break;
             case NOTE_ID:
-                // Uses the query builder add a WHERE clause based on note _id, from the URI
-                String sqlNote = "SELECT " + projection[0] + ", " + projection[1] + ", " +
+               // Returns a specific note, and uses joins to also get the notes tag
+               String sqlNote = "SELECT " + projection[0] + ", " + projection[1] + ", " +
                         projection[2] + ", " + projection[3] + ", " + projection[4] + ", " +
                         projection[5] + " FROM " +
                         NotesContract.Notes.TABLE_NAME +
@@ -85,9 +86,7 @@ public class Provider extends ContentProvider {
                 c = db.getReadableDatabase().rawQuery(sqlNote, selectionArgs);
                 break;
             case VIRTUAL_NOTES:
-                // This is used when searching for text, will return rows from notes
-                // Using a rawquery here as the querybuilder seemed awkward for making a nested select
-
+                // Returns all notes matching a query, using a virtual table
                 String sql = "SELECT " + projection[0] + ", " + projection[1] + ", " +
                         projection[2] + ", " + projection[3] + " FROM " +
                         NotesContract.Notes.TABLE_NAME + " WHERE " +
@@ -99,13 +98,14 @@ public class Provider extends ContentProvider {
                 c = db.getReadableDatabase().rawQuery(sql, selectionArgs);
                 break;
             case TAGS:
+                // Returns all the tags in the tags table
                 mQb = new SQLiteQueryBuilder();
                 mQb.setTables(NotesContract.Tags.TABLE_NAME);
                 c = mQb.query(db.getReadableDatabase(), projection,
                         selection, selectionArgs, null, null, sort);
                 break;
             case TAGS_NOTES:
-                // This uri is for selecting all notes with a specific tag
+                // Returns all notes with a specific tag
                 String sqlTags = "SELECT " + projection[0] + ", " + projection[1] + ", " +
                         projection[2] + ", " + projection[3] + " FROM " +
                         NotesContract.Notes.TABLE_NAME + " WHERE " +
@@ -134,9 +134,11 @@ public class Provider extends ContentProvider {
         int mUriType = sURIMatcher.match(uri);
         switch (mUriType) {
             case TAGS:
+                // Inserts a new tag in the tags table
                 mRowId = db.getWritableDatabase().insert(NotesContract.Tags.TABLE_NAME, null, cv);
                 break;
             case NOTES:
+                // Inserts a new note in the notes table, and a row in the tags_notes table, if tagged
                 ContentValues mValues = new ContentValues();
                 mValues.put(NotesContract.Notes.COLUMN_TITLE,
                         cv.getAsString(NotesContract.Notes.COLUMN_TITLE));
@@ -155,6 +157,7 @@ public class Provider extends ContentProvider {
 
                 break;
             case TAGS_NOTES:
+                // Inserts a row in the tags_notes table, when an existing note is tagged
                 mRowId = db.getWritableDatabase().insert(NotesContract.Tags_Notes.TABLE_NAME, null, cv);
                 break;
             default:
@@ -204,6 +207,7 @@ public class Provider extends ContentProvider {
                 }
                 break;
             case TAGS_NOTES:
+                // Updates a reference to a note that was previously tagged to the new tag
                 mCount = db.getWritableDatabase().update(NotesContract.Tags_Notes.TABLE_NAME,
                         cv,
                         selection,

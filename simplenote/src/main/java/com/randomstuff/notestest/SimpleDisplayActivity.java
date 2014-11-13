@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 
+/** Simple class to host a fragment with the help/about information */
 public class SimpleDisplayActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {

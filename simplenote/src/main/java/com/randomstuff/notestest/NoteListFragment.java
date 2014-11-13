@@ -38,6 +38,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
     private static final String TAG_ID = "id";
     private long mTagId = -1L;
 
+    /** Returns a new fragment, with a bundle containing a tag id indicating which notes to list */
     public static NoteListFragment newInstance(long id) {
         NoteListFragment frag = new NoteListFragment();
 
@@ -48,7 +49,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         return frag;
     }
 
-    // Interface that hosting activity must implement
+    /** Provides the selected notes id to the parent activity */
     public interface OnNoteSelectedListener {
         public void onNoteSelected(long id);
     }
@@ -85,10 +86,10 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
                              Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.notes_list, container, false);
 
-        // A function that starts the cursorloader
+        // Method to request all the notes and fill the listview
         fillList();
 
-        // Basic check for the layout, borrowed from google
+        // Checks to see if the layout is dual pane
         View notesFrame = getActivity().findViewById(R.id.notes);
         mDualPane = (notesFrame != null) && (notesFrame.getVisibility() == View.VISIBLE);
 
@@ -96,7 +97,6 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         if (savedInstanceState != null) {
             mCurNotePosition = savedInstanceState.getLong(CURRENT_NOTE_ID, 1L);
         }
-        Log.d("mCurNotePosition = ", Long.toString(mCurNotePosition));
         // if the layout has both panes, shows that saved note
         if (mDualPane) {
 
@@ -129,6 +129,11 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
 
     }
 
+    /** Monitors the search view, and restarts the cursorloader for the note list, show the
+     * notes with the entered text. It begins searching after 3 characters have been entered.
+     * @param newText string Text entered in the search view
+     * @return boolean
+     */
     public boolean onQueryTextChange(String newText) {
         mCurrentFilter = !TextUtils.isEmpty(newText) ? newText : null;
         restartCursorLoader();
@@ -146,6 +151,13 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         return super.onOptionsItemSelected(item);
     }
 
+    /** Provides information about the selected item in the listview. Since this is a list fragment
+     *  it expects this method to be implemented.
+     * @param l ListView
+     * @param v View
+     * @param position integer
+     * @param id long
+     */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -153,6 +165,10 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         showNote(id);
     }
 
+    /** Sends the selected notes id to the parent activity, and sets the listview item selected, to
+     *  provide visual confirmation of the choice
+     * @param id long
+     */
     private void showNote(long id) {
         mCurNotePosition = id;
 
@@ -162,6 +178,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         mCallback.onNoteSelected(id);
     }
 
+    /** Creates a new adapter and beings a cursor loader to fill the listview */
     private void fillList() {
         mAdapter = new SeparatorCursorAdapter(getActivity(), null, 0);
         // Sets current listview to the cursoradapter
@@ -170,6 +187,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
+    /** TODO: put this back in the onquerytextchanged method, probably */
     private void restartCursorLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }

@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-/* Done with mucho help from Cyril Mottier's post on listview tips and tricks
- * This is an adapter that separates the cursor data by month
+/** A cursor adapter that seperates the rows based on month. Done with mucho help
+ *  from Cyril Mottier's post on listview tips and tricks
  */
 public class SeparatorCursorAdapter extends CursorAdapter {
-    /* These are stored in an int array against the cursor position
-       to cache whether the view should have a separator visible
-     */
+    // Stored in an int array against the cursor position to cache whether the view should have a separator visible
     private static final int ROW_DEFAULT = 1;
     private static final int ROW_SEPARATOR = 2;
     private static final int ROW_UNKNOWN = 0;
@@ -23,24 +21,22 @@ public class SeparatorCursorAdapter extends CursorAdapter {
 
     public SeparatorCursorAdapter(Context ctxt, Cursor c, int flags) {
         super(ctxt, c, flags);
-        /* Sets the cache to null if cursor is null, or the size of the cursor */
+        // Sets the cache to null if cursor is null, or the size of the cursor
         mRowState = (c == null) ? null : new int[c.getCount()];
     }
 
-    /* The viewholder lets you avoid calling findViewById for every bindView, and hold onto
-    *  the resource as a parameter
-    */
+    /** Holds references to the views in each row, as findviewbyid is expensive */
     private static class CursorViewHolder {
         public TextView separator;
         public TextView titleView;
         public TextView noteView;
     }
 
-    // Have to override swapcursor with cursorloader as opposed to changecursor
     @Override
     public Cursor swapCursor(Cursor c) {
          /* Sets the cache to null to make sure the data is cleared when the cursor is changed.
-          * Then, sets mRowState to the size of the not null cursor */
+          * Then, sets mRowState to the size of the not null cursor
+          */
         mRowState = null;
         if (c != null) { mRowState = new int[c.getCount()]; }
 
@@ -90,13 +86,13 @@ public class SeparatorCursorAdapter extends CursorAdapter {
             holder.separator.setVisibility(View.GONE);
         }
 
-        if (c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)) == null) {
+        if (c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)).length() == 0) {
             holder.titleView.setText(R.string.empty_note_section);
         } else {
             holder.titleView.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_TITLE)));
         }
 
-        if (c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)) == null){
+        if (c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)).length() == 0){
             holder.noteView.setText(R.string.empty_note_section);
         } else {
             holder.noteView.setText(c.getString(c.getColumnIndex(NotesContract.Notes.COLUMN_NOTE)));

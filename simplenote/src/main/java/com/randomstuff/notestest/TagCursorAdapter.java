@@ -12,8 +12,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-/**
- * A custom cursor adapter to add a button for each tag, allowing the user
+/** A custom cursor adapter to add a button for each tag, allowing the user
  * to delete the tag.
  */
 public class TagCursorAdapter extends CursorAdapter {
@@ -25,12 +24,16 @@ public class TagCursorAdapter extends CursorAdapter {
         this.mTagCallbacks = mTagCallbacks;
     }
 
+    /** Holds references to the views in each row, and the position in the listview */
     public static class CursorViewHolder {
         public TextView mNoteTag;
         public ImageButton mDeleteTag;
         int mViewPosition;
     }
 
+    /** Sends the position of the tag to be deleted in the list view, as well as whether to delete
+     *  all notes with that tag.
+     */
     public interface OnTagDeleteListener {
         public void onDeleteTag(int position, int deleteNotes);
     }

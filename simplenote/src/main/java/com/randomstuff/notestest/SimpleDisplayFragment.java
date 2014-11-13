@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.io.InputStream;
-
+/** Shows some basic information retrieved from text files */
 public class SimpleDisplayFragment extends Fragment {
     private TextView mText = null;
 
@@ -22,6 +22,7 @@ public class SimpleDisplayFragment extends Fragment {
         return result;
     }
 
+    /** Displays a simple text file in a text view */
     private void readStuff(String s) {
         try {
             InputStream input = getActivity().getAssets().open("misc/" + s);

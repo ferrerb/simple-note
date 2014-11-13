@@ -235,6 +235,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     }
 
+    /** Monitors an EditText and then sets a boolean to true to indicate the note was changed */
     private TextWatcher noteChangedListener = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -251,7 +252,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                 // nothing
             }
         };
-
+    /** Begins a query to the content provider, using an async task, to display the requested note */
     private void fillNote(Uri uri) {
         String[] selectionArgs = new String[]{ uri.getLastPathSegment() };
         String[] projection = {
@@ -267,6 +268,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         mHandle.startQuery(NOTE_QUERY_TOKEN, null, uri, projection, null, selectionArgs, null);
     }
 
+    /** Saves the current note. The tag information is also sent to the content provider, which
+     *  will then decide whether there actually is a tag to save
+     */
     private void saveNote() {
         boolean titleEmpty = mEditTitle.getText().toString().isEmpty();
         boolean noteEmpty = mEditNote.getText().toString().isEmpty();
@@ -295,6 +299,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         }
     }
 
+    /** Creates a dialog asking for confirmation to delete the note */
     private void deleteNoteDialog() {
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(getActivity());
         deleteDialog.setMessage(R.string.delete_dialog)
@@ -327,7 +332,9 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     }
 
-
+    /** Handles content provider work asynchronously. The overridden methods here are
+     *  for actually using the results of that work
+     */
     private class NoteAsyncQueryHandler extends AsyncQueryHandler {
         public NoteAsyncQueryHandler (ContentResolver cr) {
             super(cr);

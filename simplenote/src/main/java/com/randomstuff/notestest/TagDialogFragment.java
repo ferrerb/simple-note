@@ -39,6 +39,7 @@ public class TagDialogFragment extends DialogFragment
         return frag;
     }
 
+    /** Provides the selected tags name, and id */
     public interface TagDialogCallbacks {
         void onTagChosen(String tag, long id);
     }
