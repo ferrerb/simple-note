@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+/** The main activity for the app. Starts the navigation drawer, handles note selection through
+ *  an interface, receives share data from other apps.
+ */
 public class MainActivity extends ActionBarActivity implements NoteListFragment.OnNoteSelectedListener,
         DrawerNavFragment.NavDrawerCallbacks {
     private boolean mDualPane;
@@ -22,10 +25,10 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Sets the initial layout, currently based on either landscape or portrait
+        //Sets the initial layout, which will change with a larger screen to a dual pane layout
         setContentView(R.layout.activity_main);
 
-        // using the new toolbar instead of the actionbar
+        // The toolbar takes the place of a dedicated actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -43,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
                 (DrawerLayout) findViewById(R.id.drawer_layout),
                 mDualPane);
 
+        // Creates the list of notes fragment, as that will always be displayed initially
         NoteListFragment nFrag = NoteListFragment.newInstance(-1L);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.notes_list, nFrag).commit();
@@ -57,7 +61,8 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
         }
 
     }
-
+    /** Creates a note fragment and gives it the requested note's _id */
+    @Override
     public void onNoteSelected(long id) {
         //This is to load an existing note
 
@@ -81,9 +86,9 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
 
     }
 
+    /** Replaces the note list fragment with a new one, based on the selected tag */
     @Override
     public void onDrawerItemSelected(long id, String tag) {
-        // do something here to check if the tag is changed, and see about fragment visibility
         NoteListFragment listFrag = (NoteListFragment)getFragmentManager().findFragmentById(R.id.notes_list);
         if (id != mCurrentTagId && listFrag != null && listFrag.isVisible()) {
             mCurrentTag = tag;
@@ -92,7 +97,6 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
                 getSupportActionBar().setTitle(mCurrentTag);
 
             }
-            Log.d("tag id passed to mainactivity from drawer", Long.toString(mCurrentTagId));
             NoteListFragment nFrag = NoteListFragment.newInstance(mCurrentTagId);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.notes_list, nFrag).commit();
@@ -154,6 +158,7 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
         return super.onOptionsItemSelected(item);
     }
 
+    /** Creates/replaces the note fragment when the app receives a share, and passes the shared text*/
     private void startShare(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {

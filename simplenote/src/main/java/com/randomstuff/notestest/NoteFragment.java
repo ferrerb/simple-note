@@ -27,7 +27,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/** Displays notes */
 public class NoteFragment extends Fragment implements TagDialogFragment.TagDialogCallbacks {
+    // Variables to hold references to the views associated with the note fragment
     private EditText mEditTitle = null;
     private EditText mEditNote = null;
     private TextView mTextDateModified = null;
@@ -41,7 +43,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     private boolean mDualPane;
     private Uri mNoteUri = null;
-
+    // Tokens to help identify the various async tasks used to deal with notes
     private static final int NOTE_INSERT_TOKEN = 1;
     private static final int NOTE_UPDATE_TOKEN = 2;
     private static final int NOTE_QUERY_TOKEN = 3;
@@ -51,6 +53,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
     private static final String DATE_TIME_FORMAT = "h:mm a, LLL d";
 
+    /** Returns a note fragment with the requested note id as a bundle */
     public static NoteFragment newInstance(long id) {
         NoteFragment mFrag = new NoteFragment();
         Log.d("id", String.valueOf(id));
@@ -63,6 +66,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         return mFrag;
     }
 
+    /** Returns a note fragment with the shared text, and an id of -1 to indicate there is shared text */
     public static NoteFragment newInstance(long id, String shareText) {
         NoteFragment frag = new NoteFragment();
         Log.d("id", String.valueOf(id));
@@ -76,6 +80,10 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         return frag;
     }
 
+    /** Retrieves the id from the bundle associated with this fragment. 0 is used as default since
+     *  SQLite starts incrementing from 1.
+     * @return long
+     */
     public long getShownId() {
         return getArguments().getLong("id", 0L);
     }
@@ -98,37 +106,35 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
 
         View notesListFrame = getActivity().findViewById(R.id.notes_list);
         mDualPane = (notesListFrame != null) && (notesListFrame.getVisibility() == View.VISIBLE);
-
+        // Find all the views in the layout and hold a reference to them
         mEditTitle = (EditText) result.findViewById(R.id.edit_title);
         mEditNote = (EditText) result.findViewById(R.id.edit_note);
         mTextDateModified = (TextView) result.findViewById(R.id.text_date_modified);
         mTagsBtn = (Button) result.findViewById(R.id.choose_tag_btn);
 
+        // Fills the views with the requested note information, and adds a note listener to detect changes
         if (mNoteUri != null) {
             fillNote(mNoteUri);
         } else if (mCurrentNoteId == -1L) {
             mEditNote.setText(getArguments().getString("share"));
-            //noteWatcher();
             mEditTitle.addTextChangedListener(noteChangedListener);
             mEditNote.addTextChangedListener(noteChangedListener);
         } else {
-            //noteWatcher();
             mEditTitle.addTextChangedListener(noteChangedListener);
             mEditNote.addTextChangedListener(noteChangedListener);
         }
 
         setHasOptionsMenu(true);
-
+        // Watches for button press, and creates the dialog fragment for choosing a tag
         mTagsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
-                Log.d("tag button clicked, current tag id sent = ", Long.toString(mCurrentTagId));
                 TagDialogFragment frag = TagDialogFragment.newInstance(mCurrentTagId);
                 frag.setTargetFragment(NoteFragment.this, 0);
                 frag.show(fm, "add_tag");
             }
         });
-
+        // Sets the home button in the actionbar as enabled if we are in single pane mode
         if (!mDualPane) {
             ((ActionBarActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -136,9 +142,10 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         return (result);
     }
 
+    /** Manipulates tag information for the current note based on choices in the tag dialog fragment */
     @Override
     public void onTagChosen(String tag, long id) {
-        // If id is -1, that means the user entered a new tag
+        // If id is -1, that means the user created a new tag
         if (id == -1L) {
             mIsChanged = true;
             mCurrentTag = tag;
@@ -218,7 +225,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
         super.onPause();
     }
 
-
+    /** Creates a new intent to share the displayed note body only */
     public void setActionShareIntent() {
         Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");

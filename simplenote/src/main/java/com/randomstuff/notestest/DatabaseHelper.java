@@ -109,10 +109,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TRIGGER_BD_TAG);
             // Virtual table that allows for faster full text searches, holding just notes + titles
             db.execSQL(CREATE_VIRTUAL_NOTES_TABLE);
-            // Triggers before an update to the main table, to delete the data from the virtual table
+            // Triggers before an update to the notes table, to delete the data from the virtual table
             db.execSQL(CREATE_TRIGGER_BU);
             db.execSQL(CREATE_TRIGGER_BD);
-            // Triggers after the update, to insert the new data into the virtual table
+            // Triggers after an update to the notes table, to insert the new data into the virtual table
             db.execSQL(CREATE_TRIGGER_AU);
             db.execSQL(CREATE_TRIGGER_AI);
             db.setTransactionSuccessful();
@@ -131,7 +131,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /* Adds tables or whatever is needed based on the version of the database */
         switch (oldVersion) {
             case 1:
                 try {

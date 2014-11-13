@@ -62,7 +62,6 @@ public class DrawerNavFragment extends Fragment implements
     private static final int HANDLER_DELETE_TAGGED_ROWS = 4;
 
     public DrawerNavFragment() {
-
     }
 
     /** Sends the creating activity information on the selected tag */
@@ -92,8 +91,9 @@ public class DrawerNavFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Finds the calling activity's toolbar, used as an actionbar
         mToolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
-
+        // Checks if the activity has been started before, to open the drawer if not in setUp
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
@@ -129,7 +129,7 @@ public class DrawerNavFragment extends Fragment implements
                 selectItem(position, id, mSelectedTag);
             }
         });
-        // Sets current listview to the cursoradapter
+        // Sets current listview to the custom cursor adapter
         mAdapter = new TagCursorAdapter(getActivity(),
                 null,
                 0,
