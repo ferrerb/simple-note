@@ -174,7 +174,7 @@ public class NoteFragment extends Fragment implements TagDialogFragment.TagDialo
                     null,
                     NotesContract.Tags_Notes.CONTENT_URI,
                     null,
-                    new String[]{ Long.toString(mCurrentNoteId)});
+                    new String[]{ Long.toString(mCurrentNoteId) });
             mIsChanged = true;
             mCurrentTag = null;
             mCurrentTagId = 0L;

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+/** Used to choose, create and remove a tag from a note */
 public class TagDialogFragment extends DialogFragment
         implements DialogInterface.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     private TagDialogCallbacks mCallbacks;
@@ -29,6 +30,11 @@ public class TagDialogFragment extends DialogFragment
     private SimpleCursorAdapter mAdapter;
     private static final int LOADER_ID = 2;
 
+    /** Returns a new fragment with the id of the note's current tag in a bundle
+     *
+     * @param id long
+     * @return TagDialogFragment
+     */
     public static TagDialogFragment newInstance(long id) {
         TagDialogFragment frag = new TagDialogFragment();
 
@@ -39,7 +45,7 @@ public class TagDialogFragment extends DialogFragment
         return frag;
     }
 
-    /** Provides the selected tags name, and id */
+    /** Provides the selected tags name and id */
     public interface TagDialogCallbacks {
         void onTagChosen(String tag, long id);
     }
@@ -93,8 +99,7 @@ public class TagDialogFragment extends DialogFragment
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        // do things! like TagDialogCallbacks
-        // this stuff should happen in the positive button click -1 positive -2 negative
+        // -1 is the Positive button, so this means adding or changing a tag
         if (which == -1) {
             EditText editNewTag = (EditText) mForm.findViewById(R.id.edit_new_tag);
             String newTag = editNewTag.getText().toString();
@@ -111,9 +116,11 @@ public class TagDialogFragment extends DialogFragment
                 mCallbacks.onTagChosen(newTag, mSelectedTag);
             }
         }
+        // -3 is neutral button, which is used here to remove the current tag
         if (which == -3) {
-            // this is neutral button, remove tag
+            // TODO: tag removal
             Log.d("negative 2 !", "!");
+            mCallbacks.onTagChosen(null, -2L);
         }
     }
 
