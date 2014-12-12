@@ -129,6 +129,10 @@ public class DrawerNavFragment extends Fragment implements
                 selectItem(position, id, mSelectedTag);
             }
         });
+        View header = inflater.inflate(R.layout.header_all_notes, null);
+        View footerAbout = inflater.inflate(R.layout.footer_about, null);
+        mDrawerListView.addHeaderView(header);
+        mDrawerListView.addFooterView(footerAbout);
         // Sets current listview to the custom cursor adapter
         mAdapter = new TagCursorAdapter(getActivity(),
                 null,
