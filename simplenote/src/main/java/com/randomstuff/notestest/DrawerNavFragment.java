@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /** Creates and manages a navigation drawer using a fragment
  *
@@ -112,21 +113,26 @@ public class DrawerNavFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         View result = inflater.inflate(R.layout.drawer_frag, container, false);
-        final Button notesBtn = (Button) result.findViewById(R.id.all_notes_btn);
-        notesBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                selectItem(-1, -1L, null);
-            }
-        });
 
         mDrawerListView = (ListView) result.findViewById(R.id.drawer_list);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);
-                String mSelectedTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                Log.d("selected tag from navigation drawer", mSelectedTag);
-                selectItem(position, id, mSelectedTag);
+                if (position == 0) {
+                    // The All notes header
+                    selectItem(-1, -1L, null);
+                } else if (position == mDrawerListView.getCount() - 1){
+                    // About choice
+                    // TODO pass some things to get the mainactivity to show the about page
+                    // TODO find an About icon for the footer about choice
+                    Toast.makeText(getActivity(), "You chose a header or footer", Toast.LENGTH_SHORT).show();
+                } else {
+                    Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);
+                    String mSelectedTag =
+                            c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
+                    c.close();
+                    selectItem(position, id, mSelectedTag);
+                }
             }
         });
         View header = inflater.inflate(R.layout.header_all_notes, null);
