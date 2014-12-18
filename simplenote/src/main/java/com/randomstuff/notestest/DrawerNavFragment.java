@@ -118,7 +118,7 @@ public class DrawerNavFragment extends Fragment implements
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
+                if (mDrawerListView.getHeaderViewsCount() == 1 && position == 0) {
                     // The All notes header
                     selectItem(-1, -1L, null);
                 } else if (position == mDrawerListView.getCount() - 1){
