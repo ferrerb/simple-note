@@ -2,18 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="@dimen/listview_drawer_vertical_size"
-    android:layout_marginStart="@dimen/listview_drawer_start_padding"
+    android:gravity="center_vertical"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_marginStart="@dimen/listview_drawer_start_padding"
         android:id="@+id/tag_view_list_item" />
 
     <ImageButton
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/listview_drawer_delete_icon"
         android:id="@+id/delete_tag_btn"
         android:scaleType="centerInside"
         android:adjustViewBounds="true"

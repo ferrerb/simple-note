@@ -130,7 +130,6 @@ public class DrawerNavFragment extends Fragment implements
                     Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);
                     String mSelectedTag =
                             c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                    c.close();
                     selectItem(position, id, mSelectedTag);
                 }
             }
