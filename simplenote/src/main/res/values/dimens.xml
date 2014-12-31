@@ -5,4 +5,6 @@
     <dimen name="listview_drawer_vertical_size">48dp</dimen>
     <dimen name="listview_drawer_start_padding">16dp</dimen>
     <dimen name="listview_drawer_delete_icon">24dp</dimen>
+    <dimen name="listview_drawer_about_icon">24dp</dimen>
+
 </resources>

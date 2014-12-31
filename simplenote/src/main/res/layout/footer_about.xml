@@ -8,11 +8,20 @@
         android:layout_height="@dimen/listview_drawer_vertical_size"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/listview_drawer_about_icon"
+            android:layout_marginStart="@dimen/listview_drawer_start_padding"
+            android:contentDescription="@string/about"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_action_about" />
+
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/about_button"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/listview_drawer_start_padding"
+            android:id="@+id/about_button"
             android:text="@string/about"/>
     </LinearLayout>
 </FrameLayout>

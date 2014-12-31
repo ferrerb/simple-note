@@ -123,9 +123,8 @@ public class DrawerNavFragment extends Fragment implements
                     selectItem(-1, -1L, null);
                 } else if (position == mDrawerListView.getCount() - 1){
                     // About choice
-                    // TODO pass some things to get the mainactivity to show the about page
                     // TODO find an About icon for the footer about choice
-                    Toast.makeText(getActivity(), "You chose a header or footer", Toast.LENGTH_SHORT).show();
+                    selectItem(-2, -2L, null);
                 } else {
                     Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);
                     String mSelectedTag =

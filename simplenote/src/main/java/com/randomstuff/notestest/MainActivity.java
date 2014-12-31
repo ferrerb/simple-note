@@ -89,18 +89,28 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
     /** Replaces the note list fragment with a new one, based on the selected tag */
     @Override
     public void onDrawerItemSelected(long id, String tag) {
-        NoteListFragment listFrag = (NoteListFragment)getFragmentManager().findFragmentById(R.id.notes_list);
-        if (id != mCurrentTagId && listFrag != null && listFrag.isVisible()) {
-            mCurrentTag = tag;
-            mCurrentTagId = id;
-            if (mCurrentTag != null && mCurrentTag.length() > 0) {
-                getSupportActionBar().setTitle(mCurrentTag);
+        // Restarts the note list to show the chosen tag
+        if (id > 0) {
+            NoteListFragment listFrag = (NoteListFragment)getFragmentManager().findFragmentById(R.id.notes_list);
+            if (id != mCurrentTagId && listFrag != null && listFrag.isVisible()) {
+                mCurrentTag = tag;
+                mCurrentTagId = id;
+                if (mCurrentTag != null && mCurrentTag.length() > 0) {
+                    getSupportActionBar().setTitle(mCurrentTag);
 
+                }
+                NoteListFragment nFrag = NoteListFragment.newInstance(mCurrentTagId);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.notes_list, nFrag).commit();
             }
-            NoteListFragment nFrag = NoteListFragment.newInstance(mCurrentTagId);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.notes_list, nFrag).commit();
         }
+        // Starts the 'About' activity
+        if (id == -2L) {
+            Intent i = new Intent(this, SimpleDisplayActivity.class);
+            i.putExtra("file", "about.txt");
+            startActivity(i);
+        }
+
     }
 
     public void restoreActionBar() {
@@ -147,11 +157,6 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
             case(R.id.help):
                 Intent i = new Intent(this, SimpleDisplayActivity.class);
                 i.putExtra("file", "help.txt");
-                startActivity(i);
-                return true;
-            case(R.id.about):
-                i = new Intent(this, SimpleDisplayActivity.class);
-                i.putExtra("file", "about.txt");
                 startActivity(i);
                 return true;
         }
