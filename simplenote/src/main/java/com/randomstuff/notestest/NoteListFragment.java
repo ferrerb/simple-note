@@ -136,7 +136,7 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
      */
     public boolean onQueryTextChange(String newText) {
         mCurrentFilter = !TextUtils.isEmpty(newText) ? newText : null;
-        restartCursorLoader();
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
         return true;
     }
 
@@ -185,11 +185,6 @@ public class NoteListFragment extends ListFragment implements SearchView.OnQuery
         setListAdapter(mAdapter);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
-    }
-
-    /** TODO: put this back in the onquerytextchanged method, probably */
-    private void restartCursorLoader() {
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override

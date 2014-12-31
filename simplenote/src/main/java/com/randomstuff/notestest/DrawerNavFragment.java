@@ -123,7 +123,6 @@ public class DrawerNavFragment extends Fragment implements
                     selectItem(-1, -1L, null);
                 } else if (position == mDrawerListView.getCount() - 1){
                     // About choice
-                    // TODO find an About icon for the footer about choice
                     selectItem(-2, -2L, null);
                 } else {
                     Cursor c = (Cursor) mDrawerListView.getItemAtPosition(position);

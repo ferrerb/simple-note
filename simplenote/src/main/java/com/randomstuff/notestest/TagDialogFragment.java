@@ -118,8 +118,6 @@ public class TagDialogFragment extends DialogFragment
         }
         // -3 is neutral button, which is used here to remove the current tag
         if (which == -3) {
-            // TODO: tag removal
-            Log.d("negative 2 !", "!");
             mCallbacks.onTagChosen(null, -2L);
         }
     }
