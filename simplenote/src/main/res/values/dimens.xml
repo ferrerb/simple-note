@@ -6,6 +6,6 @@
     <dimen name="listview_drawer_start_padding">16dp</dimen>
     <dimen name="listview_drawer_delete_icon">24dp</dimen>
     <dimen name="listview_drawer_about_icon">24dp</dimen>
-    <dimen name="btn_floating_action_diameter">32dp</dimen>
+    <dimen name="btn_floating_action_diameter">56dp</dimen>
     <dimen name="action_button_margin">16dp</dimen>
 </resources>

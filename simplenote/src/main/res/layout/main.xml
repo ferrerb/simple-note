@@ -12,13 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"/>
+        android:paddingEnd="8dp">
 
-    <ImageButton
-        android:layout_height="@dimen/btn_floating_action_diameter"
-        android:layout_width="@dimen/btn_floating_action_diameter"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="@dimen/action_button_margin"
-        android:layout_marginEnd="@dimen/action_button_margin"
-        android:src="@android:drawable/ic_input_add"/>
+        <ImageButton
+            android:layout_height="@dimen/btn_floating_action_diameter"
+            android:layout_width="@dimen/btn_floating_action_diameter"
+            android:id="@+id/create_note"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="@dimen/action_button_margin"
+            android:layout_marginEnd="@dimen/action_button_margin"
+            android:background="@color/lightBlue"
+            android:contentDescription="@string/add_note"
+            android:src="@drawable/ic_action_new"/>
+    </FrameLayout>
+
 </LinearLayout>
