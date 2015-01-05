@@ -64,11 +64,20 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
 
         // Creates a reference to the floating action button for creating a note
         ImageButton mCreateNote = (ImageButton) findViewById(R.id.create_note);
+        final int[] mCreateNoteCoord = new int[2];
+        mCreateNote.getLocationOnScreen(mCreateNoteCoord);
         // Sets an ontouchlistener to then find if the touch event was in the circular button
         mCreateNote.setOnTouchListener(new ImageButton.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent m) {
-                // TODO add some math to find out if the touch event was in the circle 
+                if (m.getAction() == MotionEvent.ACTION_DOWN) {
+                    int dx = (int) m.getRawX() - mCreateNoteCoord[0];
+                    int dy = (int) m.getRawY() - mCreateNoteCoord[1];
+                    double d = Math.sqrt((dx * dx) + (dy * dy));
+                    if (d < R.dimen.btn_floating_action_diameter) {
+                        // create note!
+                    }
+                }
                 return true;
             }
         });
