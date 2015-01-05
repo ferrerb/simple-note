@@ -10,7 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 
 /** The main activity for the app. Starts the navigation drawer, handles note selection through
  *  an interface, receives share data from other apps.
@@ -51,7 +53,7 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.notes_list, nFrag).commit();
 
-        // Getting intent information to then deal with a share.
+        // Gets intent information to then deal with a share.
         Intent intent = getIntent();
         String action = intent.getAction();
         String shareType = intent.getType();
@@ -59,6 +61,17 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
         if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(shareType)) {
             startShare(intent);
         }
+
+        // Creates a reference to the floating action button for creating a note
+        ImageButton mCreateNote = (ImageButton) findViewById(R.id.create_note);
+        // Sets an ontouchlistener to then find if the touch event was in the circular button
+        mCreateNote.setOnTouchListener(new ImageButton.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent m) {
+                // TODO add some math to find out if the touch event was in the circle 
+                return true;
+            }
+        });
 
     }
     /** Creates a note fragment and gives it the requested note's _id */

@@ -21,7 +21,7 @@
             android:layout_gravity="end|bottom"
             android:layout_marginBottom="@dimen/action_button_margin"
             android:layout_marginEnd="@dimen/action_button_margin"
-            android:background="@color/lightBlue"
+            android:background="@drawable/round_button"
             android:contentDescription="@string/add_note"
             android:src="@drawable/ic_action_new"/>
     </FrameLayout>
