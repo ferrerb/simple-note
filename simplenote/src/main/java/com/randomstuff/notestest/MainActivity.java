@@ -12,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 /** The main activity for the app. Starts the navigation drawer, handles note selection through
  *  an interface, receives share data from other apps.
@@ -23,6 +25,8 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
     private DrawerNavFragment mDrawerNavFragment;
     private String mCurrentTag;
     private long mCurrentTagId = -1L;
+    private int[] mCreateNoteCoord = new int[2];
+    ImageButton btnCreateNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,26 +67,59 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
         }
 
         // Creates a reference to the floating action button for creating a note
-        ImageButton mCreateNote = (ImageButton) findViewById(R.id.create_note);
-        final int[] mCreateNoteCoord = new int[2];
-        mCreateNote.getLocationOnScreen(mCreateNoteCoord);
-        // Sets an ontouchlistener to then find if the touch event was in the circular button
-        mCreateNote.setOnTouchListener(new ImageButton.OnTouchListener() {
+        btnCreateNote = (ImageButton) findViewById(R.id.create_note);
+        // Sets an ontouchlistener to create a new note when the button is touched
+        btnCreateNote.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent m) {
-                if (m.getAction() == MotionEvent.ACTION_DOWN) {
+
+                if (m.getAction() == MotionEvent.ACTION_UP) {
+                    // Checks the coordinates of the touch event to see if it occurred in the circular button
+                    //TODO GET THIS MATHS WORKING
                     int dx = (int) m.getRawX() - mCreateNoteCoord[0];
+                    Log.d("Button center x coord", Integer.toString(mCreateNoteCoord[0]));
+
+                    Log.d("X coordinate difference click to button center", Integer.toString(dx));
+
                     int dy = (int) m.getRawY() - mCreateNoteCoord[1];
+                    Log.d("Y coordinate difference click to button center", Integer.toString(dy));
+
                     double d = Math.sqrt((dx * dx) + (dy * dy));
-                    if (d < R.dimen.btn_floating_action_diameter) {
+                    Log.d("Distance from center of create note button", Double.toString(d));
+                    if (d < (getApplicationContext().getResources()
+                            .getDimensionPixelSize(R.dimen.btn_floating_action_diameter))) {
                         // create note!
+                        Log.d("Create new note click", Integer.toString((getApplicationContext().getResources()
+                                .getDimensionPixelSize(R.dimen.btn_floating_action_diameter))) );
+                        if (mDualPane) {
+                            NoteFragment noteFrag = (NoteFragment)
+                                    getFragmentManager().findFragmentById(R.id.notes);
+                            if (noteFrag == null || noteFrag.getShownId() > -2L) {
+                                noteFrag = NoteFragment.newInstance(0L);
+                                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                ft.replace(R.id.notes, noteFrag).commit();
+                            }
+                        } else {
+                            // this happens only in portrait mode
+                            Intent i = new Intent(getApplicationContext(), NoteActivity.class);
+                            i.putExtra("id", 0L);
+                            startActivity(i);
+                        }
                     }
                 }
                 return true;
             }
         });
-
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean bool) {
+        super.onWindowFocusChanged(bool);
+        btnCreateNote.getLocationOnScreen(mCreateNoteCoord);
+        mCreateNoteCoord[0] = mCreateNoteCoord[0] + (this.getResources().getDimensionPixelSize(R.dimen.btn_floating_action_diameter) / 2);
+        mCreateNoteCoord[1] = mCreateNoteCoord[1] + (this.getResources().getDimensionPixelSize(R.dimen.btn_floating_action_diameter) / 2);
+    }
+
     /** Creates a note fragment and gives it the requested note's _id */
     @Override
     public void onNoteSelected(long id) {
@@ -112,7 +149,7 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
     @Override
     public void onDrawerItemSelected(long id, String tag) {
         // Restarts the note list to show the chosen tag
-        if (id > 0) {
+        if (id > -2L) {
             NoteListFragment listFrag = (NoteListFragment)getFragmentManager().findFragmentById(R.id.notes_list);
             if (id != mCurrentTagId && listFrag != null && listFrag.isVisible()) {
                 mCurrentTag = tag;
@@ -159,23 +196,6 @@ public class MainActivity extends ActionBarActivity implements NoteListFragment.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case(R.id.add_note):
-                if (mDualPane) {
-                    NoteFragment noteFrag = (NoteFragment)
-                            getFragmentManager().findFragmentById(R.id.notes);
-                    if (noteFrag == null || noteFrag.getShownId() > -2L) {
-                        noteFrag = NoteFragment.newInstance(0L);
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.notes, noteFrag).commit();
-                    }
-                } else {
-                    // this happens only in portrait mode
-                    Intent i = new Intent(this, NoteActivity.class);
-                    i.putExtra("id", 0L);
-                    startActivity(i);
-                }
-
-                return true;
             case(R.id.help):
                 Intent i = new Intent(this, SimpleDisplayActivity.class);
                 i.putExtra("file", "help.txt");
