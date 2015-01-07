@@ -83,7 +83,7 @@ public class TagDialogFragment extends DialogFragment
         mAutoView.setAdapter(mAdapter);
         mAutoView.setThreshold(2);
         mAutoView.showDropDown();
-
+        // TODO move from cursorloader since we arent using a listview
         getLoaderManager().initLoader(LOADER_ID, null, this);
 
         mAutoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
