@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -26,7 +27,7 @@ public class TagDialogFragment extends DialogFragment
     private int mSelectedPosition = -1;
     private long mSelectedTag = -1L;
     private Cursor c;
-    private ListView lv;
+    private AutoCompleteTextView mAutoView;
     private SimpleCursorAdapter mAdapter;
     private static final int LOADER_ID = 2;
 
@@ -71,7 +72,7 @@ public class TagDialogFragment extends DialogFragment
         mForm = getActivity().getLayoutInflater().inflate(R.layout.tag_dialog_frag, null);
         builder.setView(mForm);
 
-        lv = (ListView) mForm.findViewById(R.id.tag_dialog_list);
+        mAutoView = (AutoCompleteTextView) mForm.findViewById(R.id.tag_auto_text_view);
 
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_1,
@@ -79,14 +80,16 @@ public class TagDialogFragment extends DialogFragment
                 new String[]{ NotesContract.Tags.COLUMN_TAGS},
                 new int[]{android.R.id.text1},
                 0);
-        lv.setAdapter(mAdapter);
+        mAutoView.setAdapter(mAdapter);
+        mAutoView.setThreshold(2);
+        mAutoView.showDropDown();
+
         getLoaderManager().initLoader(LOADER_ID, null, this);
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAutoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSelectedPosition = position;
                 mSelectedTag = id;
-                lv.setItemChecked(mSelectedPosition, true);
             }
         });
 
@@ -99,25 +102,21 @@ public class TagDialogFragment extends DialogFragment
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        // -1 is the Positive button, so this means adding or changing a tag
-        if (which == -1) {
-            EditText editNewTag = (EditText) mForm.findViewById(R.id.edit_new_tag);
-            String newTag = editNewTag.getText().toString();
-
-            if (newTag.length() > 0L) {
+        // Positive button, so this means adding or changing a tag
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            String newTag = mAutoView.getText().toString();
+            // A new tag entered in the textview, although this might have some logic issues
+            if (newTag.length() > 0L && mSelectedPosition < 0) {
                 mCallbacks.onTagChosen(newTag, -1L);
             }
-            if (newTag.length() < 1L && mSelectedTag != mCurTagId) {
-                if (c != null) {
-                    c.moveToPosition(mSelectedPosition);
-                    newTag = c.getString(c.getColumnIndex(NotesContract.Tags.COLUMN_TAGS));
-                }
+            // A new tag chosen from the list of existing tags
+            if (newTag.length() > 0L && mSelectedTag != mCurTagId && mSelectedPosition > -1) {
                 Log.d("chosen tag in TagDialogFragment = ", newTag);
                 mCallbacks.onTagChosen(newTag, mSelectedTag);
             }
         }
-        // -3 is neutral button, which is used here to remove the current tag
-        if (which == -3) {
+        // neutral button, which is used here to remove the current tag
+        if (which == DialogInterface.BUTTON_NEUTRAL) {
             mCallbacks.onTagChosen(null, -2L);
         }
     }
@@ -140,7 +139,7 @@ public class TagDialogFragment extends DialogFragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         c = data;
         mAdapter.swapCursor(data);
-
+        mAutoView.showDropDown();
         // If the note already has a tag, this will mark that tag on the listview
         if (mCurTagId > 0L && c != null && c.moveToFirst()) {
             while (!c.isAfterLast()) {
@@ -149,7 +148,6 @@ public class TagDialogFragment extends DialogFragment
                 }
                 c.moveToNext();
             }
-            lv.setItemChecked(mSelectedPosition, true);
         }
     }
 
