@@ -118,6 +118,8 @@ public class DrawerNavFragment extends Fragment implements
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                view.setSelected(true);
+
                 if (mDrawerListView.getHeaderViewsCount() == 1 && position == 0) {
                     // The All notes header
                     selectItem(-1, -1L, null);
@@ -143,11 +145,13 @@ public class DrawerNavFragment extends Fragment implements
                 this);
 
         mDrawerListView.setAdapter(mAdapter);
+        mDrawerListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         // Begins cursorloader
         getLoaderManager().initLoader(LOADER_ID, null, this);
         if (mCurrentSelectedPosition > 0) {
             // TODO Probably need to change this to use the selected id, as position could change
-            mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+            mDrawerListView.smoothScrollToPosition(mCurrentSelectedPosition);
+            mDrawerListView.setSelection(mCurrentSelectedPosition);
         }
         return result;
     }
@@ -316,9 +320,7 @@ public class DrawerNavFragment extends Fragment implements
     private void selectItem(int position, long id, String tag) {
         mCurrentSelectedPosition = position;
         mCurrentSelectedIndex = id;
-        if (mDrawerListView != null && position != -1) {
-            mDrawerListView.setItemChecked(position, true);
-        }
+
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
