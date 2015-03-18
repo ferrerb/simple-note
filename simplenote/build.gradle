@@ -9,6 +9,8 @@ android {
         targetSdkVersion 21
         versionCode 5
         versionName "1.3.1"
+        testApplicationId "com.randomstuff.notestest.java"
+        testInstrumentationRunner "android.test.InstrumentationRunner"
     }
     buildTypes {
         release {
@@ -22,4 +24,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:21.+'
     compile 'com.android.support:appcompat-v7:21.0.+'
+    testCompile 'junit:junit:4.12'
 }

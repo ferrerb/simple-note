@@ -111,7 +111,7 @@ public class TagDialogFragment extends DialogFragment
             }
             // A new tag chosen from the list of existing tags
             if (newTag.length() > 0L && mSelectedTag != mCurTagId && mSelectedPosition > -1) {
-                Log.d("chosen tag in TagDialogFragment = ", newTag);
+                Log.d("tag TagDialogFragment= ", newTag);
                 mCallbacks.onTagChosen(newTag, mSelectedTag);
             }
         }
