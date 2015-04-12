@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,8 +21,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 /** Used to choose, create and remove a tag from a note */
-public class TagDialogFragment extends DialogFragment
-        implements DialogInterface.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class TagDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
     private TagDialogCallbacks mCallbacks;
     private View mForm = null;
     private static final String TAG_ID = "id";
@@ -29,7 +31,7 @@ public class TagDialogFragment extends DialogFragment
     private Cursor c;
     private AutoCompleteTextView mAutoView;
     private SimpleCursorAdapter mAdapter;
-    private static final int LOADER_ID = 2;
+    private static final int TAG_QUERY_TOKEN = 2;
 
     /** Returns a new fragment with the id of the note's current tag in a bundle
      *
@@ -74,6 +76,10 @@ public class TagDialogFragment extends DialogFragment
 
         mAutoView = (AutoCompleteTextView) mForm.findViewById(R.id.tag_auto_text_view);
 
+        TagAsyncQueryHandler mHandle = new TagAsyncQueryHandler(getActivity().
+                getContentResolver());
+        mHandle.startQuery(TAG_QUERY_TOKEN, null, NotesContract.Tags.CONTENT_URI, null, null, null, null);
+
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_1,
                 null,
@@ -83,8 +89,6 @@ public class TagDialogFragment extends DialogFragment
         mAutoView.setAdapter(mAdapter);
         mAutoView.setThreshold(2);
         mAutoView.showDropDown();
-        // TODO move from cursorloader since we arent using a listview
-        getLoaderManager().initLoader(LOADER_ID, null, this);
 
         mAutoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -128,32 +132,30 @@ public class TagDialogFragment extends DialogFragment
         c.close();
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
-        // set up the provider and uri etc
-        return new CursorLoader(getActivity(),
-                NotesContract.Tags.CONTENT_URI, null, null, null, null);
-    }
+    /** Handles content provider work asynchronously. The overridden methods here are
+     *  for actually using the results of that work
+     */
+    private class TagAsyncQueryHandler extends AsyncQueryHandler {
+        public TagAsyncQueryHandler (ContentResolver cr) {
+            super(cr);
+        }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        c = data;
-        mAdapter.swapCursor(data);
-        mAutoView.showDropDown();
-        // If the note already has a tag, this will mark that tag on the listview
-        if (mCurTagId > 0L && c != null && c.moveToFirst()) {
-            while (!c.isAfterLast()) {
-                if (c.getLong(0) == mCurTagId) {
-                    mSelectedPosition = c.getPosition();
-                }
-                c.moveToNext();
-            }
+        @Override
+        protected void onQueryComplete(int token, Object cookie, Cursor c) {
+            mAdapter.swapCursor(c);
+            mAutoView.showDropDown();
+        }
+
+        @Override
+        protected void onInsertComplete(int token, Object cookie, Uri uri) {
+
+        }
+
+        @Override
+        protected void onDeleteComplete(int token, Object cookie, int result) {
+            // ???
         }
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-    }
-
 }
+
