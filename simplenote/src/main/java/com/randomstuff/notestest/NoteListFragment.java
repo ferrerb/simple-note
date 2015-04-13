@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.randomstuff.notestest.data.NotesContract;
+
 public class NoteListFragment extends ListFragment implements SearchView.OnQueryTextListener,
         LoaderManager.LoaderCallbacks<Cursor> {
     // Part of a callback interface

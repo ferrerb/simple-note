@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -16,7 +16,7 @@ public final class NotesContract {
     /**
      *  Authority definitions for the notes provider
      */
-    public static final String AUTHORITY = "com.randomstuff.notestest.Provider";
+    public static final String AUTHORITY = "com.randomstuff.notestest.data.Provider";
     public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 
     /**

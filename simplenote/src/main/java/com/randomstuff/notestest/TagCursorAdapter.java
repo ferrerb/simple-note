@@ -12,6 +12,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.randomstuff.notestest.data.NotesContract;
+
 /** A custom cursor adapter to add a button for each tag, allowing the user
  * to delete the tag.
  */

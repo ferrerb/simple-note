@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import com.randomstuff.notestest.data.NotesContract;
+
 /** A cursor adapter that seperates the rows based on month. Done with mucho help
  *  from Cyril Mottier's post on listview tips and tricks
  */

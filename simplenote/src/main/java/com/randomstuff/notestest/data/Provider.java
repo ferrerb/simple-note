@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 public class Provider extends ContentProvider {
     private DatabaseHelper db=null;

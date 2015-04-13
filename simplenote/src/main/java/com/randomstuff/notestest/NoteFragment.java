@@ -27,6 +27,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.randomstuff.notestest.data.NotesContract;
+
 /** Displays notes */
 public class NoteFragment extends Fragment implements TagDialogFragment.TagDialogCallbacks {
     // Variables to hold references to the views associated with the note fragment

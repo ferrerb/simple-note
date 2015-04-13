@@ -3,12 +3,9 @@ package com.randomstuff.notestest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.LoaderManager;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,9 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+
+import com.randomstuff.notestest.data.NotesContract;
 
 /** Used to choose, create and remove a tag from a note */
 public class TagDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {

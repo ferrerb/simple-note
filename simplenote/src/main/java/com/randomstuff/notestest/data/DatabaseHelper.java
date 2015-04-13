@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
