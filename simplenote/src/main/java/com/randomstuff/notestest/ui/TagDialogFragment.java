@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.FilterQueryProvider;
 import android.widget.SimpleCursorAdapter;
 
 import com.randomstuff.notestest.R;
@@ -26,7 +27,6 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
     private long mCurTagId = 0L;
     private int mSelectedPosition = -1;
     private long mSelectedTag = -1L;
-    private Cursor c;
     private AutoCompleteTextView mAutoView;
     private SimpleCursorAdapter mAdapter;
     private static final int TAG_QUERY_TOKEN = 2;
@@ -74,19 +74,30 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
 
         mAutoView = (AutoCompleteTextView) mForm.findViewById(R.id.tag_auto_text_view);
 
-        TagAsyncQueryHandler mHandle = new TagAsyncQueryHandler(getActivity().
-                getContentResolver());
-        mHandle.startQuery(TAG_QUERY_TOKEN, null, NotesContract.Tags.CONTENT_URI, null, null, null, null);
-
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_1,
                 null,
                 new String[]{ NotesContract.Tags.COLUMN_TAGS},
                 new int[]{android.R.id.text1},
                 0);
+        mAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public String convertToString(Cursor cursor) {
+                int index = cursor.getColumnIndexOrThrow(NotesContract.Tags.COLUMN_TAGS);
+                return cursor.getString(index);
+            }
+        });
+        mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence constraint) {
+                return getActivity().getContentResolver().query(NotesContract.Tags.CONTENT_URI,
+                        new String[] {NotesContract.Tags.COLUMN_ID, NotesContract.Tags.COLUMN_TAGS},
+                        constraint.toString(),
+                        null,
+                        null);
+            }
+        });
         mAutoView.setAdapter(mAdapter);
         mAutoView.setThreshold(2);
-        mAutoView.showDropDown();
+
 
         mAutoView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -107,6 +118,8 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
         // Positive button, so this means adding or changing a tag
         if (which == DialogInterface.BUTTON_POSITIVE) {
             String newTag = mAutoView.getText().toString();
+            // TODO check to see that a manually entered tag does not exist in the db/cursor
+
             // A new tag entered in the textview, although this might have some logic issues
             if (newTag.length() > 0L && mSelectedPosition < 0) {
                 mCallbacks.onTagChosen(newTag, -1L);
@@ -127,33 +140,8 @@ public class TagDialogFragment extends DialogFragment implements DialogInterface
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         mCallbacks = null;
-        c.close();
     }
 
-    /** Handles content provider work asynchronously. The overridden methods here are
-     *  for actually using the results of that work
-     */
-    private class TagAsyncQueryHandler extends AsyncQueryHandler {
-        public TagAsyncQueryHandler (ContentResolver cr) {
-            super(cr);
-        }
-
-        @Override
-        protected void onQueryComplete(int token, Object cookie, Cursor c) {
-            mAdapter.swapCursor(c);
-            mAutoView.showDropDown();
-        }
-
-        @Override
-        protected void onInsertComplete(int token, Object cookie, Uri uri) {
-
-        }
-
-        @Override
-        protected void onDeleteComplete(int token, Object cookie, int result) {
-            // ???
-        }
-    }
 
 }
 
