@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.randomstuff.notestest.ui.NoteFragment;
+
 /** This activity hosts the note fragment, and is only called in single pane mode */
 
 public class NoteActivity extends ActionBarActivity {

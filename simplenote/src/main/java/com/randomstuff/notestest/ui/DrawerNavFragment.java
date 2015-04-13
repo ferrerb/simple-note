@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.ui;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -28,6 +28,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.randomstuff.notestest.R;
+import com.randomstuff.notestest.adapters.TagCursorAdapter;
 import com.randomstuff.notestest.data.NotesContract;
 
 /** Creates and manages a navigation drawer using a fragment

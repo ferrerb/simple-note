@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.ui;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.randomstuff.notestest.R;
+import com.randomstuff.notestest.adapters.SeparatorCursorAdapter;
 import com.randomstuff.notestest.data.NotesContract;
 
 public class NoteListFragment extends ListFragment implements SearchView.OnQueryTextListener,

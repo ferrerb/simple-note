@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import com.randomstuff.notestest.R;
 import com.randomstuff.notestest.data.NotesContract;
 
 /** A cursor adapter that seperates the rows based on month. Done with mucho help

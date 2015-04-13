@@ -12,9 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
+
+import com.randomstuff.notestest.ui.DrawerNavFragment;
+import com.randomstuff.notestest.ui.NoteFragment;
+import com.randomstuff.notestest.ui.NoteListFragment;
 
 /** The main activity for the app. Starts the navigation drawer, handles note selection through
  *  an interface, receives share data from other apps.

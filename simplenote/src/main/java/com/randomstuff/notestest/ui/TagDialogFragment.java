@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.SimpleCursorAdapter;
 
+import com.randomstuff.notestest.R;
 import com.randomstuff.notestest.data.NotesContract;
 
 /** Used to choose, create and remove a tag from a note */

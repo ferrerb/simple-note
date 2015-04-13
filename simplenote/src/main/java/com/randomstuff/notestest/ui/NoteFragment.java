@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.ui;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -27,6 +27,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.randomstuff.notestest.MainActivity;
+import com.randomstuff.notestest.R;
 import com.randomstuff.notestest.data.NotesContract;
 
 /** Displays notes */

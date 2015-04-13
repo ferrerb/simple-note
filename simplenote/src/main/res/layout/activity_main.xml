@@ -14,6 +14,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:name="com.randomstuff.notestest.DrawerNavFragment"/>
+        android:name="com.randomstuff.notestest.ui.DrawerNavFragment"/>
 
 </android.support.v4.widget.DrawerLayout>

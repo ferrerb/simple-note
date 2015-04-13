@@ -1,4 +1,4 @@
-package com.randomstuff.notestest;
+package com.randomstuff.notestest.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.randomstuff.notestest.R;
 import com.randomstuff.notestest.data.NotesContract;
 
 /** A custom cursor adapter to add a button for each tag, allowing the user
